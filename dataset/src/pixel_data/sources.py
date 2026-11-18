@@ -36,6 +36,10 @@ class Layout:
     def reports(self) -> Path:
         return self.data / "reports"
 
+    @property
+    def records(self) -> Path:
+        return self.data / "records.sqlite"
+
     def source_dir(self, source: Source) -> Path:
         if source.is_experimental:
             return self.raw / "_experimental" / source.id

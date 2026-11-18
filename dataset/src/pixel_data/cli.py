@@ -1,12 +1,16 @@
 import argparse
+import json
 import os
+import webbrowser
 from pathlib import Path
 
 from huggingface_hub import HfApi
 
+from pixel_data.dashboard.browse_server import serve
 from pixel_data.dashboard.build import build_dashboard
 from pixel_data.dashboard.page import human_size
 from pixel_data.gather.download import gather_source, remote_size
+from pixel_data.gather.importer import import_source
 from pixel_data.sources import Layout, Source, is_gathered, load_sources, pick_sources
 
 
@@ -39,10 +43,36 @@ def gather_command(sources: list[Source], layout: Layout, args) -> None:
     print("\nDone. Run `pixel dashboard` to look at what you have.")
 
 
+def import_command(sources: list[Source], layout: Layout, ids: list[str]) -> None:
+    for source in pick_sources(sources, ids):
+        print(f"== {source.id}")
+        entry = import_source(source, layout)
+        print(f"  {entry['images']:,} images of {entry['characters']:,} characters")
+
+        for reason, count in json.loads(entry["skipped"]).items():
+            print(f"  skipped {count:,}: {reason}")
+
+    print(f"\nRecords are in {layout.records}. Run `pixel browse` to look at them.")
+
+
 def dashboard_command(sources: list[Source], layout: Layout) -> None:
     page = build_dashboard(sources, layout)
 
     print(f"\nOpen it: open {page}")
+
+
+def browse_command(layout: Layout, port: int, open_page: bool) -> None:
+    server = serve(layout, port)
+    url = f"http://127.0.0.1:{port}/"
+
+    print(f"Browsing {layout.records} at {url} (Ctrl+C to stop)")
+    if open_page:
+        webbrowser.open(url)
+
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\nStopped.")
 
 
 def parser() -> argparse.ArgumentParser:
@@ -59,7 +89,14 @@ def parser() -> argparse.ArgumentParser:
     gather.add_argument("--all", action="store_true", help="every source except experimental ones")
     gather.add_argument("--experimental", action="store_true", help="with --all, include experimental sources too")
 
+    importing = commands.add_parser("import", help="turn downloaded sources into records, one per image")
+    importing.add_argument("ids", nargs="+", help="source ids from `pixel list`")
+
     commands.add_parser("dashboard", help="build data/reports/dashboard.html")
+
+    browse = commands.add_parser("browse", help="open the records in your web browser")
+    browse.add_argument("--port", type=int, default=8777)
+    browse.add_argument("--no-open", action="store_true", help="do not open the web browser")
 
     return root
 
@@ -73,5 +110,9 @@ def main() -> None:
         list_command(sources, layout, args.sizes)
     elif args.command == "gather":
         gather_command(sources, layout, args)
+    elif args.command == "import":
+        import_command(sources, layout, args.ids)
+    elif args.command == "browse":
+        browse_command(layout, args.port, not args.no_open)
     else:
         dashboard_command(sources, layout)

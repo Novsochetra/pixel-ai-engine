@@ -9,7 +9,7 @@ Each step of building the engine gets its own folder:
 
 | Folder | Step | Status |
 |---|---|---|
-| [`dataset/`](dataset/) | gather the image data, clean it, label it, split it, and look at it on a dashboard | gathering + dashboard done; cleaning next |
+| [`dataset/`](dataset/) | gather the image data, import it as records, analyze, annotate and export it, and browse it | gather + import + browser done; analyzer next |
 | `training/` | fine-tune models on the cleaned data | later |
 | `engine/` | run the trained models: create, rotate, animate, landscape | later |
 

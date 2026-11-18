@@ -1,0 +1,83 @@
+import threading
+from urllib.error import HTTPError
+from urllib.request import urlopen
+
+import pytest
+from helpers import fake_lpc_4view, fake_pac
+
+from pixel_data.dashboard.browse_server import serve
+from pixel_data.gather.importer import import_source
+from pixel_data.sources import Layout
+
+
+@pytest.fixture
+def browser(tmp_path):
+    layout = Layout(tmp_path)
+    import_source(fake_pac(layout), layout)
+    import_source(fake_lpc_4view(layout), layout)
+    (layout.reports / "thumbs").mkdir(parents=True)
+
+    server = serve(layout, 0)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+
+    yield f"http://127.0.0.1:{server.server_address[1]}"
+
+    server.shutdown()
+    server.server_close()
+
+
+def fetch(url: str) -> tuple[int, str, bytes]:
+    try:
+        with urlopen(url) as response:
+            return response.status, response.headers["Content-Type"], response.read()
+    except HTTPError as error:
+        return error.code, error.headers["Content-Type"], error.read()
+
+
+def test_home_lists_each_imported_source(browser):
+    status, _, body = fetch(browser + "/")
+
+    assert status == 200
+    assert b"3 characters" in body and b"1 characters" in body
+
+
+def test_characters_can_be_filtered_by_source_split_and_search(browser):
+    _, _, every = fetch(browser + "/characters")
+    _, _, tests = fetch(browser + "/characters?source=pac&split=test")
+    _, _, spear = fetch(browser + "/characters?q=spear")
+
+    assert b"4 characters" in every
+    assert b"1 characters" in tests and b"pac/test/0" in tests
+    assert b"lpc-4view/char_00000" in spear and b"pac/train/0" not in spear
+
+
+def test_a_character_page_shows_every_view_in_order(browser):
+    _, _, body = fetch(browser + "/character?id=lpc-4view/char_00000")
+    html = body.decode()
+
+    positions = [html.index(f'alt="{view}"') for view in ("front", "left", "back", "right")]
+    assert positions == sorted(positions)
+
+
+def test_images_come_back_as_png(browser):
+    status, kind, body = fetch(browser + "/image?id=pac/train/0/front")
+
+    assert (status, kind) == (200, "image/png")
+    assert body.startswith(b"\x89PNG")
+
+
+def test_nothing_outside_the_thumbs_folder_is_served(browser):
+    status, _, _ = fetch(browser + "/thumbs/../records.sqlite")
+
+    assert status == 404
+
+
+def test_a_bad_page_number_shows_the_first_page(browser):
+    status, _, body = fetch(browser + "/characters?page=abc")
+
+    assert status == 200 and b"Page 1 of 1" in body
+
+
+def test_browse_needs_records_first(tmp_path):
+    with pytest.raises(SystemExit, match="pixel import"):
+        serve(Layout(tmp_path), 0)
