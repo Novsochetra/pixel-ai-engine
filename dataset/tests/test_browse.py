@@ -7,6 +7,7 @@ from helpers import fake_lpc_4view, fake_pac
 
 from pixel_data.analyze.run import analyze
 from pixel_data.dashboard.browse_server import serve
+from pixel_data.export.run import export
 from pixel_data.gather.importer import import_source
 from pixel_data.sources import Layout
 
@@ -127,3 +128,40 @@ def test_home_shows_statuses_once_analyzed(analyzed_browser):
     _, _, body = fetch(analyzed_browser + "/")
 
     assert b'class="outcome drop"' in body
+
+
+@pytest.fixture
+def exported_browser(tmp_path):
+    layout = Layout(tmp_path)
+    pac = fake_pac(layout)
+    import_source(pac, layout)
+    analyze(layout, [])
+    export(layout, [pac], "rotation-test", include_check=True, experimental=False)
+
+    server, url = start(layout)
+    yield url
+
+    server.shutdown()
+    server.server_close()
+
+
+def test_exports_asks_for_an_export_until_one_exists(analyzed_browser):
+    _, _, body = fetch(analyzed_browser + "/exports")
+
+    assert b"No exports yet" in body
+
+
+def test_exports_shows_counts_leak_check_and_samples(exported_browser):
+    _, _, body = fetch(exported_browser + "/exports")
+
+    assert b"rotation-test" in body and b"Leak check" in body
+    assert b"/exports/rotation-test/images/" in body
+
+
+def test_exported_pictures_are_served_but_nothing_else(exported_browser):
+    _, _, page = fetch(exported_browser + "/exports")
+    picture = page.decode().split('src="/exports/rotation-test/')[1].split('"')[0]
+
+    assert fetch(exported_browser + f"/exports/rotation-test/{picture}")[0] == 200
+    assert fetch(exported_browser + "/exports/rotation-test/characters.jsonl")[0] == 404
+    assert fetch(exported_browser + "/exports/%2e%2e/records.sqlite")[0] == 404

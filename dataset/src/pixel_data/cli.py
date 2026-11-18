@@ -10,6 +10,7 @@ from pixel_data.analyze.rules import FLAGS
 from pixel_data.analyze.run import analyze
 from pixel_data.dashboard.browse_server import serve
 from pixel_data.dashboard.build import build_dashboard
+from pixel_data.export.run import export
 from pixel_data.dashboard.page import human_size
 from pixel_data.gather.download import gather_source, remote_size
 from pixel_data.gather.importer import import_source
@@ -72,6 +73,22 @@ def analyze_command(layout: Layout, ids: list[str]) -> None:
     print("\nRun `pixel browse` and open Flagged to look at them.")
 
 
+def export_command(sources: list[Source], layout: Layout, args) -> None:
+    summary = export(layout, sources, args.name, args.include_check, args.experimental)
+
+    print(f"\n== {summary['name']}")
+    for split, counts in summary["characters"].items():
+        parts = ", ".join(f"{source} {count:,}" for source, count in counts.items())
+        print(f"  {split:<6} {sum(counts.values()):>7,} characters ({parts})")
+
+    for reason, count in summary["left_out"].items():
+        print(f"  left out {count:,}: {reason}")
+
+    leaks = summary["leaks"]
+    print(f"  leak checks: {leaks['groups_in_two_splits']} groups and {leaks['pictures_in_two_splits']} pictures in two splits")
+    print(f"\nWritten to {layout.data / 'exports' / summary['name']}")
+
+
 def dashboard_command(sources: list[Source], layout: Layout) -> None:
     page = build_dashboard(sources, layout)
 
@@ -112,6 +129,11 @@ def parser() -> argparse.ArgumentParser:
     analyzing = commands.add_parser("analyze", help="measure every imported image and flag bad ones")
     analyzing.add_argument("ids", nargs="*", help="sources to measure again (default: every imported source)")
 
+    exporting = commands.add_parser("export", help="write the training files: fixed PNGs split by character")
+    exporting.add_argument("name", nargs="?", default="rotation-v1", help="folder name under data/exports")
+    exporting.add_argument("--include-check", action="store_true", help="also take images marked check")
+    exporting.add_argument("--experimental", action="store_true", help="also take experimental sources")
+
     commands.add_parser("dashboard", help="build data/reports/dashboard.html")
 
     browse = commands.add_parser("browse", help="open the records in your web browser")
@@ -134,6 +156,8 @@ def main() -> None:
         import_command(sources, layout, args.ids)
     elif args.command == "analyze":
         analyze_command(layout, args.ids)
+    elif args.command == "export":
+        export_command(sources, layout, args)
     elif args.command == "browse":
         browse_command(layout, args.port, not args.no_open)
     else:

@@ -6,18 +6,21 @@ from pixel_data.analyze.rules import status_of
 from pixel_data.analyze.store import split_flags
 
 
-def character_keys(db: sqlite3.Connection) -> tuple[dict, dict]:
+def character_keys(db: sqlite3.Connection) -> tuple[dict, dict, dict]:
     rows = db.execute(
-        "SELECT i.character, i.view, a.pixel_hash, a.look_hash FROM images i "
+        "SELECT i.character, i.view, a.pixel_hash, a.look_hash, a.filled FROM images i "
         "JOIN analysis a ON a.id = i.id ORDER BY i.rowid"
     )
 
-    exact, look = defaultdict(list), defaultdict(list)
+    exact, look, pictures = defaultdict(list), defaultdict(list), defaultdict(set)
     for row in rows:
         exact[row["character"]].append(f"{row['view']}:{row['pixel_hash']}")
         look[row["character"]].append(f"{row['view']}:{row['look_hash']}")
 
-    return digest(exact), digest(look)
+        if row["filled"]:
+            pictures[row["pixel_hash"]].add(row["character"])
+
+    return digest(exact), digest(look), pictures
 
 
 def digest(parts: dict[str, list[str]]) -> dict[str, str]:
@@ -36,14 +39,42 @@ def find_copies(exact: dict[str, str]) -> dict[str, str]:
     return copies
 
 
-def find_groups(look: dict[str, str], copies: dict[str, str]) -> dict[str, list[str]]:
+class Groups:
+    def __init__(self, order: list[str]):
+        self.rank = {character: index for index, character in enumerate(order)}
+        self.parent = {}
+
+    def root(self, character: str) -> str:
+        while self.parent.get(character, character) != character:
+            character = self.parent[character]
+
+        return character
+
+    def join(self, characters: list[str]) -> None:
+        roots = sorted({self.root(character) for character in characters}, key=self.rank.get)
+
+        for other in roots[1:]:
+            self.parent[other] = roots[0]
+
+
+def find_groups(look: dict[str, str], pictures: dict[str, set], copies: dict[str, str]) -> dict[str, list[str]]:
+    kept = [character for character in look if character not in copies]
+    groups = Groups(kept)
+
+    # Near-identical characters, and characters sharing even one identical view, must never
+    # end up on both sides of the train/test split.
+    same_look = defaultdict(list)
+    for character in kept:
+        same_look[look[character]].append(character)
+
+    for members in [*same_look.values(), *pictures.values()]:
+        groups.join([character for character in members if character not in copies])
+
     members = defaultdict(list)
+    for character in kept:
+        members[groups.root(character)].append(character)
 
-    for character, key in look.items():
-        if character not in copies:
-            members[key].append(character)
-
-    return {group[0]: group for group in members.values() if len(group) > 1}
+    return {first: group for first, group in members.items() if len(group) > 1}
 
 
 def write_groups(db: sqlite3.Connection, groups: dict[str, list[str]], copies: dict[str, str]) -> None:
@@ -75,9 +106,9 @@ def apply_flags(db: sqlite3.Connection, grouped: set[str], copies: dict[str, str
 
 
 def mark_duplicates(db: sqlite3.Connection) -> tuple[int, int]:
-    exact, look = character_keys(db)
+    exact, look, pictures = character_keys(db)
     copies = find_copies(exact)
-    groups = find_groups(look, copies)
+    groups = find_groups(look, pictures, copies)
 
     write_groups(db, groups, copies)
     apply_flags(db, {character for group in groups.values() for character in group}, copies)

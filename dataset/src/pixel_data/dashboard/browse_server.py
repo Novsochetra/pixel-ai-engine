@@ -3,11 +3,12 @@ from contextlib import closing
 from functools import lru_cache
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from importlib.resources import files
-from urllib.parse import parse_qs, urlparse
+from pathlib import Path
+from urllib.parse import parse_qs, unquote, urlparse
 
 from pixel_data.dashboard import browse_pages as pages
 from pixel_data.dashboard import browse_queries as queries
-from pixel_data.dashboard import flagged
+from pixel_data.dashboard import exports, flagged
 from pixel_data.images import load_image, png_bytes
 from pixel_data.sources import Layout
 
@@ -25,12 +26,12 @@ def make_handler(layout: Layout) -> type[BaseHTTPRequestHandler]:
             url = urlparse(self.path)
             params = {key: values[0] for key, values in parse_qs(url.query).items()}
 
-            route = THUMBS_ROUTE if url.path.startswith("/thumbs/") else ROUTES.get(url.path)
+            route = file_route(url.path) or ROUTES.get(url.path)
             if route is None:
                 self.send(404, "text/plain", b"Not found")
                 return
 
-            route(self, {**params, "path": url.path})
+            route(self, {**params, "path": unquote(url.path)})
 
         def send(self, status: int, kind: str, body: bytes) -> None:
             self.send_response(status)
@@ -131,15 +132,26 @@ def downloads(handler, params: dict) -> None:
     handler.send(200, "text/html; charset=utf-8", page.read_bytes())
 
 
-def thumbs(handler, params: dict) -> None:
-    folder = (handler.layout.reports / "thumbs").resolve()
-    target = (handler.layout.reports / params["path"].lstrip("/")).resolve()
+def send_png_under(handler, folder: Path, relative: str) -> None:
+    target = (folder / relative).resolve()
 
-    if not target.is_relative_to(folder) or not target.is_file():
+    if not target.is_relative_to(folder.resolve()) or not target.is_file() or target.suffix != ".png":
         handler.send(404, "text/plain", b"Not found")
         return
 
     handler.send(200, "image/png", target.read_bytes())
+
+
+def thumbs(handler, params: dict) -> None:
+    send_png_under(handler, handler.layout.reports / "thumbs", params["path"].removeprefix("/thumbs/"))
+
+
+def export_file(handler, params: dict) -> None:
+    send_png_under(handler, handler.layout.data / "exports", params["path"].removeprefix("/exports/"))
+
+
+def export_list(handler, params: dict) -> None:
+    handler.page("Exports", exports.exports_page(handler.layout.data / "exports"))
 
 
 ROUTES = {
@@ -150,8 +162,13 @@ ROUTES = {
     "/image": image,
     "/style.css": style,
     "/downloads": downloads,
+    "/exports": export_list,
 }
-THUMBS_ROUTE = thumbs
+FILE_ROUTES = {"/thumbs/": thumbs, "/exports/": export_file}
+
+
+def file_route(path: str):
+    return next((route for prefix, route in FILE_ROUTES.items() if path.startswith(prefix)), None)
 
 
 def serve(layout: Layout, port: int) -> ThreadingHTTPServer:

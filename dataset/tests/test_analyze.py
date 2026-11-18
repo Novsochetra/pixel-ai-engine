@@ -3,6 +3,7 @@ import tarfile
 from helpers import add_to_tar, fake_lpc_4view, fake_pac, png_bytes
 from PIL import Image
 
+from pixel_data.analyze.duplicates import find_groups
 from pixel_data.analyze.measure import measure
 from pixel_data.analyze.rules import image_flags, status_of
 from pixel_data.analyze.run import analyze
@@ -112,3 +113,12 @@ def test_analyze_reports_every_source(tmp_path):
     assert set(result["summary"]) == {"pac", "lpc-4view"}
     statuses = {key: count for key, count in result["summary"]["lpc-4view"].items() if key.startswith("status:")}
     assert sum(statuses.values()) == 4
+
+
+def test_characters_sharing_one_identical_view_are_grouped():
+    look = {"bald-green-eyes": "k1", "bald-blue-eyes": "k2", "knight": "k3"}
+    pictures = {"same-back": {"bald-green-eyes", "bald-blue-eyes"}, "knight-back": {"knight"}}
+
+    groups = find_groups(look, pictures, copies={})
+
+    assert groups == {"bald-green-eyes": ["bald-green-eyes", "bald-blue-eyes"]}

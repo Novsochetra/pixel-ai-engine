@@ -14,7 +14,7 @@ FLAGS = {
     "too-many-colors": (f"more than {MOST_COLORS} colours, may not be pixel art", "check"),
     "soft-edges": ("half-transparent pixels, pixel art has none", "fix"),
     "upscaled": ("drawn at 2x or more, can be shrunk to its true size", "fix"),
-    "near-duplicate": ("looks almost the same as another character, kept on one side of the split", "ok"),
+    "near-duplicate": ("looks almost the same as another character or shares a view with one, kept on one side of the split", "ok"),
 }
 
 

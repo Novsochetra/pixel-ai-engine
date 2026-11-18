@@ -5,8 +5,8 @@ reads: which character it is, which view, its size, source and licence. Steps so
 
 1. **gather** ✅ download the sources (`pixel gather`) and import them into records (`pixel import`).
 2. **analyze** ✅ measure each image and flag bad ones (`pixel analyze`).
-3. **annotate**: captions. Next.
-4. **export**: split by character and write training files.
+3. **annotate**: captions. Later, for the create task: rotation does not need them.
+4. **export** ✅ fix, split by character and write the training files (`pixel export`).
 
 `pixel browse` shows the records in your web browser and grows a view with each step.
 
@@ -40,13 +40,15 @@ open data/reports/dashboard.html              # look at it
 
 uv run pixel import pac lpc-4view             # turn downloads into records (importers: pac, lpc-4view)
 uv run pixel analyze                          # measure every imported image and flag bad ones
+uv run pixel export                           # write data/exports/rotation-v1 for training
 uv run pixel browse                           # open the records in your browser
 ```
 
 `pixel browse` runs a small web app at http://127.0.0.1:8777 that only your own computer can open.
 It lists every imported character with its views side by side, filters by source, split and
 caption text, and shows each image's record. Flagged shows the images the analyzer flagged, by
-reason, so you can check its decisions. Stop it with Ctrl+C.
+reason, so you can check its decisions. Exports shows each export's split counts, its leak check
+and sample characters. Stop it with Ctrl+C.
 
 A download that stops halfway picks up where it left off when you run it again.
 
@@ -69,6 +71,7 @@ src/pixel_data/
   sources.py                 reads sources.json and knows where each source's files live
   gather/                    step 1: download the sources, and importers/ that turn each into records
   analyze/                   step 2: measure each image (measure.py), flag it (rules.py), find copies
+  export/                    step 4: pick characters (select.py), fix (fix.py), split (split.py), write
   dashboard/                 the downloads page and the `pixel browse` app
   records.py                 the record store: one row per image in data/records.sqlite
   images.py                  loads a record's picture from the original download
@@ -77,6 +80,7 @@ data/raw/<id>/               downloads, never edited (not in git)
 data/raw/_experimental/      sources for the experimental model only, never shipped
 data/records.sqlite          the records (not in git); open it with any SQLite viewer
 data/reports/                the downloads page and its preview pictures
+data/exports/<name>/         training files: PNGs, characters.jsonl, export.json (not in git)
 ```
 
 `use` in `sources.json` is `train`, `eval` (test set) or `experimental`. To add a source, add an
@@ -104,4 +108,20 @@ groups every view of one character; the later train/test split keeps a character
 | drop | left out: empty, almost empty, or an exact copy of another character |
 
 The flags and their limits are all in `src/pixel_data/analyze/rules.py`. Near-identical characters
-stay in but form a group, so the split later puts the whole group on one side.
+stay in but form a group, as do characters that share even one identical view (base bodies that
+differ only in the face), so the split puts the whole group on one side.
+
+## Export
+
+`pixel export [name]` (default `rotation-v1`) writes `data/exports/<name>/`:
+
+- `images/<split>/<source>/<character>/<view>.png`, fixed: half-transparent pixels snapped to solid
+  or clear, art drawn at 2x shrunk to its true size,
+- `characters.jsonl`, one line per character with its split and the path of each view,
+- `export.json`, what went in, what was left out and why, the dataset versions, and the leak check.
+
+A character goes in when it has all four views, none dropped and none marked check (add
+`--include-check` to take those too). Experimental sources stay out unless you add `--experimental`.
+
+The split is by group, 90% train, 5% val, 5% test, from a hash of the group's name, so a character
+keeps its split when new data is added. A source's own test set (PAC's) stays test.

@@ -96,8 +96,14 @@ th { color: var(--muted); font-weight: 600; }
   background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 12px 12px;
 }
 
+.export { margin-bottom: 24px; }
+.export h3 { text-transform: uppercase; letter-spacing: 0.04em; }
+.export .table { margin: 12px 0; display: inline-block; max-width: 100%; }
+.export table { width: auto; }
+
 @media (max-width: 480px) {
   .top strong { display: none; }
+  .top { gap: 14px; overflow-x: auto; }
   .rows { grid-template-columns: 1fr; }
   .view img { width: 72px; height: 72px; }
   .view.large img { width: 140px; height: 140px; }

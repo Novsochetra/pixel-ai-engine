@@ -9,8 +9,8 @@ Each step of building the engine gets its own folder:
 
 | Folder | Step | Status |
 |---|---|---|
-| [`dataset/`](dataset/) | gather the image data, import it as records, analyze, annotate and export it, and browse it | gather, import, analyze and browser done; annotate next |
-| `training/` | fine-tune models on the cleaned data | later |
+| [`dataset/`](dataset/) | gather the image data, import it as records, analyze, annotate and export it, and browse it | gather, import, analyze, export and browser done; annotate later |
+| `training/` | train models on an export, first a 64px rotation model on a Mac (M1 Max) | next |
 | `engine/` | run the trained models: create, rotate, animate, landscape | later |
 
 ## The four tasks
