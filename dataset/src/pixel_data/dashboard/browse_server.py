@@ -7,6 +7,7 @@ from urllib.parse import parse_qs, urlparse
 
 from pixel_data.dashboard import browse_pages as pages
 from pixel_data.dashboard import browse_queries as queries
+from pixel_data.dashboard import flagged
 from pixel_data.images import load_image, png_bytes
 from pixel_data.sources import Layout
 
@@ -61,8 +62,9 @@ def open_db(layout: Layout) -> closing:
 def home(handler, params: dict) -> None:
     with open_db(handler.layout) as db:
         entries = queries.imports(db)
+        statuses = flagged.status_counts(db) if flagged.analyzed(db) else {}
 
-    handler.page("Imported", pages.home_page(entries))
+    handler.page("Imported", pages.home_page(entries, statuses))
 
 
 def page_number(text: str) -> int:
@@ -87,8 +89,20 @@ def character(handler, params: dict) -> None:
 
     with open_db(handler.layout) as db:
         images = queries.character_images(db, name)
+        analysis, group = flagged.character_analysis(db, name)
+        note = flagged.group_note(db, group)
 
-    handler.page(name, pages.character_detail(name, images))
+    handler.page(name, pages.character_detail(name, images, analysis, note))
+
+
+def flagged_images(handler, params: dict) -> None:
+    with open_db(handler.layout) as db:
+        sources = [entry["source"] for entry in queries.imports(db)]
+        body = flagged.flagged_page(
+            db, params.get("flag", ""), params.get("source", ""), page_number(params.get("page", "1")), sources
+        )
+
+    handler.page("Flagged", body)
 
 
 def image(handler, params: dict) -> None:
@@ -132,6 +146,7 @@ ROUTES = {
     "/": home,
     "/characters": characters,
     "/character": character,
+    "/flagged": flagged_images,
     "/image": image,
     "/style.css": style,
     "/downloads": downloads,

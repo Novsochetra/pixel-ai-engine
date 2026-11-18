@@ -2,6 +2,7 @@ from datetime import datetime
 from html import escape
 from urllib.parse import urlencode
 
+from pixel_data.analyze.rules import STATUS_ORDER
 from pixel_data.dashboard.browse_queries import PAGE_SIZE, Filters
 
 
@@ -17,7 +18,7 @@ def layout(title: str, body: str, has_downloads: bool) -> str:
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{escape(title)}</title><link rel="stylesheet" href="/style.css"></head>
-<body><nav class="top"><strong>Pixel engine data</strong><a href="/">Imported</a><a href="/characters">Characters</a>{downloads}</nav>
+<body><nav class="top"><strong>Pixel engine data</strong><a href="/">Imported</a><a href="/characters">Characters</a><a href="/flagged">Flagged</a>{downloads}</nav>
 <main>{body}</main></body></html>"""
 
 
@@ -32,7 +33,13 @@ def readable_time(stamp: str) -> str:
     return datetime.fromisoformat(stamp).strftime("%Y-%m-%d %H:%M UTC")
 
 
-def import_card(entry: dict) -> str:
+def status_line(counts: dict[str, int]) -> str:
+    parts = [f'<span class="outcome {status}">{status}</span> {counts.get(status, 0):,}' for status in STATUS_ORDER]
+
+    return f'<p class="statuses">{" ".join(parts)}</p>'
+
+
+def import_card(entry: dict, statuses: dict[str, int] | None) -> str:
     views = "".join(f"<li>{escape(view)} <b>{count:,}</b></li>" for view, count in entry["views"].items())
     skipped = "".join(f"<li>{escape(reason)}: <b>{count:,}</b></li>" for reason, count in entry["skipped"].items())
     skipped_block = f'<h3>Skipped</h3><ul class="counts">{skipped}</ul>' if skipped else '<p class="muted">Nothing skipped.</p>'
@@ -41,14 +48,15 @@ def import_card(entry: dict) -> str:
 <h2><a href="{link('/characters', source=entry['source'])}">{escape(entry['source'])}</a></h2>
 <p class="big">{entry['characters']:,} characters · {entry['images']:,} images</p>
 <p class="muted">Imported {escape(readable_time(entry['imported_at']))}</p>
+{status_line(statuses) if statuses else '<p class="muted">Not analyzed yet: run <code>uv run pixel analyze</code>.</p>'}
 <h3>Images per view</h3><ul class="counts">{views}</ul>{skipped_block}</article>"""
 
 
-def home_page(entries: list[dict]) -> str:
+def home_page(entries: list[dict], statuses: dict[str, dict[str, int]]) -> str:
     if not entries:
         return '<h1>Nothing imported yet</h1><p>Run <code>uv run pixel import pac lpc-4view</code>, then reload.</p>'
 
-    cards = "".join(import_card(entry) for entry in entries)
+    cards = "".join(import_card(entry, statuses.get(entry["source"])) for entry in entries)
 
     return f'<h1>Imported sources</h1><section class="cards">{cards}</section>'
 
@@ -100,7 +108,31 @@ def detail_rows(image: dict) -> str:
     return f"<tr>{cells}</tr>"
 
 
-def character_detail(character: str, images: list[dict]) -> str:
+def analysis_rows(images: list[dict], analysis: dict) -> str:
+    rows = []
+    for image in images:
+        found = analysis.get(image["id"])
+        if found:
+            flags = ", ".join(filter(None, found["flags"].split(","))) or "none"
+            rows.append(
+                f'<tr><td>{escape(image["view"] or "")}</td><td><span class="outcome {found["status"]}">{found["status"]}</span></td>'
+                f'<td>{escape(flags)}</td><td>{found["colors"]}</td><td>{found["filled"]}</td><td>{found["soft_edge"]}</td><td>{found["scale"]}x</td></tr>'
+            )
+
+    return "".join(rows)
+
+
+def analysis_table(images: list[dict], analysis: dict, note: str) -> str:
+    if not analysis:
+        return '<h2>Analysis</h2><p class="muted">Not analyzed yet.</p>'
+
+    header = "".join(f"<th>{name}</th>" for name in ("view", "status", "flags", "colours", "pixels drawn", "soft pixels", "drawn at"))
+
+    return f"""<h2>Analysis</h2>{note}<div class="table"><table><thead><tr>{header}</tr></thead>
+<tbody>{analysis_rows(images, analysis)}</tbody></table></div>"""
+
+
+def character_detail(character: str, images: list[dict], analysis: dict, note: str) -> str:
     if not images:
         return f"<h1>No character {escape(character)}</h1>"
 
@@ -110,4 +142,5 @@ def character_detail(character: str, images: list[dict]) -> str:
     caption = escape(images[0]["caption"] or "No caption yet.")
 
     return f"""<h1>{escape(character)}</h1><p>{caption}</p><div class="views">{views}</div>
+{analysis_table(images, analysis, note)}
 <h2>Records</h2><div class="table"><table><thead><tr>{header}</tr></thead><tbody>{rows}</tbody></table></div>"""

@@ -4,8 +4,8 @@ Turns the downloaded image data into one list of records, one per image, that ev
 reads: which character it is, which view, its size, source and licence. Steps so far:
 
 1. **gather** ✅ download the sources (`pixel gather`) and import them into records (`pixel import`).
-2. **analyze**: measure each image and flag bad ones. Next.
-3. **annotate**: captions.
+2. **analyze** ✅ measure each image and flag bad ones (`pixel analyze`).
+3. **annotate**: captions. Next.
 4. **export**: split by character and write training files.
 
 `pixel browse` shows the records in your web browser and grows a view with each step.
@@ -39,12 +39,14 @@ uv run pixel dashboard                        # a page of previews of each downl
 open data/reports/dashboard.html              # look at it
 
 uv run pixel import pac lpc-4view             # turn downloads into records (importers: pac, lpc-4view)
+uv run pixel analyze                          # measure every imported image and flag bad ones
 uv run pixel browse                           # open the records in your browser
 ```
 
 `pixel browse` runs a small web app at http://127.0.0.1:8777 that only your own computer can open.
 It lists every imported character with its views side by side, filters by source, split and
-caption text, and shows each image's record. Stop it with Ctrl+C.
+caption text, and shows each image's record. Flagged shows the images the analyzer flagged, by
+reason, so you can check its decisions. Stop it with Ctrl+C.
 
 A download that stops halfway picks up where it left off when you run it again.
 
@@ -66,6 +68,7 @@ src/pixel_data/
   cli.py                     the `pixel` command
   sources.py                 reads sources.json and knows where each source's files live
   gather/                    step 1: download the sources, and importers/ that turn each into records
+  analyze/                   step 2: measure each image (measure.py), flag it (rules.py), find copies
   dashboard/                 the downloads page and the `pixel browse` app
   records.py                 the record store: one row per image in data/records.sqlite
   images.py                  loads a record's picture from the original download
@@ -88,3 +91,17 @@ downloads stay as they are, and nothing takes disk space twice.
 Views are named `front`, `back`, `left` and `right` (the way the character faces on screen), plus
 `front-left`, `front-right`, `back-left` and `back-right` for 8-direction sources. A `character`
 groups every view of one character; the later train/test split keeps a character on one side.
+
+## Analysis
+
+`pixel analyze` gives every image a status, from the worst of its flags:
+
+| Status | Meaning |
+|---|---|
+| ok | ready to use |
+| fix | a later step can repair it on its own (snap half-transparent pixels, shrink art drawn at 2x) |
+| check | a person should look: it may be cut off or may not be pixel art |
+| drop | left out: empty, almost empty, or an exact copy of another character |
+
+The flags and their limits are all in `src/pixel_data/analyze/rules.py`. Near-identical characters
+stay in but form a group, so the split later puts the whole group on one side.

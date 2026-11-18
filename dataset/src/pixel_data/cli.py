@@ -6,6 +6,8 @@ from pathlib import Path
 
 from huggingface_hub import HfApi
 
+from pixel_data.analyze.rules import FLAGS
+from pixel_data.analyze.run import analyze
 from pixel_data.dashboard.browse_server import serve
 from pixel_data.dashboard.build import build_dashboard
 from pixel_data.dashboard.page import human_size
@@ -55,6 +57,21 @@ def import_command(sources: list[Source], layout: Layout, ids: list[str]) -> Non
     print(f"\nRecords are in {layout.records}. Run `pixel browse` to look at them.")
 
 
+def analyze_command(layout: Layout, ids: list[str]) -> None:
+    result = analyze(layout, ids)
+
+    print(f"\n{result['copies']:,} characters are exact copies of another; {result['groups']:,} groups of near-identical characters.")
+    for source, counts in result["summary"].items():
+        statuses = ", ".join(f"{status} {counts[f'status:{status}']:,}" for status in ("ok", "fix", "check", "drop"))
+        print(f"\n== {source}: {statuses}")
+
+        for flag, (meaning, _) in FLAGS.items():
+            if counts[flag]:
+                print(f"  {flag:<16} {counts[flag]:>8,}  {meaning}")
+
+    print("\nRun `pixel browse` and open Flagged to look at them.")
+
+
 def dashboard_command(sources: list[Source], layout: Layout) -> None:
     page = build_dashboard(sources, layout)
 
@@ -92,6 +109,9 @@ def parser() -> argparse.ArgumentParser:
     importing = commands.add_parser("import", help="turn downloaded sources into records, one per image")
     importing.add_argument("ids", nargs="+", help="source ids from `pixel list`")
 
+    analyzing = commands.add_parser("analyze", help="measure every imported image and flag bad ones")
+    analyzing.add_argument("ids", nargs="*", help="sources to measure again (default: every imported source)")
+
     commands.add_parser("dashboard", help="build data/reports/dashboard.html")
 
     browse = commands.add_parser("browse", help="open the records in your web browser")
@@ -112,6 +132,8 @@ def main() -> None:
         gather_command(sources, layout, args)
     elif args.command == "import":
         import_command(sources, layout, args.ids)
+    elif args.command == "analyze":
+        analyze_command(layout, args.ids)
     elif args.command == "browse":
         browse_command(layout, args.port, not args.no_open)
     else:

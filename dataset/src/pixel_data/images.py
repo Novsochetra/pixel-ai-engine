@@ -23,12 +23,18 @@ def read_bytes(raw: Path, row) -> bytes:
             return handle.read(row["data_length"])
 
     if row["member"]:
-        archive, lock = open_zip(path)
-
-        with lock:
-            return archive.read(row["member"])
+        return zip_member(path, row["member"])
 
     return path.read_bytes()
+
+
+# lpc-4view keeps four views in one sheet, so the same member is asked for four times in a row.
+@lru_cache(maxsize=256)
+def zip_member(path: Path, member: str) -> bytes:
+    archive, lock = open_zip(path)
+
+    with lock:
+        return archive.read(member)
 
 
 def parse_crop(crop: str) -> tuple[int, int, int, int]:

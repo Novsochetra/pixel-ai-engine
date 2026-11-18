@@ -5,9 +5,30 @@ from urllib.request import urlopen
 import pytest
 from helpers import fake_lpc_4view, fake_pac
 
+from pixel_data.analyze.run import analyze
 from pixel_data.dashboard.browse_server import serve
 from pixel_data.gather.importer import import_source
 from pixel_data.sources import Layout
+
+
+def start(layout: Layout):
+    server = serve(layout, 0)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+
+    return server, f"http://127.0.0.1:{server.server_address[1]}"
+
+
+@pytest.fixture
+def analyzed_browser(tmp_path):
+    layout = Layout(tmp_path)
+    import_source(fake_pac(layout), layout)
+    analyze(layout, [])
+
+    server, url = start(layout)
+    yield url
+
+    server.shutdown()
+    server.server_close()
 
 
 @pytest.fixture
@@ -81,3 +102,28 @@ def test_a_bad_page_number_shows_the_first_page(browser):
 def test_browse_needs_records_first(tmp_path):
     with pytest.raises(SystemExit, match="pixel import"):
         serve(Layout(tmp_path), 0)
+
+
+def test_flagged_asks_for_analysis_until_it_has_run(browser):
+    _, _, body = fetch(browser + "/flagged")
+
+    assert b"Not analyzed yet" in body
+
+
+def test_flagged_lists_images_by_flag(analyzed_browser):
+    _, _, body = fetch(analyzed_browser + "/flagged?flag=duplicate")
+
+    assert b"duplicate <b>4</b>" in body
+    assert b"pac/train/0/front" in body
+
+
+def test_a_copied_character_names_its_original(analyzed_browser):
+    _, _, body = fetch(analyzed_browser + "/character?id=pac/train/0")
+
+    assert b"Exact copy of" in body and b"pac/test/0" in body
+
+
+def test_home_shows_statuses_once_analyzed(analyzed_browser):
+    _, _, body = fetch(analyzed_browser + "/")
+
+    assert b'class="outcome drop"' in body
