@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pixel Engine Data</title>
+<style>
+:root {
+  --bg: #f6f5f2;
+  --surface: #ffffff;
+  --text: #1d1c1a;
+  --muted: #6b6862;
+  --line: #e4e1da;
+  --accent: #3d5afe;
+  --ok: #1b7f4b;
+  --warn: #a15c00;
+  --bad: #b3261e;
+  --check-a: #e9e7e2;
+  --check-b: #ffffff;
+  --radius: 10px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141413;
+    --surface: #1e1d1b;
+    --text: #ecebe7;
+    --muted: #a19e97;
+    --line: #34322e;
+    --accent: #8c9eff;
+    --ok: #6fcf97;
+    --warn: #f2b45c;
+    --bad: #f28b82;
+    --check-a: #2a2926;
+    --check-b: #33312d;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: 1280px; margin: 0 auto; padding: 32px 16px 64px; }
+h1 { margin: 0; font-size: 28px; letter-spacing: -0.01em; }
+.sub { margin: 4px 0 24px; color: var(--muted); }
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+.tile span { display: block; color: var(--muted); font-size: 13px; }
+.tile strong { font-size: 22px; font-variant-numeric: tabular-nums; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.chip {
+  border: 1px solid var(--line); background: var(--surface); color: var(--text);
+  border-radius: 999px; padding: 6px 14px; font: inherit; font-size: 13px; cursor: pointer;
+}
+.chip.on { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; min-width: 0; }
+.card[hidden] { display: none; }
+.card header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.card h2 { margin: 0 auto 0 0; font-size: 17px; }
+.card h2 a { color: inherit; text-decoration: none; }
+.card h2 a:hover { text-decoration: underline; }
+.use, .status, .tag { font-size: 12px; border-radius: 6px; padding: 2px 8px; border: 1px solid var(--line); }
+.use-experimental { color: var(--bad); border-color: currentColor; }
+.use-eval { color: var(--warn); border-color: currentColor; }
+.status.ok { color: var(--ok); }
+.status.wait { color: var(--warn); }
+.status.missing { color: var(--muted); }
+.tags { display: flex; gap: 6px; margin-top: 10px; }
+.tag { color: var(--muted); }
+.notes { margin: 10px 0; color: var(--muted); }
+.meta { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 0 0 12px; font-size: 13px; }
+.meta dt { color: var(--muted); }
+.meta dd { margin: 0; overflow-wrap: anywhere; }
+.thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; }
+.thumb {
+  display: block; aspect-ratio: 1; border-radius: 6px; overflow: hidden;
+  background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 12px 12px;
+}
+.thumb img { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
+.empty { color: var(--muted); font-size: 13px; margin: 0; }
+code { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+@media (max-width: 480px) { .cards { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Pixel engine data</h1>
+  <p class="sub">Made {{generated_at}}. Hover a picture for its size, colour count and caption; click it to open it.</p>
+  <section class="summary">{{summary}}</section>
+  <nav class="filters">{{filters}}</nav>
+  <section class="cards">{{cards}}</section>
+</main>
+<script>
+const chips = document.querySelectorAll(".chip");
+const cards = document.querySelectorAll(".card");
+
+function shows(card, filter) {
+  if (filter === "all") return true;
+  const [kind, value] = filter.split(":");
+  if (kind === "use") return card.dataset.use === value;
+  if (kind === "task") return card.dataset.tasks.split(" ").includes(value);
+  return card.dataset.state === value;
+}
+
+chips.forEach((chip) => {
+  chip.addEventListener("click", () => {
+    chips.forEach((other) => other.classList.toggle("on", other === chip));
+    cards.forEach((card) => { card.hidden = !shows(card, chip.dataset.filter); });
+  });
+});
+</script>
+</body>
+</html>

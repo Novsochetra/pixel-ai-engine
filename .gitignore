@@ -1,0 +1,12 @@
+# Python
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+
+# Downloaded and generated data stays on your machine
+dataset/data/
+*.log
+
+# macOS
+.DS_Store

@@ -1,0 +1,158 @@
+{
+  "sources": [
+    {
+      "id": "lpc-4view",
+      "kind": "huggingface",
+      "repo": "carlosuperb/lpc-4view-pixel-art-diffusion",
+      "revision": "81c9a7b6901adc44f063866e97eb439fcdb4f917",
+      "license": "CC-BY-SA-3.0",
+      "use": "train",
+      "tasks": ["create", "rotate"],
+      "notes": "4 views per character, human-drawn. Credit every LPC artist."
+    },
+    {
+      "id": "lpc-action",
+      "kind": "huggingface",
+      "repo": "carlosuperb/lpc-action-pixel-art-diffusion",
+      "revision": "720e325481904942d15ece7756ffccc0df16edb6",
+      "license": "CC-BY-SA-3.0",
+      "use": "train",
+      "tasks": ["animate"],
+      "notes": "Walk, thrust and slash sheets for the lpc-4view characters."
+    },
+    {
+      "id": "lpc-generator",
+      "kind": "git",
+      "repo": "https://github.com/LiberatedPixelCup/Universal-LPC-Spritesheet-Character-Generator.git",
+      "revision": "04140673ec02906f8233523639733c83690df750",
+      "license": "mixed: OGA-BY, GPL, CC-BY-SA (see CREDITS.csv)",
+      "use": "train",
+      "tasks": ["create", "rotate", "animate"],
+      "notes": "Layer art to render many more LPC characters and actions. 4 directions only."
+    },
+    {
+      "id": "pac",
+      "kind": "huggingface",
+      "repo": "plucksquire/pac",
+      "revision": "bdb73f9625c86f85df638b891542b1858dc8b381",
+      "allow": ["*.tar", "README.md"],
+      "license": "CC-BY-NC-4.0",
+      "use": "train",
+      "tasks": ["rotate"],
+      "notes": "64x64 front/left/back/right. Non-commercial, source not stated."
+    },
+    {
+      "id": "moss-64",
+      "kind": "huggingface",
+      "repo": "ProbablyHumanAB/moss-pixelart-64",
+      "revision": "1b8c181b5639e1374932b35d91ba11baf51d48bb",
+      "license": "Apache-2.0",
+      "use": "eval",
+      "tasks": ["create", "rotate"],
+      "notes": "500 AI sprites checked by hand. Test set."
+    },
+    {
+      "id": "opengameart-2d",
+      "kind": "huggingface",
+      "repo": "nyuuzyou/OpenGameArt-CC0",
+      "revision": "9c26738cbece58950c8208debb0d3f257fa7c975",
+      "allow": ["2D_Art*", "archive_index.csv", "ATTRIBUTION.md", "README.md"],
+      "license": "CC0-1.0",
+      "use": "train",
+      "tasks": ["create", "landscape"],
+      "notes": "Human-made 2D art only (about 24 GB). Needs slicing and filtering."
+    },
+    {
+      "id": "pixelart-308k",
+      "kind": "huggingface",
+      "repo": "Chan-Y/pixelart-308k",
+      "revision": "20ea22bf6a9774a2ff84d90c59b307cad88c82aa",
+      "license": "CC-BY-4.0",
+      "use": "train",
+      "tasks": ["create", "landscape"],
+      "notes": "AI scenes (FLUX). No real pixel grid: snap to grid and palette before training."
+    },
+    {
+      "id": "landscapes-20k",
+      "kind": "huggingface",
+      "repo": "cosmicproc/pixel-art-landscapes-20k",
+      "revision": "b5056c8bd1ce21a48897d6a4986c79b792e9a6a9",
+      "license": "Apache-2.0",
+      "use": "train",
+      "tasks": ["landscape"],
+      "notes": "AI landscapes, already palette-snapped. Use image_processed_* and prompt."
+    },
+    {
+      "id": "atlas-1.4m",
+      "kind": "huggingface",
+      "repo": "Angais/pixel-art-atlas-1.4m",
+      "revision": "bf78f8c8cbafa6d07718111a94d41e2dd79ddaa7",
+      "allow": ["data/*", "README.md"],
+      "license": "CC0-1.0",
+      "use": "train",
+      "tasks": ["create"],
+      "notes": "16x16 AI icons (Krea)."
+    },
+    {
+      "id": "icons-172k",
+      "kind": "huggingface",
+      "repo": "azyg0s/pixelart-172k",
+      "revision": "69157ce36974a3afcaf2465531cfab4c2a0e36bb",
+      "license": "MIT",
+      "use": "train",
+      "tasks": ["create"],
+      "notes": "32x32 AI icons (Krea)."
+    },
+    {
+      "id": "spraix-1024",
+      "kind": "huggingface",
+      "repo": "pawkanarek/spraix_1024",
+      "revision": "b077b0cc355e1f9ddc59757bf20bad6753dc5e15",
+      "license": "GPL-3.0 label, but each itch.io pack has its own licence",
+      "use": "experimental",
+      "tasks": ["animate"],
+      "notes": "560 animation sheets taken from itch.io packs."
+    },
+    {
+      "id": "alucard",
+      "kind": "huggingface",
+      "repo": "evilsocket/alucard-sprites",
+      "revision": "c6edd10779c218dda9eb4aa2f1398d570219ff72",
+      "license": "FAIR-1.0 (business use needs a signed agreement)",
+      "use": "experimental",
+      "tasks": ["create"],
+      "notes": "128px sprites, source not stated."
+    },
+    {
+      "id": "itch-8dir-cc0",
+      "kind": "manual",
+      "license": "CC0-1.0 (check each pack page)",
+      "use": "train",
+      "tasks": ["rotate", "animate"],
+      "notes": "8-direction packs. 10 of the 12 are by one artist (Hormelz), so one style.",
+      "links": [
+        "https://hormelz.itch.io/8-directional-melee-character",
+        "https://hormelz.itch.io/8-directional-knight",
+        "https://hormelz.itch.io/8-directional-char",
+        "https://hormelz.itch.io/8-directional-great-sword-knight-character",
+        "https://hormelz.itch.io/8-directional-2d-businessman-character",
+        "https://hormelz.itch.io/8-directional-drone-robot",
+        "https://hormelz.itch.io/8-directional-girl-character",
+        "https://hormelz.itch.io/8-directional-fox-character",
+        "https://hormelz.itch.io/8-directional-iron-knight",
+        "https://hormelz.itch.io/8-directional-2d-sprite",
+        "https://ordinary-bumblebee.itch.io/8-direction-walk-cycle",
+        "https://5yvalia.itch.io/16x16-character-template-8-direction"
+      ]
+    },
+    {
+      "id": "spritedatabase",
+      "kind": "manual",
+      "license": "copyrighted game sprites",
+      "use": "experimental",
+      "tasks": ["create", "animate"],
+      "notes": "Experimental model only, never shipped.",
+      "links": ["https://spritedatabase.net/"]
+    }
+  ]
+}
