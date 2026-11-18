@@ -48,7 +48,8 @@ uv run pixel browse                           # open the records in your browser
 It lists every imported character with its views side by side, filters by source, split and
 caption text, and shows each image's record. Flagged shows the images the analyzer flagged, by
 reason, so you can check its decisions. Exports shows each export's split counts, its leak check
-and sample characters. Stop it with Ctrl+C.
+and sample characters. Try-outs shows what existing models made in `training/`, next to the
+real views. Stop it with Ctrl+C.
 
 A download that stops halfway picks up where it left off when you run it again.
 

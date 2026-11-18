@@ -1,9 +1,11 @@
+import json
 import threading
 from urllib.error import HTTPError
 from urllib.request import urlopen
 
 import pytest
 from helpers import fake_lpc_4view, fake_pac
+from PIL import Image
 
 from pixel_data.analyze.run import analyze
 from pixel_data.dashboard.browse_server import serve
@@ -165,3 +167,33 @@ def test_exported_pictures_are_served_but_nothing_else(exported_browser):
     assert fetch(exported_browser + f"/exports/rotation-test/{picture}")[0] == 200
     assert fetch(exported_browser + "/exports/rotation-test/characters.jsonl")[0] == 404
     assert fetch(exported_browser + "/exports/%2e%2e/records.sqlite")[0] == 404
+
+
+def fake_tryout(layout: Layout) -> None:
+    folder = layout.data / "tryouts" / "run-1"
+    (folder / "model-a").mkdir(parents=True)
+    Image.new("RGBA", (64, 64), (1, 2, 3, 255)).save(folder / "model-a" / "p00-s0-pixel.png")
+
+    results = {
+        "name": "run-1", "created_at": "2026-11-18T10:00:00+00:00", "device": "mps", "seeds": [0],
+        "repos": {"model-a": "someone/model-a", "model-b": "someone/model-b"},
+        "create": [{"id": "p00", "prompt": "pixel art of a knight"}],
+        "rotate": [],
+        "models": {
+            "model-a": {"create": {"p00-s0": {"raw": None, "pixel": "model-a/p00-s0-pixel.png"}}, "rotate": {},
+                        "load_seconds": 30.0, "seconds_per_image": 12.5},
+            "model-b": {"error": "OSError: 401 gated"},
+        },
+    }
+    (folder / "results.json").write_text(json.dumps(results))
+
+
+def test_tryouts_show_each_model_and_its_pictures(browser, tmp_path):
+    fake_tryout(Layout(tmp_path))
+
+    _, _, body = fetch(browser + "/tryouts")
+
+    assert b"pixel art of a knight" in body
+    assert b"12.5s per image" in body and b"401 gated" in body
+    assert fetch(browser + "/tryouts/run-1/model-a/p00-s0-pixel.png")[0] == 200
+    assert fetch(browser + "/tryouts/run-1/results.json")[0] == 404

@@ -8,7 +8,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 from pixel_data.dashboard import browse_pages as pages
 from pixel_data.dashboard import browse_queries as queries
-from pixel_data.dashboard import exports, flagged
+from pixel_data.dashboard import exports, flagged, tryouts
 from pixel_data.images import load_image, png_bytes
 from pixel_data.sources import Layout
 
@@ -150,6 +150,14 @@ def export_file(handler, params: dict) -> None:
     send_png_under(handler, handler.layout.data / "exports", params["path"].removeprefix("/exports/"))
 
 
+def tryout_file(handler, params: dict) -> None:
+    send_png_under(handler, handler.layout.data / "tryouts", params["path"].removeprefix("/tryouts/"))
+
+
+def tryout_list(handler, params: dict) -> None:
+    handler.page("Try-outs", tryouts.tryouts_page(handler.layout.data / "tryouts", params.get("run", "")))
+
+
 def export_list(handler, params: dict) -> None:
     handler.page("Exports", exports.exports_page(handler.layout.data / "exports"))
 
@@ -163,8 +171,9 @@ ROUTES = {
     "/style.css": style,
     "/downloads": downloads,
     "/exports": export_list,
+    "/tryouts": tryout_list,
 }
-FILE_ROUTES = {"/thumbs/": thumbs, "/exports/": export_file}
+FILE_ROUTES = {"/thumbs/": thumbs, "/exports/": export_file, "/tryouts/": tryout_file}
 
 
 def file_route(path: str):

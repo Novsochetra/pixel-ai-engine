@@ -37,7 +37,7 @@ a { color: var(--accent); }
 main { max-width: 1280px; margin: 0 auto; padding: 24px 16px 64px; }
 h1 { font-size: 26px; margin: 8px 0 16px; }
 h2 { font-size: 17px; margin: 0 0 4px; }
-.views + h2, .table + h2 { margin-top: 24px; }
+.views + h2, .table + h2, .rows + h2 { margin-top: 24px; }
 h3 { font-size: 13px; color: var(--muted); margin: 14px 0 4px; font-weight: 600; }
 code { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--surface); padding: 1px 5px; border-radius: 4px; }
 .muted { color: var(--muted); }
@@ -96,6 +96,9 @@ th { color: var(--muted); font-weight: 600; }
   background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 12px 12px;
 }
 
+.view:not(.pixel) img { image-rendering: auto; }
+.rows.wide { grid-template-columns: 1fr; }
+.missing { width: 96px; height: 96px; display: grid; place-items: center; border-radius: 6px; border: 1px dashed var(--line); }
 .export { margin-bottom: 24px; }
 .export h3 { text-transform: uppercase; letter-spacing: 0.04em; }
 .export .table { margin: 12px 0; display: inline-block; max-width: 100%; }
