@@ -107,6 +107,11 @@ def browse_command(layout: Layout, port: int, open_page: bool) -> None:
         server.serve_forever()
     except KeyboardInterrupt:
         print("\nStopped.")
+    finally:
+        # A job started from the page stops with it, so none keeps running unseen.
+        if server.jobs.current():
+            print("Stopping the running job...")
+            server.jobs.stop()
 
 
 def parser() -> argparse.ArgumentParser:

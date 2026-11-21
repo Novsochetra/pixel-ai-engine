@@ -21,6 +21,7 @@ class Plan:
     create: list[dict]
     rotate: list[dict]
     seeds: list[int]
+    size: int = GENERATE_SIZE
     timings: dict = field(default_factory=dict)
 
 
@@ -67,7 +68,7 @@ def run_create(plan: Plan, model: str, generate: Generate) -> dict:
 def run_rotate(plan: Plan, model: str, generate: Generate) -> dict:
     outputs = {}
     for job in plan.rotate:
-        reference = blow_up(Image.open(job["front"]), GENERATE_SIZE)
+        reference = blow_up(Image.open(job["front"]), plan.size)
         image = generate(job["prompt"], reference, plan.seeds[0])
         outputs[job["id"]] = save_pair(image, plan.folder / model, job["id"])
 

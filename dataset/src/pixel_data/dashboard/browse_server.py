@@ -1,3 +1,4 @@
+import json
 import sqlite3
 from contextlib import closing
 from functools import lru_cache
@@ -8,12 +9,13 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 from pixel_data.dashboard import browse_pages as pages
 from pixel_data.dashboard import browse_queries as queries
-from pixel_data.dashboard import exports, flagged, tryouts
+from pixel_data.dashboard import exports, flagged, studio, tryouts
+from pixel_data.dashboard.jobs import Jobs
 from pixel_data.images import load_image, png_bytes
 from pixel_data.sources import Layout
 
 
-def make_handler(layout: Layout) -> type[BaseHTTPRequestHandler]:
+def make_handler(layout: Layout, jobs: Jobs) -> type[BaseHTTPRequestHandler]:
     @lru_cache(maxsize=8192)
     def image_bytes(image_id: str) -> bytes | None:
         with open_db(layout) as db:
@@ -33,6 +35,40 @@ def make_handler(layout: Layout) -> type[BaseHTTPRequestHandler]:
 
             route(self, {**params, "path": unquote(url.path)})
 
+        def do_POST(self):
+            # Only pages of this dashboard may start jobs: another site open in the browser could
+            # otherwise post a form to 127.0.0.1 and start a training run.
+            if not self.same_site():
+                self.send(403, "text/plain", b"Forbidden")
+                return
+
+            url = urlparse(self.path)
+            route = POST_ROUTES.get(url.path)
+            if route is None:
+                self.send(404, "text/plain", b"Not found")
+                return
+
+            length = min(int(self.headers.get("Content-Length") or 0), 64_000)
+            fields = parse_qs(self.rfile.read(length).decode("utf-8", "replace"), keep_blank_values=True)
+            form = {key: values[0] for key, values in fields.items()}
+            form["sources_list"] = fields.get("sources", [])
+            route(self, form)
+
+        def same_site(self) -> bool:
+            port = self.server.server_address[1]
+            hosts = {f"127.0.0.1:{port}", f"localhost:{port}"}
+            origin = self.headers.get("Origin")
+            if self.headers.get("Host") not in hosts:
+                return False
+
+            return origin is None or urlparse(origin).netloc in hosts
+
+        def redirect(self, where: str) -> None:
+            self.send_response(303)
+            self.send_header("Location", where)
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+
         def send(self, status: int, kind: str, body: bytes) -> None:
             self.send_response(status)
             self.send_header("Content-Type", kind)
@@ -48,6 +84,7 @@ def make_handler(layout: Layout) -> type[BaseHTTPRequestHandler]:
             pass
 
     Handler.layout = layout
+    Handler.jobs = jobs
     Handler.image_bytes = staticmethod(image_bytes)
 
     return Handler
@@ -162,6 +199,56 @@ def export_list(handler, params: dict) -> None:
     handler.page("Exports", exports.exports_page(handler.layout.data / "exports"))
 
 
+
+def generated_file(handler, params: dict) -> None:
+    send_png_under(handler, handler.layout.data / "generated", params["path"].removeprefix("/generated/"))
+
+
+def latest_job(handler) -> tuple[dict | None, str]:
+    job = handler.jobs.latest()
+
+    return job, handler.jobs.log(job["id"]) if job else ""
+
+
+def generate_page(handler, params: dict, message: str = "", status: int = 200) -> None:
+    job, log = latest_job(handler)
+    body = studio.generate_page(handler.layout.data, job, log, params, message)
+    html = pages.layout("Generate", body, (handler.layout.reports / "dashboard.html").exists())
+    handler.send(status, "text/html; charset=utf-8", html.encode())
+
+
+def training_page(handler, params: dict, message: str = "", status: int = 200) -> None:
+    job, log = latest_job(handler)
+    body = studio.training_page(handler.layout.data, job, log, params, message)
+    html = pages.layout("Training", body, (handler.layout.reports / "dashboard.html").exists())
+    handler.send(status, "text/html; charset=utf-8", html.encode())
+
+
+def current_job(handler, params: dict) -> None:
+    job, log = latest_job(handler)
+    handler.send(200, "application/json", json.dumps({"job": job, "log": log}).encode())
+
+
+def start_job(make, page, where: str):
+    """A form route: check the form, start the job, and go back to the page; or show what is wrong."""
+    def route(handler, form: dict) -> None:
+        try:
+            title, args = make(handler.layout.data, form)
+            handler.jobs.start(where.strip("/"), title, args)
+        except (studio.Invalid, RuntimeError) as error:
+            page(handler, form, str(error), 400)
+            return
+
+        handler.redirect(where)
+
+    return route
+
+
+def stop_job(handler, form: dict) -> None:
+    handler.jobs.stop()
+    handler.redirect(form.get("back") if form.get("back") in ("/generate", "/training") else "/training")
+
+
 ROUTES = {
     "/": home,
     "/characters": characters,
@@ -172,17 +259,32 @@ ROUTES = {
     "/downloads": downloads,
     "/exports": export_list,
     "/tryouts": tryout_list,
+    "/generate": generate_page,
+    "/training": training_page,
+    "/jobs/current": current_job,
 }
-FILE_ROUTES = {"/thumbs/": thumbs, "/exports/": export_file, "/tryouts/": tryout_file}
+FILE_ROUTES = {"/thumbs/": thumbs, "/exports/": export_file, "/tryouts/": tryout_file, "/generated/": generated_file}
+POST_ROUTES = {
+    "/generate": start_job(studio.generate_job, generate_page, "/generate"),
+    "/training/start": start_job(studio.train_job, training_page, "/training"),
+    "/training/resume": start_job(studio.resume_job, training_page, "/training"),
+    "/training/tryout": start_job(studio.tryout_job, training_page, "/training"),
+    "/jobs/stop": stop_job,
+}
 
 
 def file_route(path: str):
     return next((route for prefix, route in FILE_ROUTES.items() if path.startswith(prefix)), None)
 
 
-def serve(layout: Layout, port: int) -> ThreadingHTTPServer:
+def serve(layout: Layout, port: int, jobs: Jobs | None = None) -> ThreadingHTTPServer:
     if not layout.records.exists():
         raise SystemExit("No records yet. Run `pixel import pac lpc-4view` first.")
 
+    jobs = jobs or Jobs(layout.data / "jobs", layout.data)
+
     # Only this computer can open it: the data never leaves the machine.
-    return ThreadingHTTPServer(("127.0.0.1", port), make_handler(layout))
+    server = ThreadingHTTPServer(("127.0.0.1", port), make_handler(layout, jobs))
+    server.jobs = jobs
+
+    return server

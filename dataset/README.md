@@ -51,6 +51,20 @@ reason, so you can check its decisions. Exports shows each export's split counts
 and sample characters. Try-outs shows what existing models made in `training/`, next to the
 real views. Stop it with Ctrl+C.
 
+Training and Generate run `pixel-train` (in `training/`, which needs `uv sync --extra models` once)
+from the browser, offline:
+
+- **Training** lists every run with its progress and a chart of its check score. It starts a new
+  run, resumes one to more steps, and tries a checkpoint on the test characters (the result shows
+  under Try-outs).
+- **Generate** draws a character from your words and turns it with a trained LoRA. Everything it
+  made is listed below the form.
+
+One job runs at a time, since each fills most of a 32 GB Mac; its output shows at the top of both
+pages, with a Stop button. Each job keeps its settings and output in `data/jobs/`. Stopping the
+dashboard stops its job too, so keep it open while training. Only pages of the dashboard itself
+can start a job.
+
 A download that stops halfway picks up where it left off when you run it again.
 
 Two sources are downloaded by hand: `itch-8dir-cc0` and `spritedatabase`. Run

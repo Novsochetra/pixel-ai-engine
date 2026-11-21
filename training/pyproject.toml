@@ -12,6 +12,7 @@ models = [
   "accelerate>=1.16",
   "diffusers>=0.43",
   "huggingface_hub>=0.26",
+  "peft>=0.17",
   "protobuf>=5",
   "safetensors>=0.4",
   "sentencepiece>=0.2",

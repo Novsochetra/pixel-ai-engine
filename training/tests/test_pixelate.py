@@ -1,6 +1,6 @@
 from PIL import Image
 
-from pixel_training.pixelate import blow_up, clear_background, pixelate
+from pixel_training.pixelate import blow_up, block_mode, clear_background, pixelate
 
 WHITE = (255, 255, 255, 255)
 RED = (200, 30, 30, 255)
@@ -68,3 +68,34 @@ def test_a_background_that_drifts_in_colour_is_still_cleared():
     assert cleared.getpixel((0, 5)) == (0, 0, 0, 0)
     assert cleared.getpixel((5, 0)) == (0, 0, 0, 0)
     assert cleared.getpixel((3, 3)) == RED
+
+
+def test_a_thin_outline_that_misses_the_grid_is_kept():
+    # A 1-pixel black line on a 4x4 grid, so it covers only a quarter of each block it crosses.
+    image = Image.new("RGB", (32, 32), (255, 255, 255))
+    for y in range(32):
+        image.putpixel((13, y), (0, 0, 0))
+    for x in range(14, 32):
+        for y in range(32):
+            image.putpixel((x, y), (200, 30, 30))
+
+    small = block_mode(image, 8)
+
+    assert small.getpixel((3, 4))[:3] == (0, 0, 0)
+    assert small.getpixel((5, 4))[:3] == (200, 30, 30)
+
+
+def test_a_dark_speck_inside_a_block_does_not_take_it_over():
+    image = Image.new("RGB", (8, 8), (200, 30, 30))
+    image.putpixel((1, 1), (0, 0, 0))
+
+    assert block_mode(image, 2).getpixel((0, 0))[:3] == (200, 30, 30)
+
+
+def test_a_block_of_many_colours_keeps_the_most_common_one():
+    image = Image.new("RGB", (5, 1), (200, 30, 30))
+    for x, color in enumerate([(0, 0, 0), (0, 0, 200), (0, 200, 0)]):
+        image.putpixel((x, 0), color)
+    image = image.resize((5, 5), Image.NEAREST).crop((0, 0, 5, 5))
+
+    assert block_mode(image, 1).getpixel((0, 0))[:3] == (200, 30, 30)

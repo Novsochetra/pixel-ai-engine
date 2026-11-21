@@ -10,5 +10,5 @@ def test_a_gated_model_without_login_gets_the_login_hint():
 def test_tryout_runs_both_models_by_default():
     args = parser().parse_args(["tryout"])
 
-    assert args.models == ["flux2-klein-4b", "flux3-klein"]
+    assert args.models == ["flux2-klein-4b", "flux2-klein-base-4b", "flux3-klein"]
     assert (args.seeds, args.rotate, args.export) == (2, 4, "rotation-v1")
