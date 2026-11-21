@@ -123,6 +123,39 @@ faces on the side views, where turning it at 256 did not. The results go to
 `../dataset/data/generated/<date>-<prompt>/`: `s0-front.png`, `s0-left.png` and so on, the raw
 pictures, and `s0-sheet.png` with the 4 views side by side.
 
+## Step 4: animate a character (try-out)
+
+`pixel-train animate` gives a sprite from `generate` to Wan 2.2 image-to-video with the
+[pixel-animate LoRA](https://huggingface.co/styly-agents/Wan2-2-pixel-animate) (Apache-2.0, trained
+on 226 pixel sprite animations). It copies that LoRA's own ComfyUI workflow: the LoRA on both
+experts, the lightx2v 4-step speed-up LoRA, guidance 1, shift 5.
+
+Wan 2.2 I2V A14B is two 14B experts, about 56 GB at full size. On a 32 GB Mac they run as 4-bit
+GGUF files from `QuantStack/Wan2.2-I2V-A14B-GGUF`. The text encoder (11 GB) encodes all prompts
+first and is then let go, so it is never in memory with the experts.
+
+Download once, about 33 GB (use Wi-Fi):
+
+```bash
+uv sync --extra models
+uv run hf download styly-agents/Wan2-2-pixel-animate wan2.2_animate_adapter_model.safetensors
+uv run hf download lightx2v/Wan2.2-Lightning --include "Wan2.2-I2V-A14B-4steps-lora-rank64-Seko-V1/*.safetensors"
+uv run hf download Wan-AI/Wan2.2-I2V-A14B-Diffusers --include "model_index.json" "scheduler/*" "text_encoder/*" "tokenizer/*" "vae/*" "transformer/config.json" "transformer_2/config.json"
+uv run hf download QuantStack/Wan2.2-I2V-A14B-GGUF HighNoise/Wan2.2-I2V-A14B-HighNoise-Q4_K_M.gguf LowNoise/Wan2.2-I2V-A14B-LowNoise-Q4_K_M.gguf
+```
+
+Run:
+
+```bash
+uv run pixel-train animate knight --seeds 0 --views right --actions walk --frames 17   # one short clip, to see the speed
+uv run pixel-train animate knight                                                      # idle and walk, front and right
+uv run pixel-train animate knight --pixel-strength 0 --name knight-no-lora              # the same without the LoRA
+```
+
+Results go to `../dataset/data/animated/<name>/`, per clip: `<id>-raw.gif` (the video as made),
+`<id>.gif` (every frame snapped to a 64x64 sprite in the input sprite's colours) and
+`<id>-sheet.png` (`--keep` evenly spaced frames side by side).
+
 ## Tests
 
 ```bash

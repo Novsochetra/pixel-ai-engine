@@ -143,6 +143,43 @@ def generate_command(args) -> None:
     print(f"\nDone. Look at: {', '.join(str(path) for path in made)}")
 
 
+def animate_command(args) -> None:
+    import time
+
+    from pixel_training import animate
+    from pixel_training.models import pick_device
+
+    source = args.source if args.source.is_dir() else args.data / "generated" / args.source
+    if not (source / "generated.json").exists():
+        raise SystemExit(f"No character at {source}. Make one with `uv run pixel-train generate` first.")
+
+    seeds = sorted(int(path.name.split("-")[0][1:]) for path in source.glob("s*-front.png"))
+    jobs = animate.jobs_for(source, args.seeds or seeds, args.views, args.actions)
+    if not jobs:
+        raise SystemExit(f"No sprites for views {args.views} in {source}.")
+
+    steps = args.steps or (4 if args.lightning else 20)
+    folder = args.data / "animated" / (args.name or f"{datetime.now():%Y%m%d-%H%M}-{source.name}")
+    device = pick_device()
+    print(f"{len(jobs)} clips of {args.frames} frames, {args.size}px, {steps} steps, Wan 2.2 {args.quant}, on {device}")
+    print("Loading the model...")
+    started = time.monotonic()
+    animator = animate.wan_animator([job.prompt for job in jobs], device, args.size, args.frames, steps, args.quant,
+                                    args.lightning, args.pixel_strength)
+    loaded = time.monotonic()
+
+    rows = []
+    for job in jobs:
+        print(f"  {job.id}")
+        rows += animate.run(folder, [job], animator, args.size, args.keep)
+        animate.write_info(folder, {"source": str(source), "size": args.size, "frames": args.frames, "steps": steps,
+                                    "quant": args.quant, "lightning": args.lightning,
+                                    "pixel_strength": args.pixel_strength, "clips": rows})
+
+    seconds = (time.monotonic() - loaded) / len(jobs)
+    print(f"\nLoaded in {loaded - started:.0f}s, {seconds:.0f}s per clip. Results in {folder}")
+
+
 def parser() -> argparse.ArgumentParser:
     root = argparse.ArgumentParser(prog="pixel-train", description="Try, train and evaluate pixel art models.")
     root.add_argument("--data", type=Path, default=Path("../dataset/data"), help="the dataset's data folder")
@@ -193,6 +230,22 @@ def parser() -> argparse.ArgumentParser:
     generate.add_argument("--prompts", type=Path, default=Path("prompts.json"))
     generate.add_argument("--name", help="folder name under data/generated (default: <date>-<prompt>)")
 
+    animate = commands.add_parser("animate", help="animate a generated character with Wan 2.2 and the pixel-animate LoRA")
+    animate.add_argument("source", type=Path, help="a folder from `generate`, or its name under data/generated")
+    animate.add_argument("--actions", nargs="+", choices=["idle", "walk", "attack"], default=["idle", "walk"])
+    animate.add_argument("--views", nargs="+", choices=["front", "left", "back", "right"], default=["front", "right"])
+    animate.add_argument("--seeds", type=int, nargs="+", help="which characters of the folder (default: all)")
+    animate.add_argument("--size", type=int, default=512, help="video size in pixels, a multiple of 16")
+    animate.add_argument("--frames", type=int, default=33, help="video frames, 4n+1 (33 is about 2 seconds)")
+    animate.add_argument("--keep", type=int, default=8, help="frames in the sprite sheet")
+    animate.add_argument("--steps", type=int, help="sampling steps (default: 4 with the speed-up LoRA, else 20)")
+    animate.add_argument("--quant", choices=["Q4_K_S", "Q4_K_M", "Q5_K_M"], default="Q4_K_M",
+                         help="size of the 4/5-bit experts: Q4_K_M is about 10 GB each")
+    animate.add_argument("--no-lightning", dest="lightning", action="store_false",
+                         help="without the 4-step speed-up LoRA: slower, uses guidance")
+    animate.add_argument("--pixel-strength", type=float, default=1.0, help="weight of the pixel-animate LoRA, 0 to leave it out")
+    animate.add_argument("--name", help="folder name under data/animated (default: <date>-<source>)")
+
     return root
 
 
@@ -209,3 +262,7 @@ def main() -> None:
         train_command(args)
     elif args.command == "generate":
         generate_command(args)
+    elif args.command == "animate":
+        if args.size % 16 or (args.frames - 1) % 4:
+            raise SystemExit("--size must be a multiple of 16, and --frames 4n+1 (17, 33, 45...).")
+        animate_command(args)
