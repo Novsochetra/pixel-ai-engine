@@ -425,7 +425,7 @@ def training_page(data: Path, job: dict | None, log: str, form: dict, message: s
 <label>Steps<input type="number" name="steps" min="1" max="50000" value="{escape(form.get('steps', '2000'))}"></label>
 <fieldset class="wide"><legend>Sources</legend>{source_boxes or '<span class="muted">No export yet: run <code>uv run pixel export</code>.</span>'}</fieldset>
 <button{disabled}>Start training</button>
-<p class="muted wide">About 28 s per step at 256 px and 77 s at 512 px on an M1 Max. A source with an NC licence makes the result non-commercial. Create trains only on characters with a caption (lpc-4view).</p>
+<p class="muted wide">About 28 s per step at 256 px and 77 s at 512 px on an M1 Max. A source with an NC licence makes the result non-commercial. Create trains on characters with a caption (lpc-4view) or an AI label in data/labels (pac).</p>
 </form>"""
 
     return f"""<h1>Training</h1>

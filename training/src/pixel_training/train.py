@@ -82,22 +82,41 @@ def caption_text(caption: str, template: str) -> str:
     "lpc-style pixel art character, with male human body, ..." becomes the create template around
     "a character with male human body, ...".
     """
-    subject = caption.removeprefix(CAPTION_PREFIX).strip()
+    subject = caption.removeprefix(CAPTION_PREFIX).strip().rstrip(".")
 
     return template.format(subject=f"a character {subject}" if subject.startswith("with ") else subject)
 
 
-def read_captioned(export: Path, split: str, template: str, sources: tuple[str, ...] = ()) -> list[Pair]:
-    """One pair per character with a caption: its caption in, its front view out."""
+def read_labels(folder: Path) -> dict[str, str]:
+    """AI labels from dataset/labelling: every <folder>/<name>/labels.jsonl, character -> label."""
+    labels = {}
+    for path in sorted(folder.glob("*/labels.jsonl")):
+        for line in path.read_text().splitlines():
+            if line.strip():
+                row = json.loads(line)
+                labels[row["character"]] = row["label"]
+
+    return labels
+
+
+def read_captioned(export: Path, split: str, template: str, sources: tuple[str, ...] = (),
+                   labels: dict[str, str] | None = None) -> list[Pair]:
+    """One pair per character with a caption: its caption in, its front view out.
+
+    The export's own caption wins (lpc-4view's comes from its art layers); a character without one
+    takes its AI label, if it has one.
+    """
+    labels = labels or {}
     pairs = []
     for line in (export / "characters.jsonl").read_text().splitlines():
         entry = json.loads(line)
         if entry["split"] != split or (sources and entry["source"] not in sources):
             continue
 
-        if entry.get("caption") and "front" in entry["views"]:
+        caption = entry.get("caption") or labels.get(entry["character"])
+        if caption and "front" in entry["views"]:
             pairs.append(Pair(entry["character"], "front", None, export / entry["views"]["front"],
-                              caption_text(entry["caption"], template)))
+                              caption_text(caption, template)))
 
     return pairs
 

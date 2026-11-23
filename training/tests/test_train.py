@@ -5,7 +5,7 @@ import pytest
 
 from pixel_training.cli import parser
 from pixel_training.train import (Pair, Settings, caption_text, latest_checkpoint, lora_folder, read_captioned,
-                                  read_pairs, run_settings, train, val_sample)
+                                  read_labels, read_pairs, run_settings, train, val_sample)
 
 VIEWS = ["left", "back", "right"]
 
@@ -158,3 +158,15 @@ def test_a_create_run_remembers_its_task(tmp_path):
 
     assert run_settings(run)["task"] == "create"
     assert parser().parse_args(["train"]).task == "rotate"
+
+
+def test_a_character_without_a_caption_takes_its_ai_label(tmp_path):
+    export = fake_export(tmp_path / "export")
+    folder = tmp_path / "labels" / "pac"
+    folder.mkdir(parents=True)
+    (folder / "labels.jsonl").write_text(json.dumps({"character": "pac/a", "label": "a small chibi character with red hair."}))
+
+    found = read_captioned(export, "train", TEMPLATE, labels=read_labels(tmp_path / "labels"))
+
+    assert [(pair.character, pair.caption) for pair in found] == \
+        [("pac/a", "pixel art game sprite of a small chibi character with red hair, front view")]

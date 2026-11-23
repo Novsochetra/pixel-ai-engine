@@ -76,7 +76,7 @@ def tryout_command(args) -> None:
 def train_command(args) -> None:
     from pixel_training.lora import FluxLora
     from pixel_training.models import pick_device
-    from pixel_training.train import Settings, read_captioned, read_pairs, train, val_sample
+    from pixel_training.train import Settings, read_captioned, read_labels, read_pairs, train, val_sample
 
     export = args.data / "exports" / args.export
     if not (export / "characters.jsonl").exists():
@@ -88,14 +88,17 @@ def train_command(args) -> None:
         # Text to the front view: only characters with a caption count.
         template = prompts["create"]["template"]
         instructions = {}
-        train_pairs = read_captioned(export, "train", template, sources)
-        val_pairs = val_sample(read_captioned(export, "val", template, sources), args.val, args.seed)
+        labels = read_labels(args.data / "labels")
+        train_pairs = read_captioned(export, "train", template, sources, labels)
+        val_pairs = val_sample(read_captioned(export, "val", template, sources, labels), args.val, args.seed)
+        labelled = sum(pair.character in labels for pair in train_pairs)
+        print(f"{len(train_pairs) - labelled:,} with the export's caption, {labelled:,} with an AI label (data/labels)")
     else:
         instructions = prompts["rotate"]
         train_pairs = read_pairs(export, "train", list(instructions), sources)
         val_pairs = val_sample(read_pairs(export, "val", list(instructions), sources), args.val, args.seed)
     if not train_pairs:
-        hint = " Only lpc-4view has captions." if args.task == "create" else ""
+        hint = " Only lpc-4view has captions; label others with dataset/labelling." if args.task == "create" else ""
         raise SystemExit(f"No training pairs in {export} for sources {sources or 'all'}.{hint}")
 
     settings = Settings(model=args.model, export=args.export, size=args.size, steps=args.steps, rank=args.rank,
@@ -235,7 +238,7 @@ def parser() -> argparse.ArgumentParser:
 
     train = commands.add_parser("train", help="train a LoRA: to turn a front view (rotate), or to draw one from text (create)")
     train.add_argument("--task", choices=["rotate", "create"], default="rotate",
-                       help="rotate: front view to left, back, right; create: caption to front view (lpc-4view only)")
+                       help="rotate: front view to left, back, right; create: caption or AI label to front view")
     train.add_argument("--model", choices=["flux2-klein-base-4b", "flux2-klein-4b"], default="flux2-klein-base-4b",
                        help="the base model is made for training; the 4-step model trains blurry")
     train.add_argument("--export", default="rotation-v1", help="the export to train on")

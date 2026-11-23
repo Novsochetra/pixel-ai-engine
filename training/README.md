@@ -127,11 +127,17 @@ pictures, and `s0-sheet.png` with the 4 views side by side.
 
 The plain model draws the front view as it is. A create LoRA teaches it to draw like the training
 characters. It trains on the captions of the export: each character's caption in, its front view
-out. Only lpc-4view has captions (45,016 training characters), so a create LoRA draws LPC-style
-characters, 64-pixel sprites, and its licence is CC-BY-SA-3.0 (credit the LPC artists).
+out. lpc-4view has captions from its art layers (45,016 training characters). A character without
+one takes its AI label from `../dataset/data/labels/<name>/labels.jsonl`, if it has one: pac is
+labelled by Haiku 5.5 (10,898 training characters; see `../dataset/labelling/`).
+
+The licence follows the sources: lpc-4view is CC-BY-SA-3.0 (credit the LPC artists), pac is
+CC-BY-NC-4.0, so a LoRA with pac in it is for testing, not for a game that is sold. For a LoRA you
+can sell with, train on lpc-4view only:
 
 ```bash
-HF_HUB_OFFLINE=1 caffeinate -i uv run pixel-train train --task create --name create-v1 --size 256 --steps 2000
+HF_HUB_OFFLINE=1 caffeinate -i uv run pixel-train train --task create --name create-v1 --size 256 --steps 2000 --sources lpc-4view
+HF_HUB_OFFLINE=1 caffeinate -i uv run pixel-train train --task create --name create-mix --size 256 --steps 2000   # with pac
 uv run pixel-train generate "a frog wizard" --create-lora ../dataset/data/runs/create-v1 --lora ../dataset/data/runs/rotate-v2
 ```
 
