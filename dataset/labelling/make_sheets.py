@@ -20,14 +20,14 @@ def main() -> None:
     parser.add_argument("out", type=Path)
     parser.add_argument("--export", type=Path, default=Path("data/exports/rotation-v1"))
     parser.add_argument("--source", default="lpc-4view")
-    parser.add_argument("--split", default="train")
-    parser.add_argument("--count", type=int, default=1000)
+    parser.add_argument("--split", default="train", help="train, val, test or all")
+    parser.add_argument("--count", type=int, default=1000, help="0 for every character, in export order")
     parser.add_argument("--seed", type=int, default=7)
     args = parser.parse_args()
 
     rows = [json.loads(line) for line in (args.export / "characters.jsonl").read_text().splitlines()]
-    rows = [row for row in rows if row["source"] == args.source and row["split"] == args.split]
-    pick = random.Random(args.seed).sample(rows, min(args.count, len(rows)))
+    rows = [row for row in rows if row["source"] == args.source and args.split in ("all", row["split"])]
+    pick = rows if args.count == 0 else random.Random(args.seed).sample(rows, min(args.count, len(rows)))
 
     (args.out / "sheets").mkdir(parents=True, exist_ok=True)
     font = ImageFont.load_default(size=18)

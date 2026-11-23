@@ -26,3 +26,21 @@ v2 tells the labeller not to guess man or woman (at 64 pixels it was right only 
 call bones a skeleton and to name skin colours instead of "pale". The small LPC dagger at the hip
 is still missed most of the time. At v2 prices all 50,000 LPC characters cost about $10 and all
 14,202 pac characters about $3; 5 agents label about 1000 in 2.5 minutes.
+
+## pac, labelled (2026-11-23)
+
+All 14,153 pac characters in the export (train, val and test) are labelled with prompt v2, adjusted
+for pac's two styles (it says "a small chibi character" for a big head on a small body, and names
+ears, horns, bows and hair clips). 69 Haiku 5.5 jobs of 13 sheets, 5 at a time, took 32 minutes
+and about $2.64 at API prices.
+
+```bash
+uv run python labelling/make_sheets.py data/labels/pac --source pac --split all --count 0
+python3 labelling/collect.py data/labels/pac      # -> data/labels/pac/labels.jsonl
+```
+
+`labels.jsonl` has one line per character: `{"character": "pac/train/0", "label": "..."}`. One job
+numbered its cells 1-16 on each sheet instead of with the cell numbers; `collect.py` maps those back
+by position. There is no true label to check pac against, so expect about the LPC test's error rate
+(14.5% of labels with a wrong fact, mostly missed small daggers). pac is CC-BY-NC-4.0: a model
+trained on it is for testing, not for a game that is sold.
