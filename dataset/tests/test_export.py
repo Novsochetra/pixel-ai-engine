@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from helpers import fake_lpc_4view, fake_pac
+from helpers import fake_icons, fake_lpc_4view, fake_lpc_action, fake_pac
 from PIL import Image
 
 from pixel_data.analyze.run import analyze
@@ -74,7 +74,7 @@ def test_a_character_needs_all_four_views_and_none_dropped():
 @pytest.fixture
 def exported(tmp_path):
     layout = Layout(tmp_path)
-    sources = [fake_pac(layout), fake_lpc_4view(layout)]
+    sources = [fake_pac(layout), fake_lpc_4view(layout), fake_lpc_action(layout), fake_icons(layout)]
     for source in sources:
         import_source(source, layout)
     analyze(layout, [])
@@ -94,6 +94,14 @@ def test_export_writes_every_view_of_every_character(exported):
     for entry in entries:
         assert set(entry["views"]) == {"front", "left", "back", "right"}
         assert all((folder / path).is_file() for path in entry["views"].values())
+
+
+def test_action_strips_and_icons_stay_out_of_a_rotation_export(exported):
+    _, summary = exported
+
+    exported_sources = {source for counts in summary["characters"].values() for source in counts}
+
+    assert exported_sources == {"pac", "lpc-4view"}
 
 
 def test_export_drops_copies_and_reports_no_leaks(exported):

@@ -22,9 +22,16 @@ def layout(title: str, body: str, has_downloads: bool) -> str:
 <main>{body}</main></body></html>"""
 
 
+def view_label(view: dict) -> str:
+    # lpc-action records are strips of frames: name the action before the direction.
+    # Icons and scenes have no view; landscapes-20k has one scene at three sizes.
+    return " · ".join(part for part in (view.get("action"), view["view"]) if part) or f"{view['width']}px"
+
+
 def view_image(view: dict, size_class: str = "") -> str:
     src = link("/image", id=view["id"])
-    label = escape(view["view"] or "")
+    label = escape(view_label(view))
+    size_class = f"{size_class} strip" if view.get("action") else size_class
 
     return f'<figure class="view {size_class}"><img src="{src}" alt="{label}" loading="lazy"><figcaption>{label}</figcaption></figure>'
 
@@ -40,7 +47,7 @@ def status_line(counts: dict[str, int]) -> str:
 
 
 def import_card(entry: dict, statuses: dict[str, int] | None) -> str:
-    views = "".join(f"<li>{escape(view)} <b>{count:,}</b></li>" for view, count in entry["views"].items())
+    views = "".join(f"<li>{escape(view or 'no view')} <b>{count:,}</b></li>" for view, count in entry["views"].items())
     skipped = "".join(f"<li>{escape(reason)}: <b>{count:,}</b></li>" for reason, count in entry["skipped"].items())
     skipped_block = f'<h3>Skipped</h3><ul class="counts">{skipped}</ul>' if skipped else '<p class="muted">Nothing skipped.</p>'
 
@@ -102,7 +109,7 @@ def characters_page(characters: list[dict], total: int, filters: Filters, source
 
 
 def detail_rows(image: dict) -> str:
-    fields = ("id", "view", "width", "height", "file", "member", "crop", "license", "use", "source_split")
+    fields = ("id", "view", "action", "width", "height", "file", "member", "crop", "license", "use", "source_split")
     cells = "".join(f"<td>{escape(str(image[field] if image[field] is not None else ''))}</td>" for field in fields)
 
     return f"<tr>{cells}</tr>"
@@ -115,7 +122,7 @@ def analysis_rows(images: list[dict], analysis: dict) -> str:
         if found:
             flags = ", ".join(filter(None, found["flags"].split(","))) or "none"
             rows.append(
-                f'<tr><td>{escape(image["view"] or "")}</td><td><span class="outcome {found["status"]}">{found["status"]}</span></td>'
+                f'<tr><td>{escape(view_label(image))}</td><td><span class="outcome {found["status"]}">{found["status"]}</span></td>'
                 f'<td>{escape(flags)}</td><td>{found["colors"]}</td><td>{found["filled"]}</td><td>{found["soft_edge"]}</td><td>{found["scale"]}x</td></tr>'
             )
 
@@ -137,7 +144,7 @@ def character_detail(character: str, images: list[dict], analysis: dict, note: s
         return f"<h1>No character {escape(character)}</h1>"
 
     views = "".join(view_image(image, "large") for image in images)
-    header = "".join(f"<th>{name}</th>" for name in ("id", "view", "w", "h", "file", "inside", "crop", "licence", "use", "split"))
+    header = "".join(f"<th>{name}</th>" for name in ("id", "view", "action", "w", "h", "file", "inside", "crop", "licence", "use", "split"))
     rows = "".join(detail_rows(image) for image in images)
     caption = escape(images[0]["caption"] or "No caption yet.")
 

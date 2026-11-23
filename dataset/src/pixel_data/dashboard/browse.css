@@ -72,6 +72,7 @@ code { font: 12px ui-monospace, SFMono-Regular, Menlo, monospace; background: va
   background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 12px 12px;
 }
 .view.large img { width: 192px; height: 192px; }
+.view.strip img { width: auto; height: 64px; max-width: 100%; }
 
 .table { margin-top: 8px; overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
 table { border-collapse: collapse; width: 100%; font-size: 13px; }

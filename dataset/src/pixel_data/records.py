@@ -29,6 +29,18 @@ CREATE TABLE IF NOT EXISTS images (
 );
 CREATE INDEX IF NOT EXISTS images_by_character ON images (source, character);
 CREATE INDEX IF NOT EXISTS images_by_view ON images (view);
+CREATE INDEX IF NOT EXISTS images_by_name ON images (character);
+CREATE INDEX IF NOT EXISTS images_by_source_view ON images (source, view);
+CREATE TABLE IF NOT EXISTS characters (
+  character TEXT PRIMARY KEY,
+  source TEXT NOT NULL,
+  source_split TEXT,
+  caption TEXT,
+  first_rowid INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS characters_in_order ON characters (first_rowid);
+CREATE INDEX IF NOT EXISTS characters_by_source ON characters (source, first_rowid);
+CREATE INDEX IF NOT EXISTS characters_by_split ON characters (source_split);
 CREATE TABLE IF NOT EXISTS imports (
   source TEXT PRIMARY KEY,
   imported_at TEXT NOT NULL,
@@ -65,8 +77,32 @@ def connect(path: Path) -> sqlite3.Connection:
     db = sqlite3.connect(path)
     db.row_factory = sqlite3.Row
     db.executescript(SCHEMA)
+    fill_missing_characters(db)
 
     return db
+
+
+# One row per character, so the dashboard can list and count millions of images quickly.
+FILL_CHARACTERS = (
+    "INSERT INTO characters SELECT character, source, MIN(source_split), MIN(caption), MIN(rowid) "
+    "FROM images WHERE source = ? GROUP BY character"
+)
+
+
+def fill_characters(db: sqlite3.Connection, source: str) -> None:
+    db.execute("DELETE FROM characters WHERE source = ?", (source,))
+    db.execute(FILL_CHARACTERS, (source,))
+
+
+def fill_missing_characters(db: sqlite3.Connection) -> None:
+    # Records imported before the characters table existed.
+    missing = db.execute(
+        "SELECT source FROM imports WHERE source NOT IN (SELECT DISTINCT source FROM characters)"
+    ).fetchall()
+
+    with db:
+        for (source,) in missing:
+            fill_characters(db, source)
 
 
 def replace_source(db: sqlite3.Connection, source: str, records: Iterable[Record]) -> int:
@@ -76,6 +112,7 @@ def replace_source(db: sqlite3.Connection, source: str, records: Iterable[Record
     with db:
         db.execute("DELETE FROM images WHERE source = ?", (source,))
         cursor = db.executemany(insert, ([asdict(record)[name] for name in columns] for record in records))
+        fill_characters(db, source)
 
     return cursor.rowcount
 

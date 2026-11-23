@@ -10,8 +10,10 @@ def image_rows(db: sqlite3.Connection, sources: list[str]) -> list:
     return db.execute(
         "SELECT i.*, a.flags, a.status, a.scale, a.pixel_hash, g.group_id FROM images i "
         "JOIN analysis a ON a.id = i.id LEFT JOIN character_groups g ON g.character = i.character "
-        f"WHERE i.source IN ({marks}) ORDER BY i.rowid",
-        sources,
+        # Only the four turnable views: not action strips (lpc-action), icons or scenes.
+        f"WHERE i.source IN ({marks}) AND i.action IS NULL AND i.view IN ({', '.join('?' for _ in REQUIRED_VIEWS)}) "
+        "ORDER BY i.rowid",
+        [*sources, *REQUIRED_VIEWS],
     ).fetchall()
 
 

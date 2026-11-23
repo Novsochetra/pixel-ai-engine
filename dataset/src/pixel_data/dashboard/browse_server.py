@@ -1,5 +1,6 @@
 import json
 import sqlite3
+import threading
 from contextlib import closing
 from functools import lru_cache
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -12,6 +13,7 @@ from pixel_data.dashboard import browse_queries as queries
 from pixel_data.dashboard import exports, flagged, studio, tryouts
 from pixel_data.dashboard.jobs import Jobs
 from pixel_data.images import load_image, png_bytes
+from pixel_data.records import connect
 from pixel_data.sources import Layout
 
 
@@ -277,9 +279,25 @@ def file_route(path: str):
     return next((route for prefix, route in FILE_ROUTES.items() if path.startswith(prefix)), None)
 
 
+def warm_up(layout: Layout) -> None:
+    # Count the slow summaries now, so the first page someone opens does not wait for them.
+    with open_db(layout) as db:
+        queries.imports(db)
+        queries.splits(db)
+        if flagged.analyzed(db):
+            flagged.status_counts(db)
+            first_flag = next(iter(flagged.flag_counts(db, "")), "")
+            if first_flag:
+                flagged.flagged_images(db, first_flag, "", 1)
+
+
 def serve(layout: Layout, port: int, jobs: Jobs | None = None) -> ThreadingHTTPServer:
     if not layout.records.exists():
         raise SystemExit("No records yet. Run `pixel import pac lpc-4view` first.")
+
+    # The pages open the records read-only, so bring the file up to date once here.
+    connect(layout.records).close()
+    threading.Thread(target=warm_up, args=(layout,), daemon=True).start()
 
     jobs = jobs or Jobs(layout.data / "jobs", layout.data)
 

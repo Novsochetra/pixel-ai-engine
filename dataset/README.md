@@ -38,7 +38,7 @@ uv run pixel gather --all --experimental      # everything
 uv run pixel dashboard                        # a page of previews of each download
 open data/reports/dashboard.html              # look at it
 
-uv run pixel import pac lpc-4view             # turn downloads into records (importers: pac, lpc-4view)
+uv run pixel import pac lpc-4view             # turn downloads into records (all but lpc-generator, opengameart-2d, itch-8dir-cc0)
 uv run pixel analyze                          # measure every imported image and flag bad ones
 uv run pixel export                           # write data/exports/rotation-v1 for training
 uv run pixel browse                           # open the records in your browser
