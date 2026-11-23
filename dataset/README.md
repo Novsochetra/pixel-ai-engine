@@ -55,10 +55,10 @@ Training and Generate run `pixel-train` (in `training/`, which needs `uv sync --
 from the browser, offline:
 
 - **Training** lists every run with its progress and a chart of its check score. It starts a new
-  run, resumes one to more steps, and tries a checkpoint on the test characters (the result shows
-  under Try-outs).
-- **Generate** draws a character from your words and turns it with a trained LoRA. Everything it
-  made is listed below the form.
+  run (task rotate or create), resumes one to more steps, and tries a rotate checkpoint on the test
+  characters (the result shows under Try-outs). A create run is tried on the Generate page.
+- **Generate** draws a character from your words, with a create LoRA or the plain model, and
+  turns it with a rotate LoRA. Everything it made is listed below the form.
 
 One job runs at a time, since each fills most of a 32 GB Mac; its output shows at the top of both
 pages, with a Stop button. Each job keeps its settings and output in `data/jobs/`. Stopping the

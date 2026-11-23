@@ -76,36 +76,63 @@ def tryout_command(args) -> None:
 def train_command(args) -> None:
     from pixel_training.lora import FluxLora
     from pixel_training.models import pick_device
-    from pixel_training.train import Settings, read_pairs, train, val_sample
+    from pixel_training.train import Settings, read_captioned, read_pairs, train, val_sample
 
     export = args.data / "exports" / args.export
     if not (export / "characters.jsonl").exists():
         raise SystemExit(f"No export at {export}. Run `uv run pixel export` in dataset/ first.")
 
-    prompts = json.loads(args.prompts.read_text())["rotate"]
+    prompts = json.loads(args.prompts.read_text())
     sources = tuple(args.sources or ())
-    train_pairs = read_pairs(export, "train", list(prompts), sources)
-    val_pairs = val_sample(read_pairs(export, "val", list(prompts), sources), args.val, args.seed)
+    if args.task == "create":
+        # Text to the front view: only characters with a caption count.
+        template = prompts["create"]["template"]
+        instructions = {}
+        train_pairs = read_captioned(export, "train", template, sources)
+        val_pairs = val_sample(read_captioned(export, "val", template, sources), args.val, args.seed)
+    else:
+        instructions = prompts["rotate"]
+        train_pairs = read_pairs(export, "train", list(instructions), sources)
+        val_pairs = val_sample(read_pairs(export, "val", list(instructions), sources), args.val, args.seed)
     if not train_pairs:
-        raise SystemExit(f"No training pairs in {export} for sources {sources or 'all'}.")
+        hint = " Only lpc-4view has captions." if args.task == "create" else ""
+        raise SystemExit(f"No training pairs in {export} for sources {sources or 'all'}.{hint}")
 
     settings = Settings(model=args.model, export=args.export, size=args.size, steps=args.steps, rank=args.rank,
                         learning_rate=args.learning_rate, accumulate=args.accumulate, every=args.every,
-                        val_count=len(val_pairs), sources=sources, seed=args.seed)
+                        val_count=len(val_pairs), sources=sources, seed=args.seed, task=args.task)
     run = args.data / "runs" / (args.name or datetime.now().strftime("lora-%Y%m%d-%H%M"))
+    before = run_settings(run).get("task", "rotate") if (run / "run.json").exists() else args.task
+    if args.resume and before != args.task:
+        raise SystemExit(f"{run.name} is a {before} run: resume it with --task {before}.")
     licences = json.loads((export / "export.json").read_text())["sources"]
-    used = {name: info["license"] for name, info in licences.items() if not sources or name in sources}
+    used = {name: info["license"] for name, info in licences.items()
+            if (not sources or name in sources) and any(pair.character.startswith(f"{name}/") for pair in train_pairs)}
     device = pick_device()
 
-    print(f"{len(train_pairs):,} training pairs, {len(val_pairs)} check pairs, {args.size}px, on {device}")
+    print(f"{args.task}: {len(train_pairs):,} training pairs, {len(val_pairs)} check pairs, {args.size}px, on {device}")
     print(f"Sources and licences: {', '.join(f'{name} ({licence})' for name, licence in used.items())}")
     print(f"Run folder: {run}")
     print("Loading the model...")
-    backend = FluxLora(PRESETS[args.model], device, args.size, args.rank, args.learning_rate, prompts, args.seed)
+    backend = FluxLora(PRESETS[args.model], device, args.size, args.rank, args.learning_rate, instructions, args.seed,
+                       args.task)
 
     result = train(run, settings, train_pairs, val_pairs, backend, resume=args.resume)
     print(f"\nDone. The LoRA is in {result['final']}.")
-    print(f"Try it: uv run pixel-train tryout --models {args.model} --lora {run}")
+    if args.task == "create":
+        print(f"Try it: uv run pixel-train generate \"a frog wizard\" --create-lora {run}")
+    else:
+        print(f"Try it: uv run pixel-train tryout --models {args.model} --lora {run}")
+
+
+def trained_lora(path: Path, task: str, flag: str) -> tuple[Path, dict]:
+    """The LoRA folder and its run settings, refusing one trained for the other task."""
+    lora = lora_folder(path)
+    trained = run_settings(lora)
+    if trained.get("task", "rotate") != task:
+        raise SystemExit(f"{flag} needs a {task} LoRA, and {path} is a {trained.get('task', 'rotate')} one.")
+
+    return lora, trained
 
 
 def generate_command(args) -> None:
@@ -119,16 +146,25 @@ def generate_command(args) -> None:
     seeds = list(range(args.seeds))
     device = pick_device()
 
-    print(f"== front view: {args.front_model}, {args.front_size}px, {len(seeds)} seeds")
-    front = generator_for(PRESETS[args.front_model], device, args.front_size)
+    info = {"prompt": args.prompt, "text": text, "seeds": seeds, "front_model": args.front_model, "sprite": args.sprite}
+    create, front_size = None, args.front_size or 1024
+    if args.create_lora:
+        create, made_by = trained_lora(args.create_lora, "create", "--create-lora")
+        # As for turning: the LoRA's own size, scaled with the sprite.
+        front_size = args.front_size or made_by.get("size", 256) * args.sprite // 64
+        info |= {"create_lora": str(create)}
+    if args.lora:
+        trained_lora(args.lora, "rotate", "--lora")
+
+    print(f"== front view: {args.front_model}, {front_size}px, {len(seeds)} seeds" + (f", LoRA {create}" if create else ""))
+    front = generator_for(PRESETS[args.front_model], device, front_size, create)
     fronts = make_fronts(folder, text, seeds, front, args.sprite)
     del front
     free_memory()
+    info |= {"front_size": front_size}
 
-    info = {"prompt": args.prompt, "text": text, "seeds": seeds, "front_model": args.front_model, "sprite": args.sprite}
     if args.lora:
-        lora = lora_folder(args.lora)
-        trained = run_settings(lora)
+        lora, trained = trained_lora(args.lora, "rotate", "--lora")
         model = args.turn_model or trained.get("model", "flux2-klein-base-4b")
         # The LoRA learnt on 64-pixel sprites, each pixel a block of size/64. A bigger sprite gets a
         # bigger picture, so its pixels are blocks of the same size.
@@ -197,7 +233,9 @@ def parser() -> argparse.ArgumentParser:
     tryout.add_argument("--size", type=int, help="picture size (default: the LoRA's training size, or 1024)")
     tryout.add_argument("--steps", type=int, help="sampling steps per picture (default: the model's own, 4 for FLUX.2 Klein)")
 
-    train = commands.add_parser("train", help="train a LoRA that turns a front view into the left, back and right views")
+    train = commands.add_parser("train", help="train a LoRA: to turn a front view (rotate), or to draw one from text (create)")
+    train.add_argument("--task", choices=["rotate", "create"], default="rotate",
+                       help="rotate: front view to left, back, right; create: caption to front view (lpc-4view only)")
     train.add_argument("--model", choices=["flux2-klein-base-4b", "flux2-klein-4b"], default="flux2-klein-base-4b",
                        help="the base model is made for training; the 4-step model trains blurry")
     train.add_argument("--export", default="rotation-v1", help="the export to train on")
@@ -220,7 +258,9 @@ def parser() -> argparse.ArgumentParser:
     generate.add_argument("--lora", type=Path, help="a training run (or checkpoint) that turns the front view to the other views")
     generate.add_argument("--seeds", type=int, default=2, help="characters to make, each from another seed")
     generate.add_argument("--front-model", choices=flux2, default="flux2-klein-4b", help="the model that draws the front view")
-    generate.add_argument("--front-size", type=int, default=1024)
+    generate.add_argument("--create-lora", type=Path, help="a create training run (or checkpoint) that draws the front view")
+    generate.add_argument("--front-size", type=int,
+                          help="picture size for the front view (default: 1024, or the create LoRA's size scaled with --sprite)")
     generate.add_argument("--sprite", type=int, default=128,
                           help="sprite size in pixels: the model draws finer than 64, so 128 keeps faces and small parts")
     generate.add_argument("--turn-size", type=int, help="picture size for turning (default: the LoRA's training size, scaled with --sprite)")

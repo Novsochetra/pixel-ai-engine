@@ -7,9 +7,10 @@ from pathlib import Path
 
 from pixel_data.dashboard.browse_pages import link, readable_time
 
-MODELS = {"flux2-klein-4b": "fast (4 steps)", "flux2-klein-base-4b": "base (slow, sharp)"}
+MODELS = {"flux2-klein-4b": "fast (4 steps, ~40 s a view)", "flux2-klein-base-4b": "base (28 steps, ~6 min a view)"}
 SPRITES = (64, 96, 128)
 SIZES = (256, 512)
+TASKS = {"rotate": "rotate: turn a front view", "create": "create: draw a front view from text"}
 NAME = re.compile(r"^[A-Za-z0-9_-]{1,40}$")
 GALLERY = 40
 
@@ -74,10 +75,16 @@ def read_runs(data: Path) -> list[dict]:
     return sorted(runs, key=lambda run: run["created_at"], reverse=True)
 
 
-def lora_options(data: Path) -> list[tuple[str, str]]:
+def task_of(run: dict) -> str:
+    return run["settings"].get("task", "rotate")
+
+
+def lora_options(data: Path, task: str | None = None) -> list[tuple[str, str]]:
     """(value, label) for every LoRA a job may load: each run's final one and its last checkpoints."""
     options = []
     for run in read_runs(data):
+        if task and task_of(run) != task:
+            continue
         if run["final"]:
             options.append((f"runs/{run['name']}/final", f"{run['name']} · final"))
         for name in reversed(run["checkpoints"][-5:]):
@@ -129,11 +136,16 @@ def generate_job(data: Path, form: dict) -> tuple[str, list[str]]:
     seeds = number(form.get("seeds", "2"), 1, 8, "Characters")
     sprite = one_of(form.get("sprite", "128"), SPRITES, "sprite size")
     model = one_of(form.get("turn_model", "flux2-klein-4b"), MODELS, "turning model")
-    args = ["generate", prompt, "--seeds", str(seeds), "--sprite", sprite, "--turn-model", model]
+    front = one_of(form.get("front_model", "flux2-klein-4b"), MODELS, "drawing model")
+    args = ["generate", prompt, "--seeds", str(seeds), "--sprite", sprite, "--turn-model", model, "--front-model", front]
 
+    create = form.get("create_lora", "")
+    if create:
+        one_of(create, [value for value, _ in lora_options(data, "create")], "create model")
+        args += ["--create-lora", str(data.resolve() / create)]
     lora = form.get("lora", "")
     if lora:
-        one_of(lora, [value for value, _ in lora_options(data)], "trained model")
+        one_of(lora, [value for value, _ in lora_options(data, "rotate")], "trained model")
         args += ["--lora", str(data.resolve() / lora)]
 
     return f"Generate: {prompt}", args
@@ -147,6 +159,7 @@ def train_job(data: Path, form: dict) -> tuple[str, list[str]]:
         raise Invalid(f"There is already a run called {name}. Resume it, or pick another name.")
 
     export = one_of(form.get("export", ""), exports(data), "export")
+    task = one_of(form.get("task", "rotate"), TASKS, "task")
     model = one_of(form.get("model", "flux2-klein-base-4b"), MODELS, "model")
     size = one_of(form.get("size", "256"), SIZES, "size")
     steps = number(form.get("steps", "2000"), 1, 50000, "Steps")
@@ -155,7 +168,8 @@ def train_job(data: Path, form: dict) -> tuple[str, list[str]]:
     if not chosen or any(source not in available for source in chosen):
         raise Invalid("Pick at least one source.")
 
-    args = ["train", "--name", name, "--export", export, "--model", model, "--size", size, "--steps", str(steps)]
+    args = ["train", "--name", name, "--task", task, "--export", export, "--model", model, "--size", size,
+            "--steps", str(steps)]
     if sorted(chosen) != available:
         args += ["--sources", *sorted(chosen)]
 
@@ -176,7 +190,7 @@ def resume_job(data: Path, form: dict) -> tuple[str, list[str]]:
     settings = run["settings"]
 
     # The same settings as the run had, so it goes on with what it learnt.
-    args = ["train", "--name", run["name"], "--resume", "--steps", str(steps)]
+    args = ["train", "--name", run["name"], "--resume", "--task", task_of(run), "--steps", str(steps)]
     for flag, key in (("--export", "export"), ("--model", "model"), ("--size", "size"), ("--rank", "rank"),
                       ("--learning-rate", "learning_rate"), ("--accumulate", "accumulate"), ("--every", "every"),
                       ("--val", "val_count"), ("--seed", "seed")):
@@ -190,6 +204,8 @@ def resume_job(data: Path, form: dict) -> tuple[str, list[str]]:
 
 def tryout_job(data: Path, form: dict) -> tuple[str, list[str]]:
     run = find_run(data, form.get("run", ""))
+    if task_of(run) != "rotate":
+        raise Invalid("A create run is tried on the Generate page.")
     lora = one_of(form.get("lora", ""), [value for value, _ in lora_options(data) if value.startswith(f"runs/{run['name']}/")],
                   "checkpoint")
     model = one_of(form.get("model", "flux2-klein-4b"), MODELS, "model")
@@ -260,13 +276,17 @@ def message_block(message: str) -> str:
     return f'<p class="note error">{escape(message)}</p>' if message else ""
 
 
-def generate_page(data: Path, job: dict | None, log: str, form: dict, message: str = "") -> str:
-    loras = lora_options(data)
-    lora_choice = form.get("lora", loras[0][0] if loras else "")
-    lora_select = (
-        '<option value="">none: front view only</option>'
-        + "".join(f'<option value="{escape(value)}"{" selected" if value == lora_choice else ""}>{escape(label)}</option>' for value, label in loras)
+def lora_select(loras: list[tuple[str, str]], chosen: str, none: str) -> str:
+    return f'<option value="">{escape(none)}</option>' + "".join(
+        f'<option value="{escape(value)}"{" selected" if value == chosen else ""}>{escape(label)}</option>' for value, label in loras
     )
+
+
+def generate_page(data: Path, job: dict | None, log: str, form: dict, message: str = "") -> str:
+    loras = lora_options(data, "rotate")
+    turn_select = lora_select(loras, form.get("lora", loras[0][0] if loras else ""), "none: front view only")
+    # The plain model stays the default for drawing until you pick a create LoRA you like.
+    draw_select = lora_select(lora_options(data, "create"), form.get("create_lora", ""), "none: the model as it is")
 
     items = []
     for item in read_generated(data)[:GALLERY]:
@@ -275,6 +295,9 @@ def generate_page(data: Path, job: dict | None, log: str, form: dict, message: s
             for sheet in item["sheets"]
         )
         details = [f"{item.get('sprite', 64)}px", item.get("turn_model", "no turning") if item.get("lora") else "front only"]
+        if item.get("create_lora"):
+            drawn = Path(item["create_lora"])
+            details.append("drawn by " + (drawn.parent.name if drawn.name == "final" else drawn.name))
         if item.get("lora"):
             details.append(Path(item["lora"]).parent.name if Path(item["lora"]).name == "final" else Path(item["lora"]).name)
         when = escape(readable_time(item["created_at"])) if item.get("created_at") else ""
@@ -292,10 +315,12 @@ def generate_page(data: Path, job: dict | None, log: str, form: dict, message: s
 <label class="wide">What to draw<textarea name="prompt" rows="2" required maxlength="300" placeholder="a frog wizard with a staff">{prompt}</textarea></label>
 <label>Characters<input type="number" name="seeds" min="1" max="8" value="{escape(form.get('seeds', '2'))}"></label>
 <label>Sprite size<select name="sprite">{options(SPRITES, form.get('sprite', '128'), {s: f'{s} x {s}' for s in SPRITES})}</select></label>
-<label>Turn with<select name="lora">{lora_select}</select></label>
+<label>Draw with<select name="create_lora">{draw_select}</select></label>
+<label>Drawing model<select name="front_model">{options(MODELS, form.get('front_model', 'flux2-klein-4b'), MODELS)}</select></label>
+<label>Turn with<select name="lora">{turn_select}</select></label>
 <label>Turning model<select name="turn_model">{options(MODELS, form.get('turn_model', 'flux2-klein-4b'), MODELS)}</select></label>
 <button>Generate</button>
-<p class="muted wide">The front view comes from the model as it is; your trained LoRA turns it to the left, back and right.</p>
+<p class="muted wide">A create LoRA draws the front view from your text; a rotate LoRA turns it to the left, back and right.</p>
 </form>
 <h2>Made so far</h2><section class="rows wide">{gallery}</section>{POLL}"""
 
@@ -349,13 +374,16 @@ def run_card(data: Path, run: dict, running: bool) -> str:
         left = f" · ~{hours:.1f} h left at {per_step:.0f}s per step"
 
     loras = [(value, label) for value, label in lora_options(data) if value.startswith(f"runs/{run['name']}/")]
+    task = task_of(run)
     disabled = " disabled" if running else ""
     next_steps = run["steps"] if run["step"] < run["steps"] else run["steps"] + 1000
 
     actions = f"""<form method="post" action="/training/resume" class="inline">
 <input type="hidden" name="run" value="{escape(run['name'])}">
 <label>to<input type="number" name="steps" min="{run['step'] + 1}" value="{next_steps}"></label><button{disabled}>Resume</button></form>"""
-    if loras:
+    if loras and task == "create":
+        actions += f"""<a class="chip" href="{link('/generate', create_lora=loras[0][0])}">Try in Generate</a>"""
+    elif loras:
         actions += f"""<form method="post" action="/training/tryout" class="inline">
 <input type="hidden" name="run" value="{escape(run['name'])}">
 <select name="lora">{"".join(f'<option value="{escape(value)}">{escape(label.split(" · ")[-1])}</option>' for value, label in loras)}</select>
@@ -365,7 +393,7 @@ def run_card(data: Path, run: dict, running: bool) -> str:
 <a class="chip" href="{link('/generate', lora=loras[0][0])}">Use in Generate</a>"""
 
     return f"""<article class="card run">
-<header><h2>{escape(run['name'])}</h2><span class="muted">{escape(model)} · {settings.get('size', '?')}px · {escape(sources)}</span></header>
+<header><h2>{escape(run['name'])}</h2><span class="muted">{escape(task)} · {escape(model)} · {settings.get('size', '?')}px · {escape(sources)}</span></header>
 <p><strong>step {run['step']:,} of {run['steps']:,}</strong> · check score {val_now}{escape(left)}</p>
 <div class="bar"><span style="width:{progress}%"></span></div>
 {chart(run)}<div class="actions">{actions}</div></article>"""
@@ -390,13 +418,14 @@ def training_page(data: Path, job: dict | None, log: str, form: dict, message: s
 
     new_run = f"""<form method="post" action="/training/start" class="panel">
 <label>Name<input name="name" required pattern="[A-Za-z0-9_-]{{1,40}}" value="{escape(form.get('name', ''))}" placeholder="rotate-v3"></label>
+<label>Task<select name="task">{options(TASKS, form.get('task', 'rotate'), TASKS)}</select></label>
 <label>Export<select name="export">{options(export_names, export)}</select></label>
 <label>Model<select name="model">{options(MODELS, form.get('model', 'flux2-klein-base-4b'), MODELS)}</select></label>
 <label>Size<select name="size">{options(SIZES, form.get('size', '256'), {s: f'{s} px' for s in SIZES})}</select></label>
 <label>Steps<input type="number" name="steps" min="1" max="50000" value="{escape(form.get('steps', '2000'))}"></label>
 <fieldset class="wide"><legend>Sources</legend>{source_boxes or '<span class="muted">No export yet: run <code>uv run pixel export</code>.</span>'}</fieldset>
 <button{disabled}>Start training</button>
-<p class="muted wide">About 28 s per step at 256 px and 77 s at 512 px on an M1 Max. A source with an NC licence makes the result non-commercial.</p>
+<p class="muted wide">About 28 s per step at 256 px and 77 s at 512 px on an M1 Max. A source with an NC licence makes the result non-commercial. Create trains only on characters with a caption (lpc-4view).</p>
 </form>"""
 
     return f"""<h1>Training</h1>

@@ -7,6 +7,10 @@ One training example is: the front view as the reference image (as in an edit), 
 for the view from prompts.json, and the real view as the picture to make. The loss is flow
 matching, the way FLUX is trained: mix the real view's latents with noise at a random level, and
 ask the model for the direction from the picture to the noise.
+
+The "create" task has no reference image: the character's caption in, its front view out. There
+is a caption per character, too many to turn into embeddings up front (8 MB each), so the text
+model stays loaded and encodes each caption as it comes.
 """
 
 import math
@@ -43,7 +47,7 @@ def shift(sigmas: torch.Tensor, mu: float) -> torch.Tensor:
 
 class FluxLora:
     def __init__(self, preset: Preset, device: str, size: int, rank: int, learning_rate: float,
-                 instructions: dict[str, str], seed: int):
+                 instructions: dict[str, str], seed: int, task: str = "rotate"):
         from diffusers import AutoencoderKLFlux2, Flux2KleinPipeline, Flux2Transformer2DModel
         from diffusers.pipelines.flux2.pipeline_flux2_klein import compute_empirical_mu
         from peft import LoraConfig
@@ -53,17 +57,19 @@ class FluxLora:
         self.pipeline = Flux2KleinPipeline
         dtype = torch.bfloat16
 
-        # There are only a few instructions, so they are turned into embeddings once and the text
-        # model (8 GB) is let go before training starts.
         tokenizer = Qwen2TokenizerFast.from_pretrained(preset.parts, subfolder="tokenizer")
         text_encoder = Qwen3ForCausalLM.from_pretrained(preset.parts, subfolder="text_encoder", dtype=dtype).to(device)
-        self.prompts = {}
-        with torch.no_grad():
-            for view, instruction in instructions.items():
-                embeds = Flux2KleinPipeline._get_qwen3_prompt_embeds(text_encoder, tokenizer, instruction, dtype, device)
-                self.prompts[view] = (embeds, Flux2KleinPipeline._prepare_text_ids(embeds).to(device))
-        del text_encoder
-        free(device)
+        text_encoder.requires_grad_(False)
+        text_encoder.eval()
+        self.text = (text_encoder, tokenizer)
+        self.prompts = {view: self.embed(instruction) for view, instruction in instructions.items()}
+        self.captions = {}
+        if task == "rotate":
+            # There are only a few instructions, so they are embeddings now and the text model
+            # (8 GB) is let go before training starts.
+            del text_encoder
+            self.text = None
+            free(device)
 
         self.vae = AutoencoderKLFlux2.from_pretrained(preset.parts, subfolder="vae", dtype=dtype).to(device)
         self.vae.requires_grad_(False)
@@ -83,6 +89,26 @@ class FluxLora:
         self.mu = compute_empirical_mu(image_seq_len=tokens, num_steps=preset.steps)
         self.generator = torch.Generator("cpu").manual_seed(seed)
         self.latents = {}
+
+    def embed(self, text: str) -> tuple[torch.Tensor, torch.Tensor]:
+        text_encoder, tokenizer = self.text
+        with torch.no_grad():
+            embeds = self.pipeline._get_qwen3_prompt_embeds(text_encoder, tokenizer, text, torch.bfloat16, self.device)
+
+        return embeds, self.pipeline._prepare_text_ids(embeds).to(self.device)
+
+    def prompt(self, pair: Pair, keep: bool) -> tuple[torch.Tensor, torch.Tensor]:
+        if pair.caption is None:
+            return self.prompts[pair.view]
+        if pair.caption in self.captions:
+            return tuple(part.to(self.device) for part in self.captions[pair.caption])
+
+        embeds = self.embed(pair.caption)
+        # As with latents, only the check pairs' captions are kept.
+        if keep:
+            self.captions[pair.caption] = tuple(part.cpu() for part in embeds)
+
+        return embeds
 
     def encode(self, path: Path, keep: bool) -> torch.Tensor:
         """A picture to patched, normalised latents (1, 128, size/16, size/16), as the pipeline makes them."""
@@ -105,22 +131,26 @@ class FluxLora:
 
     def loss(self, pair: Pair, generator: torch.Generator, keep: bool = False) -> torch.Tensor:
         target = self.encode(pair.target, keep)
-        reference = self.encode(pair.front, keep)
-        embeds, text_ids = self.prompts[pair.view]
+        embeds, text_ids = self.prompt(pair, keep)
 
         noise = torch.randn(target.shape, generator=generator).to(self.device)
         sigma = shift(torch.sigmoid(torch.randn(1, generator=generator)), self.mu).to(self.device)
         noisy = (1 - sigma) * target + sigma * noise
 
         pack = self.pipeline._pack_latents
-        image_ids = self.pipeline._prepare_latent_ids(target).to(self.device)
-        reference_ids = self.pipeline._prepare_image_ids([reference]).to(self.device)
+        hidden = pack(noisy)
+        ids = self.pipeline._prepare_latent_ids(target).to(self.device)
+        if pair.front is not None:
+            # The front view rides along after the noisy picture, as the edit pipeline sends it.
+            reference = self.encode(pair.front, keep)
+            hidden = torch.cat([hidden, pack(reference)], dim=1)
+            ids = torch.cat([ids, self.pipeline._prepare_image_ids([reference]).to(self.device)], dim=1)
 
         prediction = self.transformer(
-            hidden_states=torch.cat([pack(noisy), pack(reference)], dim=1).to(torch.bfloat16),
+            hidden_states=hidden.to(torch.bfloat16),
             encoder_hidden_states=embeds,
             timestep=sigma.to(torch.bfloat16),
-            img_ids=torch.cat([image_ids, reference_ids], dim=1),
+            img_ids=ids,
             txt_ids=text_ids,
             guidance=None,
             return_dict=False,

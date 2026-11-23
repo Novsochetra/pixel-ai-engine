@@ -5,6 +5,7 @@ text, so the front view comes from a model without it.
 """
 
 import json
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -22,7 +23,8 @@ def make_fronts(folder: Path, prompt: str, seeds: list[int], generate: Generate,
     """Draw the front view once per seed; keep the raw picture and the sprite."""
     folder.mkdir(parents=True, exist_ok=True)
     fronts = []
-    for seed in seeds:
+    for number, seed in enumerate(seeds, 1):
+        print(f"front view {number} of {len(seeds)} (seed {seed})...", flush=True)
         image = generate(prompt, None, seed)
         image.convert("RGB").save(folder / f"s{seed}-front-raw.png")
         pixelate(image, sprite).save(folder / f"s{seed}-front.png")
@@ -34,11 +36,18 @@ def make_fronts(folder: Path, prompt: str, seeds: list[int], generate: Generate,
 def turn(folder: Path, fronts: list[Path], instructions: dict[str, str], generate: Generate, size: int,
          sprite: int = SPRITE) -> None:
     """Turn every front view to each view in the instructions, the way the LoRA was trained."""
+    total, number = len(fronts) * len(instructions), 0
     for front in fronts:
         seed = front.name.split("-")[0]
         reference = blow_up(Image.open(front), size)
         for view, instruction in instructions.items():
+            number += 1
+            # One line per picture: a sampling progress bar on a Mac fills before the GPU is done,
+            # so it says nothing about how far a slow model has got.
+            started = time.monotonic()
+            print(f"turning {number} of {total}: {seed} {view}...", flush=True)
             image = generate(instruction, reference, int(seed[1:]))
+            print(f"  done in {time.monotonic() - started:.0f}s", flush=True)
             image.convert("RGB").save(folder / f"{seed}-{view}-raw.png")
             pixelate(image, sprite).save(folder / f"{seed}-{view}.png")
 

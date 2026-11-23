@@ -4,8 +4,8 @@ from pathlib import Path
 import pytest
 
 from pixel_training.cli import parser
-from pixel_training.train import (Pair, Settings, latest_checkpoint, lora_folder, read_pairs, run_settings, train,
-                                  val_sample)
+from pixel_training.train import (Pair, Settings, caption_text, latest_checkpoint, lora_folder, read_captioned,
+                                  read_pairs, run_settings, train, val_sample)
 
 VIEWS = ["left", "back", "right"]
 
@@ -126,3 +126,35 @@ def test_train_defaults():
 
     assert (args.model, args.export, args.steps, args.size, args.rank, args.resume) == \
         ("flux2-klein-base-4b", "rotation-v1", 1000, 512, 16, False)
+
+
+TEMPLATE = "pixel art game sprite of {subject}, front view"
+
+
+def test_a_caption_is_put_in_the_words_generate_uses():
+    caption = "lpc-style pixel art character, with male human body, tanned skin, wearing blue vest"
+
+    assert caption_text(caption, TEMPLATE) == \
+        "pixel art game sprite of a character with male human body, tanned skin, wearing blue vest, front view"
+
+
+def test_create_pairs_are_the_captioned_front_views_of_the_split(tmp_path):
+    export = fake_export(tmp_path)
+    rows = [json.loads(line) for line in (export / "characters.jsonl").read_text().splitlines()]
+    rows[1]["caption"] = "lpc-style pixel art character, with a hat"
+    (export / "characters.jsonl").write_text("\n".join(json.dumps(row) for row in rows))
+
+    found = read_captioned(export, "train", TEMPLATE)
+
+    assert found == [Pair("lpc/b", "front", None, export / "images/b/front.png",
+                          "pixel art game sprite of a character with a hat, front view")]
+
+
+def test_a_create_run_remembers_its_task(tmp_path):
+    run = tmp_path / "run"
+    create = Settings(**{**settings(steps=1, every=1).__dict__, "task": "create"})
+
+    train(run, create, [Pair("c", "front", None, Path("t.png"), "x")], [], FakeBackend(), say=lambda _: None)
+
+    assert run_settings(run)["task"] == "create"
+    assert parser().parse_args(["train"]).task == "rotate"

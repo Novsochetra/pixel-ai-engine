@@ -47,6 +47,12 @@ def fake_data(data: Path) -> Path:
     (export / "export.json").write_text(json.dumps({"sources": {"pac": {"license": "CC-BY-NC-4.0"},
                                                                 "lpc-4view": {"license": "CC-BY-SA-3.0"}}}))
 
+    create = data / "runs" / "create-v1"
+    (create / "final").mkdir(parents=True)
+    (create / "final" / "pytorch_lora_weights.safetensors").write_text("lora")
+    (create / "run.json").write_text(json.dumps({"created_at": "2026-11-23T10:00:00+00:00",
+                                                 "settings": {**settings, "task": "create"}}))
+
     generated = data / "generated" / "frog"
     generated.mkdir(parents=True)
     (generated / "generated.json").write_text(json.dumps({"created_at": "2026-11-21T04:50:09+00:00", "prompt": "a frog wizard",
@@ -111,7 +117,7 @@ def test_a_job_left_running_by_a_closed_dashboard_is_marked_stopped(tmp_path):
 
 
 def test_runs_are_read_with_the_later_log_line_winning(tmp_path):
-    run = studio.read_runs(fake_data(tmp_path))[0]
+    run = next(run for run in studio.read_runs(fake_data(tmp_path)) if run["name"] == "rotate-v2")
 
     assert (run["name"], run["step"], run["steps"]) == ("rotate-v2", 20, 20)
     assert run["val"] == [(10, 0.15), (20, 0.12)]
@@ -127,7 +133,24 @@ def test_generate_form_becomes_arguments(tmp_path):
 
     assert title == "Generate: a frog wizard"
     assert args == ["generate", "a frog wizard", "--seeds", "3", "--sprite", "128", "--turn-model", "flux2-klein-4b",
-                    "--lora", str(data.resolve() / "runs/rotate-v2/final")]
+                    "--front-model", "flux2-klein-4b", "--lora", str(data.resolve() / "runs/rotate-v2/final")]
+
+
+def test_a_create_lora_draws_and_a_rotate_lora_turns(tmp_path):
+    data = fake_data(tmp_path)
+
+    _, args = studio.generate_job(data, {"prompt": "a frog", "create_lora": "runs/create-v1/final",
+                                         "lora": "runs/rotate-v2/final"})
+
+    assert args[args.index("--create-lora") + 1] == str(data.resolve() / "runs/create-v1/final")
+    with pytest.raises(studio.Invalid):
+        studio.generate_job(data, {"prompt": "a frog", "lora": "runs/create-v1/final"})
+    with pytest.raises(studio.Invalid):
+        studio.generate_job(data, {"prompt": "a frog", "create_lora": "runs/rotate-v2/final"})
+    with pytest.raises(studio.Invalid):
+        studio.tryout_job(data, {"run": "create-v1", "lora": "runs/create-v1/final", "model": "flux2-klein-4b"})
+    _, resume = studio.resume_job(data, {"run": "create-v1", "steps": "40"})
+    assert resume[4:6] == ["--task", "create"]
 
 
 @pytest.mark.parametrize("form", [
@@ -148,8 +171,10 @@ def test_a_new_run_names_its_sources_only_when_some_are_left_out(tmp_path):
     _, every = studio.train_job(data, {**form, "sources_list": ["pac", "lpc-4view"]})
     _, some = studio.train_job(data, {**form, "sources_list": ["lpc-4view"]})
 
-    assert "--sources" not in every
+    assert "--sources" not in every and every[3:5] == ["--task", "rotate"]
     assert some[-2:] == ["--sources", "lpc-4view"]
+    _, create = studio.train_job(data, {**form, "task": "create", "sources_list": ["lpc-4view"]})
+    assert create[3:5] == ["--task", "create"]
     with pytest.raises(studio.Invalid):
         studio.train_job(data, {**form, "name": "rotate-v2", "sources_list": ["pac"]})
     with pytest.raises(studio.Invalid):
@@ -159,7 +184,7 @@ def test_a_new_run_names_its_sources_only_when_some_are_left_out(tmp_path):
 def test_resume_keeps_the_settings_of_the_run(tmp_path):
     _, args = studio.resume_job(fake_data(tmp_path), {"run": "rotate-v2", "steps": "40"})
 
-    assert args[:5] == ["train", "--name", "rotate-v2", "--resume", "--steps"]
+    assert args[:7] == ["train", "--name", "rotate-v2", "--resume", "--task", "rotate", "--steps"]
     assert ["--size", "256"] == args[args.index("--size"):args.index("--size") + 2]
     assert args[-2:] == ["--sources", "pac"]
     with pytest.raises(studio.Invalid):

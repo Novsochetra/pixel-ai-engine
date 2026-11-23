@@ -123,6 +123,27 @@ faces on the side views, where turning it at 256 did not. The results go to
 `../dataset/data/generated/<date>-<prompt>/`: `s0-front.png`, `s0-left.png` and so on, the raw
 pictures, and `s0-sheet.png` with the 4 views side by side.
 
+### A create LoRA: draw the front view in your own style
+
+The plain model draws the front view as it is. A create LoRA teaches it to draw like the training
+characters. It trains on the captions of the export: each character's caption in, its front view
+out. Only lpc-4view has captions (45,016 training characters), so a create LoRA draws LPC-style
+characters, 64-pixel sprites, and its licence is CC-BY-SA-3.0 (credit the LPC artists).
+
+```bash
+HF_HUB_OFFLINE=1 caffeinate -i uv run pixel-train train --task create --name create-v1 --size 256 --steps 2000
+uv run pixel-train generate "a frog wizard" --create-lora ../dataset/data/runs/create-v1 --lora ../dataset/data/runs/rotate-v2
+```
+
+Each caption is put in the same words `generate` puts around your prompt (the `create` template
+of `prompts.json`), so the LoRA learns the words it will be asked with. There is a caption per
+character, too many to turn into embeddings up front, so the text model (8 GB) stays loaded and
+encodes each caption as it comes. On an M1 Max that is about 35 s per step at 256 pixels.
+
+With `--create-lora`, the front view is drawn at the LoRA's size scaled with `--sprite` (512 for a
+128 sprite), as for turning. `--lora` must be a rotate LoRA and `--create-lora` a create one;
+`generate` stops if they are the other way round. `--resume` needs the run's own `--task`.
+
 ## Step 4: animate a character (try-out)
 
 `pixel-train animate` gives a sprite from `generate` to Wan 2.2 image-to-video with the

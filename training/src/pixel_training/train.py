@@ -1,5 +1,8 @@
 """The training loop, without the model: what to train on, when to save, how to pick up again.
 
+Two tasks train the same way. "rotate": the front view in, another view out. "create": the
+character's caption in, its front view out.
+
 The model side (FLUX.2 Klein with a LoRA) is in lora.py. The loop only needs something with the
 Backend methods, so the tests run it with a stand-in.
 """
@@ -16,12 +19,16 @@ CHECKPOINTS = "checkpoints"
 FINAL = "final"
 
 
+CAPTION_PREFIX = "lpc-style pixel art character, "
+
+
 @dataclass(frozen=True)
 class Pair:
     character: str
     view: str
-    front: Path
+    front: Path | None  # None for "create": there is no picture in, only the caption
     target: Path
+    caption: str | None = None
 
 
 @dataclass(frozen=True)
@@ -37,6 +44,7 @@ class Settings:
     val_count: int
     sources: tuple[str, ...]
     seed: int
+    task: str = "rotate"
 
 
 class Backend(Protocol):
@@ -64,6 +72,32 @@ def read_pairs(export: Path, split: str, views: list[str], sources: tuple[str, .
         for view in views:
             if view in entry["views"]:
                 pairs.append(Pair(entry["character"], view, export / entry["views"]["front"], export / entry["views"][view]))
+
+    return pairs
+
+
+def caption_text(caption: str, template: str) -> str:
+    """An export caption in the words `generate` uses, so the LoRA learns what it will be asked.
+
+    "lpc-style pixel art character, with male human body, ..." becomes the create template around
+    "a character with male human body, ...".
+    """
+    subject = caption.removeprefix(CAPTION_PREFIX).strip()
+
+    return template.format(subject=f"a character {subject}" if subject.startswith("with ") else subject)
+
+
+def read_captioned(export: Path, split: str, template: str, sources: tuple[str, ...] = ()) -> list[Pair]:
+    """One pair per character with a caption: its caption in, its front view out."""
+    pairs = []
+    for line in (export / "characters.jsonl").read_text().splitlines():
+        entry = json.loads(line)
+        if entry["split"] != split or (sources and entry["source"] not in sources):
+            continue
+
+        if entry.get("caption") and "front" in entry["views"]:
+            pairs.append(Pair(entry["character"], "front", None, export / entry["views"]["front"],
+                              caption_text(entry["caption"], template)))
 
     return pairs
 
@@ -138,7 +172,8 @@ def train(run: Path, settings: Settings, train_pairs: list[Pair], val_pairs: lis
         "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "settings": asdict(settings),
         "train_pairs": len(train_pairs),
-        "val_pairs": [asdict(pair) | {"front": str(pair.front), "target": str(pair.target)} for pair in val_pairs],
+        "val_pairs": [asdict(pair) | {"front": pair.front and str(pair.front), "target": str(pair.target)}
+                      for pair in val_pairs],
     }, indent=2))
 
     # The order of the pairs depends only on the seed and the step, so a resumed run sees what an
