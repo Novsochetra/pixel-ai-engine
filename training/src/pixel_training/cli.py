@@ -193,7 +193,7 @@ def animate_command(args) -> None:
         raise SystemExit(f"No character at {source}. Make one with `uv run pixel-train generate` first.")
 
     seeds = sorted(int(path.name.split("-")[0][1:]) for path in source.glob("s*-front.png"))
-    jobs = animate.jobs_for(source, args.seeds or seeds, args.views, args.actions)
+    jobs = animate.jobs_for(source, args.seeds or seeds, args.views, args.actions, args.subject)
     if not jobs:
         raise SystemExit(f"No sprites for views {args.views} in {source}.")
 
@@ -201,22 +201,16 @@ def animate_command(args) -> None:
     folder = args.data / "animated" / (args.name or f"{datetime.now():%Y%m%d-%H%M}-{source.name}")
     device = pick_device()
     print(f"{len(jobs)} clips of {args.frames} frames, {args.size}px, {steps} steps, Wan 2.2 {args.quant}, on {device}")
-    print("Loading the model...")
+    print("Encoding the prompts...")
     started = time.monotonic()
     animator = animate.wan_animator([job.prompt for job in jobs], device, args.size, args.frames, steps, args.quant,
                                     args.lightning, args.pixel_strength)
-    loaded = time.monotonic()
+    info = {"source": str(source), "subject": args.subject, "size": args.size, "frames": args.frames, "steps": steps,
+            "quant": args.quant, "lightning": args.lightning, "pixel_strength": args.pixel_strength}
+    animate.run(folder, jobs, animator, args.size, args.keep, info)
 
-    rows = []
-    for job in jobs:
-        print(f"  {job.id}")
-        rows += animate.run(folder, [job], animator, args.size, args.keep)
-        animate.write_info(folder, {"source": str(source), "size": args.size, "frames": args.frames, "steps": steps,
-                                    "quant": args.quant, "lightning": args.lightning,
-                                    "pixel_strength": args.pixel_strength, "clips": rows})
-
-    seconds = (time.monotonic() - loaded) / len(jobs)
-    print(f"\nLoaded in {loaded - started:.0f}s, {seconds:.0f}s per clip. Results in {folder}")
+    seconds = time.monotonic() - started
+    print(f"\n{seconds:.0f}s in all, {seconds / len(jobs):.0f}s per clip. Results in {folder}")
 
 
 def parser() -> argparse.ArgumentParser:
@@ -278,6 +272,8 @@ def parser() -> argparse.ArgumentParser:
     animate.add_argument("--actions", nargs="+", choices=["idle", "walk", "attack"], default=["idle", "walk"])
     animate.add_argument("--views", nargs="+", choices=["front", "left", "back", "right"], default=["front", "right"])
     animate.add_argument("--seeds", type=int, nargs="+", help="which characters of the folder (default: all)")
+    animate.add_argument("--subject", help="what the sprite shows, for the prompt (default: the words it was made from); "
+                                           "leave out items the sprite does not show, or the model draws them in")
     animate.add_argument("--size", type=int, default=512, help="video size in pixels, a multiple of 16")
     animate.add_argument("--frames", type=int, default=33, help="video frames, 4n+1 (33 is about 2 seconds)")
     animate.add_argument("--keep", type=int, default=8, help="frames in the sprite sheet")
