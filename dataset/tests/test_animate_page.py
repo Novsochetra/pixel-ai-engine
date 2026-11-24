@@ -35,12 +35,12 @@ def test_a_generated_character_becomes_animate_arguments(tmp_path):
     folder = knight(data)
 
     title, args = animate_page.animate_job(data, {
-        "source": "generated/knight", "seed": "0", "views_list": ["front", "right"], "actions_list": ["idle", "walk"],
-        "size": "384", "frames": "33", "subject": "a knight,  empty hands", "same_end": "on"})
+        "source": "generated/knight/s0", "views_list": ["front", "right"], "actions": "idle\r\n flaps its  wings \n\nIDLE",
+        "size": "384", "frames": "33", "subject": "a knight,  empty hands"})
 
     assert title == "Animate knight: 4 clips"
     assert args[:6] == ["animate", str(folder.resolve()), "--views", "front", "right", "--seeds"]
-    assert args[args.index("--actions") + 1:args.index("--size")] == ["idle", "walk"]
+    assert args[args.index("--actions") + 1:args.index("--size")] == ["idle", "flaps its wings"]
     assert args[args.index("--subject") + 1] == "a knight, empty hands" and "--open-end" not in args
     assert args[args.index("--name") + 1].endswith("-knight")
 
@@ -50,12 +50,24 @@ def test_a_character_offers_only_the_views_it_has(tmp_path):
 
     assert animate_page.characters(tmp_path)[0]["sprites"] == {0: ["front", "right"], 1: ["front"]}
     with pytest.raises(Invalid, match="s1 has: front"):
-        animate_page.animate_job(tmp_path, {"source": "generated/knight", "seed": "1", "views_list": ["right"],
-                                            "actions_list": ["walk"]})
+        animate_page.animate_job(tmp_path, {"source": "generated/knight/s1", "views_list": ["right"], "actions": "walk"})
+    with pytest.raises(Invalid, match="no character s7"):
+        animate_page.animate_job(tmp_path, {"source": "generated/knight/s7", "views_list": ["front"], "actions": "walk"})
+
+
+def test_a_link_to_the_folder_picks_its_first_character(tmp_path):
+    knight(tmp_path)
+
+    _, args = animate_page.animate_job(tmp_path, {"source": "generated/knight", "views_list": ["front"], "actions": "walk"})
+    html, _ = animate_page.source_options(tmp_path, "generated/knight")
+
+    assert args[args.index("--seeds") + 1] == "0"
+    assert 'value="generated/knight/s0" data-subject="a knight with a sword" data-views="[&quot;front&quot;, &quot;right&quot;]" selected' in html
+    assert 'value="generated/knight/s1"' in html
 
 
 def test_an_upload_is_saved_as_a_clean_png_and_needs_a_subject(tmp_path):
-    form = {"source": "upload", "facing": "right", "actions_list": ["walk"], "files": {"image": ("My Hero!.png", sprite_png((48, 64)))}}
+    form = {"source": "upload", "actions": "walk", "files": {"image": ("My Hero!.png", sprite_png((48, 64)))}}
 
     with pytest.raises(Invalid, match="what the picture shows"):
         animate_page.animate_job(tmp_path, form)
@@ -64,27 +76,29 @@ def test_an_upload_is_saved_as_a_clean_png_and_needs_a_subject(tmp_path):
     saved = list((tmp_path / "uploads").glob("*.png"))
     assert len(saved) == 1 and saved[0].name.endswith("-my-hero.png")
     assert Image.open(saved[0]).size == (48, 64)
-    assert args[:4] == ["animate", str(saved[0].resolve()), "--views", "right"] and "--open-end" in args
+    assert args[:4] == ["animate", str(saved[0].resolve()), "--seeds", "0"] and "--views" not in args and "--open-end" not in args
     assert animate_page.uploads(tmp_path) == [saved[0].name]
 
     # The same picture can be picked again without uploading it.
-    _, again = animate_page.animate_job(tmp_path, {"source": f"uploads/{saved[0].name}", "subject": "a hero", "actions_list": ["idle"]})
+    _, again = animate_page.animate_job(tmp_path, {"source": f"uploads/{saved[0].name}", "subject": "a hero", "actions": "idle"})
     assert again[1] == str(saved[0].resolve())
 
 
 @pytest.mark.parametrize("body", [b"not a picture", sprite_png((3000, 10))])
 def test_a_bad_upload_is_refused(tmp_path, body):
     with pytest.raises(Invalid):
-        animate_page.animate_job(tmp_path, {"source": "upload", "subject": "x", "actions_list": ["walk"],
+        animate_page.animate_job(tmp_path, {"source": "upload", "subject": "x", "actions": "walk",
                                             "files": {"image": ("x.png", body)}})
     assert not list((tmp_path / "uploads").glob("*.png")) if (tmp_path / "uploads").exists() else True
 
 
-def test_only_known_uploads_and_actions_are_passed_on(tmp_path):
+def test_only_known_uploads_and_some_actions_are_passed_on(tmp_path):
     with pytest.raises(Invalid):
-        animate_page.animate_job(tmp_path, {"source": "uploads/../../etc.png", "subject": "x", "actions_list": ["walk"]})
-    with pytest.raises(Invalid, match="action"):
-        animate_page.animate_job(tmp_path, {"source": "upload", "subject": "x", "actions_list": ["dance"]})
+        animate_page.animate_job(tmp_path, {"source": "uploads/../../etc.png", "subject": "x", "actions": "walk"})
+    with pytest.raises(Invalid, match="at least one action"):
+        animate_page.animate_job(tmp_path, {"source": "upload", "subject": "x", "actions": " \n "})
+    with pytest.raises(Invalid, match="at most 8"):
+        animate_page.animate_job(tmp_path, {"source": "upload", "subject": "x", "actions": "\n".join(f"move {n}" for n in range(9))})
 
 
 def multipart(fields: list[tuple[str, str]], files: dict[str, tuple[str, bytes]]) -> tuple[bytes, str]:
@@ -119,8 +133,8 @@ def test_the_page_uploads_a_png_starts_the_job_and_shows_results(site):  # noqa:
     with urlopen(f"{url}/generate") as response:
         assert "/animate?source=generated%2Ffrog" in response.read().decode()
 
-    body, kind = multipart([("source", "upload"), ("subject", "a hero"), ("facing", "front"), ("actions", "idle"),
-                            ("actions", "walk"), ("size", "384"), ("frames", "17"), ("same_end", "on")],
+    body, kind = multipart([("source", "upload"), ("subject", "a hero"), ("actions", "idle\r\nwalk"),
+                            ("size", "384"), ("frames", "17")],
                            {"image": ("hero.png", sprite_png())})
     request = Request(f"{url}/animate", data=body, method="POST", headers={"Content-Type": kind, "Origin": url})
     with urlopen(request) as response:

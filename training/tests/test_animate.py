@@ -53,6 +53,16 @@ def test_the_subject_can_be_given_and_attacks_do_not_loop(tmp_path):
     assert not jobs[0].loops
 
 
+def test_an_action_in_your_own_words_is_used_as_written_and_loops(tmp_path):
+    source = character(tmp_path / "dragon")
+
+    jobs = jobs_for(source, [0], ["front"], ["Flaps its wings  and hovers.", "IDLE"])
+
+    assert [job.id for job in jobs] == ["s0-front-flaps-its-wings-and-hovers", "s0-front-idle"]
+    assert "Flaps its wings and hovers, then comes back to the first pose." in jobs[0].prompt
+    assert "breathes" in jobs[1].prompt and all(job.loops for job in jobs)
+
+
 def test_pick_spreads_the_frames_from_the_first():
     assert pick(list(range(32)), 8) == [0, 4, 8, 12, 16, 20, 24, 28]
     assert pick(list(range(5)), 8) == [0, 1, 2, 3, 4]
@@ -128,6 +138,16 @@ def test_a_png_of_your_own_makes_jobs_from_the_subject_and_view(tmp_path):
     assert [job.id for job in jobs] == ["s0-right-idle", "s0-right-walk", "s3-right-idle", "s3-right-walk"]
     assert all(job.sprite == image for job in jobs)
     assert "a hero in red" in jobs[0].prompt and "facing right" in jobs[0].prompt
+
+
+def test_a_png_needs_no_view(tmp_path):
+    image = tmp_path / "dragon.png"
+    block_at(20).save(image)
+
+    jobs = image_jobs(image, "a small red dragon flying, facing left", None, ["flaps its wings"], [0])
+
+    assert [job.id for job in jobs] == ["s0-flaps-its-wings"]
+    assert jobs[0].prompt.startswith("pixel art game sprite animation of a small red dragon flying, facing left. Flaps")
 
 
 def test_a_tall_sprite_is_centred_on_a_square_and_snapped_at_its_own_size(tmp_path):

@@ -200,9 +200,9 @@ def animate_command(args) -> None:
         source = args.source
         if not args.subject:
             raise SystemExit("A PNG needs --subject: what the sprite shows, for example \"a knight in grey armour\".")
-        views = args.views or ["front"]
+        views = args.views or [None]
         if len(views) != 1:
-            raise SystemExit("A PNG is one view: give one --views, the way the sprite faces.")
+            raise SystemExit("A PNG is one view: give at most one --views, the way the sprite faces.")
         jobs = animate.image_jobs(source, args.subject, views[0], args.actions, args.seeds or [0])
     else:
         source = args.source if args.source.is_dir() else args.data / "generated" / args.source
@@ -289,9 +289,10 @@ def parser() -> argparse.ArgumentParser:
     animate = commands.add_parser("animate", help="animate a generated character with Wan 2.2 and the pixel-animate LoRA")
     animate.add_argument("source", type=Path, help="a folder from `generate`, its name under data/generated, "
                                                    "or a PNG of your own (then give --subject and one --views)")
-    animate.add_argument("--actions", nargs="+", choices=["idle", "walk", "attack"], default=["idle", "walk"])
+    animate.add_argument("--actions", nargs="+", default=["idle", "walk"],
+                         help="idle, walk, attack, or any action in your own words, such as \"flaps its wings\"")
     animate.add_argument("--views", nargs="+", choices=["front", "left", "back", "right"],
-                         help="views to animate (default: front right); for a PNG, the one way it faces (default: front)")
+                         help="views to animate (default: front right); for a PNG, the one way it faces (default: not said)")
     animate.add_argument("--seeds", type=int, nargs="+", help="which characters of the folder (default: all)")
     animate.add_argument("--subject", help="what the sprite shows, for the prompt (default: the words it was made from); "
                                            "leave out items the sprite does not show, or the model draws them in")

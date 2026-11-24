@@ -17,6 +17,7 @@ motion is closest to the first frame again, and a few evenly spaced frames of th
 """
 
 import json
+import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -41,7 +42,7 @@ FPS = 16
 # A loop is at least this many frames, so a still second frame does not count as "back to the start".
 SHORTEST_LOOP = 8
 
-# What each action asks for, and whether it loops. The subject is what the sprite shows.
+# Words for the usual actions, and whether they loop. Any other action is used as written and loops.
 ACTIONS = {
     "idle": ("idle animation: stands in place and breathes, the chest and head move a little up and down, "
              "then comes back to the first pose", True),
@@ -51,7 +52,7 @@ ACTIONS = {
 }
 VIEW_WORDS = {"front": "facing the viewer", "left": "facing left, side view", "back": "seen from the back",
               "right": "facing right, side view"}
-TEMPLATE = ("pixel art game sprite animation of {subject}, {view}. {action}. Crisp pixel art, the same character "
+TEMPLATE = ("pixel art game sprite animation of {subject}{view}. {action}. Crisp pixel art, the same character "
             "with the same clothes and items in every frame, plain flat white background, the camera does not move")
 
 # The frames for each (prompt, first picture, seed, last picture or None), in order, as each clip is done.
@@ -65,6 +66,24 @@ class Job:
     prompt: str
     seed: int
     loops: bool
+
+
+def action_words(action: str) -> tuple[str, str, bool]:
+    """The id part, the prompt words, and whether it loops, for a usual action or one in your own words.
+
+    An action of your own loops: the sprite is its last frame too, so the clip comes back to it.
+    """
+    action = " ".join(action.split())
+    if action.lower() in ACTIONS:
+        words, loops = ACTIONS[action.lower()]
+        return action.lower(), words, loops
+
+    slug = re.sub(r"[^a-z0-9]+", "-", action.lower()).strip("-")[:40].strip("-") or "action"
+    return slug, f"{action[0].upper()}{action[1:].rstrip('.')}, then comes back to the first pose", True
+
+
+def prompt_for(subject: str, view: str | None, words: str) -> str:
+    return TEMPLATE.format(subject=subject, view=f", {VIEW_WORDS[view]}" if view else "", action=words)
 
 
 def jobs_for(source: Path, seeds: list[int], views: list[str], actions: list[str], subject: str | None = None) -> list[Job]:
@@ -81,21 +100,20 @@ def jobs_for(source: Path, seeds: list[int], views: list[str], actions: list[str
             if not sprite.exists():
                 continue
             for action in actions:
-                words, loops = ACTIONS[action]
-                prompt = TEMPLATE.format(subject=subject, view=VIEW_WORDS[view], action=words)
-                jobs.append(Job(f"s{seed}-{view}-{action}", sprite, prompt, seed, loops))
+                slug, words, loops = action_words(action)
+                jobs.append(Job(f"s{seed}-{view}-{slug}", sprite, prompt_for(subject, view, words), seed, loops))
 
     return jobs
 
 
-def image_jobs(image: Path, subject: str, view: str, actions: list[str], seeds: list[int]) -> list[Job]:
-    """Jobs for one PNG of your own: you say what it shows and which way it faces."""
+def image_jobs(image: Path, subject: str, view: str | None, actions: list[str], seeds: list[int]) -> list[Job]:
+    """Jobs for one PNG of your own: you say what it shows, and which way it faces if you like."""
     jobs = []
     for seed in seeds:
         for action in actions:
-            words, loops = ACTIONS[action]
-            prompt = TEMPLATE.format(subject=subject, view=VIEW_WORDS[view], action=words)
-            jobs.append(Job(f"s{seed}-{view}-{action}", image, prompt, seed, loops))
+            slug, words, loops = action_words(action)
+            name = f"s{seed}-{view}-{slug}" if view else f"s{seed}-{slug}"
+            jobs.append(Job(name, image, prompt_for(subject, view, words), seed, loops))
 
     return jobs
 
