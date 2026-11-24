@@ -153,8 +153,33 @@ def test_a_create_lora_draws_and_a_rotate_lora_turns(tmp_path):
     assert resume[4:6] == ["--task", "create"]
 
 
+def test_a_pose_goes_to_the_prompt_and_empty_means_standing(tmp_path):
+    data = fake_data(tmp_path)
+
+    _, args = studio.generate_job(data, {"prompt": "a dragon", "pose": "  flying,  wings spread "})
+    _, plain = studio.generate_job(data, {"prompt": "a dragon", "pose": ""})
+
+    assert args[args.index("--pose") + 1] == "flying, wings spread"
+    assert "--pose" not in plain
+    with pytest.raises(studio.Invalid):
+        studio.generate_job(data, {"prompt": "a dragon", "pose": "flying", "create_lora": "runs/create-v1/final"})
+
+
+def test_a_side_view_is_drawn_without_turning(tmp_path):
+    data = fake_data(tmp_path)
+
+    _, args = studio.generate_job(data, {"prompt": "a dragon", "facing": "side", "lora": "runs/rotate-v2/final"})
+
+    assert args[-2:] == ["--facing", "side"]
+    assert "--lora" not in args
+    with pytest.raises(studio.Invalid):
+        studio.generate_job(data, {"prompt": "a dragon", "facing": "side", "create_lora": "runs/create-v1/final"})
+
+
 @pytest.mark.parametrize("form", [
     {"prompt": ""},
+    {"prompt": "x", "facing": "up"},
+    {"prompt": "x", "pose": "x" * 101},
     {"prompt": "x", "seeds": "99"},
     {"prompt": "x", "sprite": "65"},
     {"prompt": "x", "lora": "../../etc"},

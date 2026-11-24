@@ -294,7 +294,7 @@ def animate_page(data: Path, job: dict | None, log: str, form: dict, message: st
 <p class="muted wide">Name only what the picture shows. A sword in the words gives the character a sword, even when the sprite has none. For your own PNG, you can also say which way it faces.</p>
 <fieldset class="wide" data-for="generated"><legend>Views</legend>{checks("views", VIEWS, views)}</fieldset>
 <label class="wide">Actions, one a line<textarea name="actions" rows="3" placeholder="idle&#10;walk&#10;flaps its wings and hovers">{escape(actions)}</textarea></label>
-<p class="muted wide">Each line is one clip. idle, walk and attack have ready words. Any other line is used as you write it. Every clip ends on the sprite, so it loops.</p>
+<p class="muted wide">Each line is one clip. idle, walk and attack have ready words: idle keeps the pose (a flying dragon keeps flying), walk is for characters with legs. Any other line is used as you write it. Every clip ends on the sprite, so it loops.</p>
 <label>Video size<select name="size">{options(SIZES, form.get("size", "384"), SIZES)}</select></label>
 <label>Length<select name="frames">{options(FRAMES, form.get("frames", "33"), FRAMES)}</select></label>
 <button{" disabled" if running else ""}>Animate</button>

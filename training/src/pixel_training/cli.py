@@ -4,7 +4,7 @@ from datetime import datetime
 from pathlib import Path
 
 from pixel_training.models import PRESETS
-from pixel_training.train import lora_folder, run_settings
+from pixel_training.train import FRONT, POSE, SIDE, lora_folder, run_settings
 from pixel_training.tryout import GENERATE_SIZE, Plan, create_jobs, rotate_jobs, run_model, write_results
 
 ACCESS_HINT = (
@@ -163,11 +163,12 @@ def trained_lora(path: Path, task: str, flag: str, data: Path | None = None) -> 
 
 
 def generate_command(args) -> None:
-    from pixel_training.generate import make_fronts, sheets, turn, write_info
+    from pixel_training.generate import make_fronts, mirror, sheets, turn, write_info
     from pixel_training.models import free_memory, generator_for, pick_device
 
     prompts = json.loads(args.prompts.read_text())
-    text = args.prompt if args.raw else prompts["create"]["template"].format(subject=args.prompt)
+    text = args.prompt if args.raw else prompts["create"]["template"].format(
+        subject=args.prompt, pose=args.pose, view=SIDE if args.facing == "side" else FRONT)
     slug = "-".join("".join(c if c.isalnum() else " " for c in args.prompt.lower()).split())[:40]
     folder = args.data / "generated" / (args.name or f"{datetime.now():%Y%m%d-%H%M}-{slug}")
     seeds = list(range(args.seeds))
@@ -180,15 +181,22 @@ def generate_command(args) -> None:
         # As for turning: the LoRA's own size, scaled with the sprite.
         front_size = args.front_size or made_by.get("size", 256) * args.sprite // 64
         info |= {"create_lora": str(create)}
+    if args.facing == "side" and (args.lora or args.create_lora):
+        raise SystemExit("A side view is drawn without LoRAs: they learned front views only. Leave out --lora and --create-lora.")
     if args.lora:
         trained_lora(args.lora, "rotate", "--lora", args.data)
 
     print(f"== front view: {args.front_model}, {front_size}px, {len(seeds)} seeds" + (f", LoRA {create}" if create else ""))
     front = generator_for(PRESETS[args.front_model], device, front_size, create)
-    fronts = make_fronts(folder, text, seeds, front, args.sprite)
+    if args.facing == "side":
+        # The right side from the text; the left side is that sprite flipped.
+        mirror(make_fronts(folder, text, seeds, front, args.sprite, view="right"))
+        fronts = []
+    else:
+        fronts = make_fronts(folder, text, seeds, front, args.sprite)
     del front
     free_memory()
-    info |= {"front_size": front_size}
+    info |= {"front_size": front_size, "facing": args.facing}
 
     if args.lora:
         lora, trained = trained_lora(args.lora, "rotate", "--lora", args.data)
@@ -227,7 +235,8 @@ def animate_command(args) -> None:
             raise SystemExit(f"No character at {source}. Make one with `uv run pixel-train generate` first, "
                              f"or give a PNG file.")
         views = args.views or ["front", "right"]
-        seeds = sorted(int(path.name.split("-")[0][1:]) for path in source.glob("s*-front.png"))
+        seeds = sorted({int(path.name.split("-")[0][1:]) for view in ("front", "left", "back", "right")
+                        for path in source.glob(f"s*-{view}.png")})
         jobs = animate.jobs_for(source, args.seeds or seeds, views, args.actions, args.subject)
         if not jobs:
             raise SystemExit(f"No sprites for views {views} in {source}.")
@@ -303,6 +312,11 @@ def parser() -> argparse.ArgumentParser:
     generate.add_argument("--turn-size", type=int, help="picture size for turning (default: the LoRA's training size, scaled with --sprite)")
     generate.add_argument("--turn-model", choices=flux2, help="the model that turns it (default: the one the LoRA was trained on)")
     generate.add_argument("--steps", type=int, help="sampling steps for turning (default: the model's own)")
+    generate.add_argument("--pose", default=POSE,
+                          help="the pose words in the prompt, for example \"flying, wings spread, legs tucked\" (default: standing)")
+    generate.add_argument("--facing", choices=["front", "side"], default="front",
+                          help="front: draw the front view, and turn it with --lora; side: draw the right side, "
+                               "and flip it for the left (for a pose such as flying, seen from the side)")
     generate.add_argument("--raw", action="store_true", help="use the prompt as written, without the pixel art sprite wording")
     generate.add_argument("--prompts", type=Path, default=Path("prompts.json"))
     generate.add_argument("--name", help="folder name under data/generated (default: <date>-<prompt>)")

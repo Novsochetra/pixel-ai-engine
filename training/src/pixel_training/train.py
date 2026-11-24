@@ -21,6 +21,12 @@ FINAL = "final"
 
 # A labeller writes this for a picture that is not one character seen from the front.
 SKIP = "skip"
+# The pose and view words in the create template. Every training sprite stands and faces the
+# viewer, so training always uses these.
+POSE = "standing"
+FRONT = "front view facing the viewer"
+# The view words for a character drawn from the side, flying or running to the right.
+SIDE = "side view, facing right, seen from the side"
 CAPTION_PREFIX = "lpc-style pixel art character, "
 
 
@@ -88,7 +94,7 @@ def caption_text(caption: str, template: str) -> str:
     """
     subject = caption.removeprefix(CAPTION_PREFIX).strip().rstrip(".")
 
-    return template.format(subject=f"a character {subject}" if subject.startswith("with ") else subject)
+    return template.format(subject=f"a character {subject}" if subject.startswith("with ") else subject, pose=POSE, view=FRONT)
 
 
 def read_labels(folder: Path) -> dict[str, str]:

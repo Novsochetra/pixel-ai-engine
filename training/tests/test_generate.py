@@ -3,7 +3,7 @@ import json
 from PIL import Image
 
 from pixel_training.cli import parser
-from pixel_training.generate import make_fronts, sheets, turn, write_info
+from pixel_training.generate import make_fronts, mirror, sheets, turn, write_info
 
 INSTRUCTIONS = {"left": "turn left", "back": "turn around", "right": "turn right"}
 
@@ -72,3 +72,20 @@ def test_a_bigger_sprite_keeps_more_pixels(tmp_path):
     assert Image.open(fronts[0]).size == (128, 128)
     assert Image.open(tmp_path / "s0-back.png").size == (128, 128)
     assert Image.open(sheets(tmp_path, [0])[0]).size == (4 * 256, 256)
+
+
+def test_a_side_view_is_drawn_and_flipped_for_the_left(tmp_path):
+    def half_red(prompt, image, seed):
+        picture = Image.new("RGB", (256, 256), (255, 255, 255))
+        picture.paste((200, 30, 30), (0, 0, 128, 256))
+        return picture
+
+    sides = make_fronts(tmp_path, "a dragon", [0], half_red, view="right")
+    lefts = mirror(sides)
+
+    assert [path.name for path in sides] == ["s0-right.png"]
+    assert [path.name for path in lefts] == ["s0-left.png"]
+    right, left = Image.open(sides[0]).convert("RGB"), Image.open(lefts[0]).convert("RGB")
+    assert left.getpixel((0, 32)) == right.getpixel((63, 32))
+    assert not (tmp_path / "s0-front.png").exists()
+    assert Image.open(sheets(tmp_path, [0])[0]).size == (2 * 256, 256)

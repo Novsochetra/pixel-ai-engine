@@ -19,18 +19,30 @@ VIEWS = ("front", "left", "back", "right")
 SHEET_SCALE = 4
 
 
-def make_fronts(folder: Path, prompt: str, seeds: list[int], generate: Generate, sprite: int = SPRITE) -> list[Path]:
-    """Draw the front view once per seed; keep the raw picture and the sprite."""
+def make_fronts(folder: Path, prompt: str, seeds: list[int], generate: Generate, sprite: int = SPRITE,
+                view: str = "front") -> list[Path]:
+    """Draw one view (the front, or the right side) once per seed; keep the raw picture and the sprite."""
     folder.mkdir(parents=True, exist_ok=True)
     fronts = []
     for number, seed in enumerate(seeds, 1):
-        print(f"front view {number} of {len(seeds)} (seed {seed})...", flush=True)
+        print(f"{view} view {number} of {len(seeds)} (seed {seed})...", flush=True)
         image = generate(prompt, None, seed)
-        image.convert("RGB").save(folder / f"s{seed}-front-raw.png")
-        pixelate(image, sprite).save(folder / f"s{seed}-front.png")
-        fronts.append(folder / f"s{seed}-front.png")
+        image.convert("RGB").save(folder / f"s{seed}-{view}-raw.png")
+        pixelate(image, sprite).save(folder / f"s{seed}-{view}.png")
+        fronts.append(folder / f"s{seed}-{view}.png")
 
     return fronts
+
+
+def mirror(sides: list[Path]) -> list[Path]:
+    """The left view of each right view: the same sprite flipped."""
+    made = []
+    for side in sides:
+        left = side.with_name(side.name.replace("-right.png", "-left.png"))
+        Image.open(side).transpose(Image.FLIP_LEFT_RIGHT).save(left)
+        made.append(left)
+
+    return made
 
 
 def turn(folder: Path, fronts: list[Path], instructions: dict[str, str], generate: Generate, size: int,

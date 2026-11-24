@@ -10,6 +10,7 @@ from PIL import Image
 
 from pixel_training.models import Generate
 from pixel_training.pixelate import blow_up, pixelate
+from pixel_training.train import FRONT, POSE
 
 GENERATE_SIZE = 1024
 SPRITE_SIZE = 64
@@ -28,7 +29,7 @@ class Plan:
 def create_jobs(prompts: dict) -> list[dict]:
     template = prompts["create"]["template"]
 
-    return [{"id": f"p{index:02d}", "prompt": template.format(subject=subject)} for index, subject in enumerate(prompts["create"]["subjects"])]
+    return [{"id": f"p{index:02d}", "prompt": template.format(subject=subject, pose=POSE, view=FRONT)} for index, subject in enumerate(prompts["create"]["subjects"])]
 
 
 def rotate_jobs(export: Path, prompts: dict, count: int, seed: int = 7) -> list[dict]:

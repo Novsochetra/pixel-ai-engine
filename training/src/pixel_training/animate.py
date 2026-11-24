@@ -43,12 +43,13 @@ FPS = 16
 SHORTEST_LOOP = 8
 
 # Words for the usual actions, and whether they loop. Any other action is used as written and loops.
+# The words name no pose, so a sprite that flies, sits or swims keeps that pose; walk needs legs.
 ACTIONS = {
-    "idle": ("idle animation: stands in place and breathes, the chest and head move a little up and down, "
-             "then comes back to the first pose", True),
-    "walk": ("walk cycle in place: one leg steps forward, then the other leg steps forward, the arms swing, "
+    "idle": ("idle animation: keeps the same pose in the same place and breathes, the body moves a little "
+             "up and down, then comes back to the first pose", True),
+    "walk": ("walk cycle in place: the legs step one after the other, the body moves with each step, "
              "then comes back to the first pose. The character stays in the center of the frame", True),
-    "attack": ("attack animation: swings forward and returns to the first pose", False),
+    "attack": ("attack animation: moves forward to strike and returns to the first pose", False),
 }
 VIEW_WORDS = {"front": "facing the viewer", "left": "facing left, side view", "back": "seen from the back",
               "right": "facing right, side view"}

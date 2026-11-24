@@ -10,6 +10,8 @@ from pixel_data.dashboard.browse_pages import link, readable_time
 MODELS = {"flux2-klein-4b": "fast (4 steps, ~40 s a view)", "flux2-klein-base-4b": "base (28 steps, ~6 min a view)"}
 SPRITES = (64, 96, 128)
 SIZES = (256, 512)
+# How the character is drawn: from the front and turned, or from the side and flipped.
+FACING = {"front": "front, then turned to left, back, right", "side": "side, facing right (left is its mirror)"}
 TASKS = {"rotate": "rotate: turn a front view", "create": "create: draw a front view from text"}
 NAME = re.compile(r"^[A-Za-z0-9_-]{1,40}$")
 GALLERY = 40
@@ -138,8 +140,21 @@ def generate_job(data: Path, form: dict) -> tuple[str, list[str]]:
     model = one_of(form.get("turn_model", "flux2-klein-4b"), MODELS, "turning model")
     front = one_of(form.get("front_model", "flux2-klein-4b"), MODELS, "drawing model")
     args = ["generate", prompt, "--seeds", str(seeds), "--sprite", sprite, "--turn-model", model, "--front-model", front]
+    pose = " ".join(form.get("pose", "").split())
+    if len(pose) > 100:
+        raise Invalid("Write the pose in at most 100 characters.")
+    if pose:
+        args += ["--pose", pose]
+    facing = one_of(form.get("facing", "front"), list(FACING), "facing")
 
     create = form.get("create_lora", "")
+    if create and pose and pose.lower() != "standing":
+        raise Invalid('A create LoRA draws only standing sprites. For this pose, set "Draw with" to none.')
+    if create and facing == "side":
+        raise Invalid('A create LoRA draws only front views. For a side view, set "Draw with" to none.')
+    if facing == "side":
+        # The side is drawn from the text and flipped for the left; nothing is turned.
+        return f"Generate: {prompt}", [*args, "--facing", "side"]
     if create:
         one_of(create, [value for value, _ in lora_options(data, "create")], "create model")
         args += ["--create-lora", str(data.resolve() / create)]
@@ -294,7 +309,8 @@ def generate_page(data: Path, job: dict | None, log: str, form: dict, message: s
             f'<a href="{link(f"/generated/{item["folder"]}/{sheet}")}"><img class="sheet" src="{link(f"/generated/{item["folder"]}/{sheet}")}" alt="{escape(sheet)}" loading="lazy"></a>'
             for sheet in item["sheets"]
         )
-        details = [f"{item.get('sprite', 64)}px", item.get("turn_model", "no turning") if item.get("lora") else "front only"]
+        details = [f"{item.get('sprite', 64)}px", item.get("turn_model", "no turning") if item.get("lora") else
+                   "side, flipped" if item.get("facing") == "side" else "front only"]
         if item.get("create_lora"):
             drawn = Path(item["create_lora"])
             details.append("drawn by " + (drawn.parent.name if drawn.name == "final" else drawn.name))
@@ -314,6 +330,8 @@ def generate_page(data: Path, job: dict | None, log: str, form: dict, message: s
 {message_block(message)}{job_panel(job, log, "/generate")}
 <form method="post" action="/generate" class="panel">
 <label class="wide">What to draw<textarea name="prompt" rows="2" required maxlength="300" placeholder="a frog wizard with a staff">{prompt}</textarea></label>
+<label class="wide">Pose<input name="pose" maxlength="100" placeholder="standing" value="{escape(form.get('pose', ''))}"></label>
+<label>Facing<select name="facing">{options(list(FACING), form.get('facing', 'front'), FACING)}</select></label>
 <label>Characters<input type="number" name="seeds" min="1" max="8" value="{escape(form.get('seeds', '2'))}"></label>
 <label>Sprite size<select name="sprite">{options(SPRITES, form.get('sprite', '128'), {s: f'{s} x {s}' for s in SPRITES})}</select></label>
 <label>Draw with<select name="create_lora">{draw_select}</select></label>
@@ -321,7 +339,7 @@ def generate_page(data: Path, job: dict | None, log: str, form: dict, message: s
 <label>Turn with<select name="lora">{turn_select}</select></label>
 <label>Turning model<select name="turn_model">{options(MODELS, form.get('turn_model', 'flux2-klein-4b'), MODELS)}</select></label>
 <button>Generate</button>
-<p class="muted wide">A create LoRA draws the front view from your text; a rotate LoRA turns it to the left, back and right.</p>
+<p class="muted wide">A create LoRA draws the front view from your text; a rotate LoRA turns it to the left, back and right. The pose is standing when you leave it empty. For another pose, such as flying, draw with "none": the create LoRA learned only standing sprites. For a side pose, such as a dragon flying to the right, pick Facing: side; it is drawn with no LoRA and not turned.</p>
 </form>
 <h2>Made so far</h2><section class="rows wide">{gallery}</section>{POLL}"""
 

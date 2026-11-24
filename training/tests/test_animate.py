@@ -2,7 +2,7 @@ import json
 
 from PIL import Image
 
-from pixel_training.animate import cycle, image_jobs, jobs_for, pick, run, snap, square
+from pixel_training.animate import action_words, cycle, image_jobs, jobs_for, pick, run, snap, square
 from pixel_training.cli import parser
 from pixel_training.pixelate import palette_of
 
@@ -169,3 +169,9 @@ def test_animate_defaults():
     assert (args.quant, args.lightning, args.pixel_strength, args.same_end) == ("Q4_K_M", True, 1.0, True)
     assert parser().parse_args(["animate", "hero.png", "--open-end"]).same_end is False
     assert parser().parse_args(["animate", "knight", "--no-lightning"]).lightning is False
+
+
+def test_the_ready_words_keep_the_pose_of_the_sprite():
+    for action in ("idle", "walk", "attack"):
+        _, words, _ = action_words(action)
+        assert "stand" not in words and "arm" not in words

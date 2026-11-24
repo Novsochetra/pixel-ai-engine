@@ -1,6 +1,6 @@
 {
   "create": {
-    "template": "pixel art game sprite of {subject}, full body, standing, front view facing the viewer, centered, 64x64 pixel art, crisp hard pixel edges, limited colour palette, dark outline, plain flat white background, no text, no shadow",
+    "template": "pixel art game sprite of {subject}, full body, {pose}, {view}, centered, 64x64 pixel art, crisp hard pixel edges, limited colour palette, dark outline, plain flat white background, no text, no shadow",
     "subjects": [
       "a knight in silver armour with a red cape and a sword",
       "a young wizard in a blue robe holding a wooden staff",
