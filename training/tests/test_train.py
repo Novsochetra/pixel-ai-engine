@@ -170,3 +170,20 @@ def test_a_character_without_a_caption_takes_its_ai_label(tmp_path):
 
     assert [(pair.character, pair.caption) for pair in found] == \
         [("pac/a", "pixel art game sprite of a small chibi character with red hair, front view")]
+
+
+def test_a_skip_label_is_left_out(tmp_path):
+    export = fake_export(tmp_path / "export")
+    folder = tmp_path / "labels" / "pac"
+    folder.mkdir(parents=True)
+    (folder / "labels.jsonl").write_text(json.dumps({"character": "pac/a", "label": "skip"}))
+
+    assert read_captioned(export, "train", TEMPLATE, labels=read_labels(tmp_path / "labels")) == []
+
+
+def test_create_training_takes_more_exports():
+    args = parser().parse_args(["train", "--task", "create", "--more-exports", "opengameart-v1"])
+
+    assert args.more_exports == ["opengameart-v1"]
+    assert args.more_repeat == 1
+    assert parser().parse_args(["train"]).more_exports == []

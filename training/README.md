@@ -138,7 +138,16 @@ can sell with, train on lpc-4view only:
 ```bash
 HF_HUB_OFFLINE=1 caffeinate -i uv run pixel-train train --task create --name create-v1 --size 256 --steps 2000 --sources lpc-4view
 HF_HUB_OFFLINE=1 caffeinate -i uv run pixel-train train --task create --name create-mix --size 256 --steps 2000   # with pac
-uv run pixel-train generate "a frog wizard" --create-lora ../dataset/data/runs/create-v1 --lora ../dataset/data/runs/rotate-v2
+uv run pixel-train generate "a frog wizard" --create-lora create-v1 --lora rotate-v2
+```
+
+LPC alone draws everything in the LPC way. pac gives more styles but is non-commercial. For more
+styles you can sell with, add the OpenGameArt sprites (CC0, about 1,300 characters cut from packs and
+labelled by Haiku; see `../dataset/opengameart/README.md`). They are their own export, so add it with
+`--more-exports`; it is small next to LPC, so `--more-repeat` shows each of its characters more often:
+
+```bash
+HF_HUB_OFFLINE=1 caffeinate -i uv run pixel-train train --task create --name create-v2 --size 256 --steps 2000 --sources lpc-4view opengameart-2d --more-exports opengameart-v1 --more-repeat 5
 ```
 
 Each caption is put in the same words `generate` puts around your prompt (the `create` template

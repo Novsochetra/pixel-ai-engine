@@ -19,6 +19,8 @@ CHECKPOINTS = "checkpoints"
 FINAL = "final"
 
 
+# A labeller writes this for a picture that is not one character seen from the front.
+SKIP = "skip"
 CAPTION_PREFIX = "lpc-style pixel art character, "
 
 
@@ -45,6 +47,8 @@ class Settings:
     sources: tuple[str, ...]
     seed: int
     task: str = "rotate"
+    more_exports: tuple[str, ...] = ()  # create only: more exports whose captioned characters join in
+    more_repeat: int = 1
 
 
 class Backend(Protocol):
@@ -114,7 +118,7 @@ def read_captioned(export: Path, split: str, template: str, sources: tuple[str, 
             continue
 
         caption = entry.get("caption") or labels.get(entry["character"])
-        if caption and "front" in entry["views"]:
+        if caption and caption != SKIP and "front" in entry["views"]:
             pairs.append(Pair(entry["character"], "front", None, export / entry["views"]["front"],
                               caption_text(caption, template)))
 

@@ -82,6 +82,13 @@ def train_command(args) -> None:
     if not (export / "characters.jsonl").exists():
         raise SystemExit(f"No export at {export}. Run `uv run pixel export` in dataset/ first.")
 
+    more = [args.data / "exports" / name for name in args.more_exports]
+    for folder in more:
+        if not (folder / "characters.jsonl").exists():
+            raise SystemExit(f"No export at {folder}.")
+    if more and args.task != "create":
+        raise SystemExit("--more-exports is for --task create only.")
+
     prompts = json.loads(args.prompts.read_text())
     sources = tuple(args.sources or ())
     if args.task == "create":
@@ -89,10 +96,17 @@ def train_command(args) -> None:
         template = prompts["create"]["template"]
         instructions = {}
         labels = read_labels(args.data / "labels")
-        train_pairs = read_captioned(export, "train", template, sources, labels)
-        val_pairs = val_sample(read_captioned(export, "val", template, sources, labels), args.val, args.seed)
+        train_pairs, val_pairs = [], []
+        for folder in [export, *more]:
+            # A small extra export would hardly be seen next to a big one, so it can be shown more often.
+            train_pairs += read_captioned(folder, "train", template, sources, labels) * (args.more_repeat if folder in more else 1)
+            val_pairs += read_captioned(folder, "val", template, sources, labels)
+        val_pairs = val_sample(val_pairs, args.val, args.seed)
         labelled = sum(pair.character in labels for pair in train_pairs)
         print(f"{len(train_pairs) - labelled:,} with the export's caption, {labelled:,} with an AI label (data/labels)")
+        if more:
+            print(f"{', '.join(args.more_exports)}: {sum(pair.target.is_relative_to(folder) for folder in more for pair in train_pairs):,} pairs"
+                  f" (each character {args.more_repeat} times)")
     else:
         instructions = prompts["rotate"]
         train_pairs = read_pairs(export, "train", list(instructions), sources)
@@ -103,12 +117,15 @@ def train_command(args) -> None:
 
     settings = Settings(model=args.model, export=args.export, size=args.size, steps=args.steps, rank=args.rank,
                         learning_rate=args.learning_rate, accumulate=args.accumulate, every=args.every,
-                        val_count=len(val_pairs), sources=sources, seed=args.seed, task=args.task)
+                        val_count=len(val_pairs), sources=sources, seed=args.seed, task=args.task,
+                        more_exports=tuple(args.more_exports), more_repeat=args.more_repeat)
     run = args.data / "runs" / (args.name or datetime.now().strftime("lora-%Y%m%d-%H%M"))
     before = run_settings(run).get("task", "rotate") if (run / "run.json").exists() else args.task
     if args.resume and before != args.task:
         raise SystemExit(f"{run.name} is a {before} run: resume it with --task {before}.")
-    licences = json.loads((export / "export.json").read_text())["sources"]
+    licences = {}
+    for folder in [export, *more]:
+        licences |= json.loads((folder / "export.json").read_text())["sources"]
     used = {name: info["license"] for name, info in licences.items()
             if (not sources or name in sources) and any(pair.character.startswith(f"{name}/") for pair in train_pairs)}
     device = pick_device()
@@ -256,6 +273,10 @@ def parser() -> argparse.ArgumentParser:
                        help="the base model is made for training; the 4-step model trains blurry")
     train.add_argument("--export", default="rotation-v1", help="the export to train on")
     train.add_argument("--sources", nargs="+", help="train on these sources only (default: all in the export)")
+    train.add_argument("--more-exports", nargs="+", default=[], metavar="EXPORT",
+                       help="create only: also train on the captioned characters of these exports (e.g. opengameart-v1)")
+    train.add_argument("--more-repeat", type=int, default=1,
+                       help="show each character of --more-exports this many times, so a small export is not lost")
     train.add_argument("--steps", type=int, default=1000, help="optimiser steps")
     train.add_argument("--accumulate", type=int, default=4, help="pairs per step")
     train.add_argument("--size", type=int, default=512, help="picture size the model sees, a multiple of 16")
