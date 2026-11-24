@@ -303,7 +303,8 @@ def generate_page(data: Path, job: dict | None, log: str, form: dict, message: s
         when = escape(readable_time(item["created_at"])) if item.get("created_at") else ""
         items.append(
             f'<article class="row"><header><strong>{escape(item.get("prompt", item["folder"]))}</strong>'
-            f'<span class="muted">{when} · {escape(" · ".join(details))}</span></header>{sheets}</article>'
+            f'<span class="muted">{when} · {escape(" · ".join(details))}</span>'
+            f'<a class="chip" href="{link("/animate", source=f"generated/{item["folder"]}")}">Animate</a></header>{sheets}</article>'
         )
 
     gallery = "".join(items) or '<p class="muted">Nothing made yet.</p>'

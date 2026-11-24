@@ -51,7 +51,7 @@ reason, so you can check its decisions. Exports shows each export's split counts
 and sample characters. Try-outs shows what existing models made in `training/`, next to the
 real views. Stop it with Ctrl+C.
 
-Training and Generate run `pixel-train` (in `training/`, which needs `uv sync --extra models` once)
+Training, Generate and Animate run `pixel-train` (in `training/`, which needs `uv sync --extra models` once)
 from the browser, offline:
 
 - **Training** lists every run with its progress and a chart of its check score. It starts a new
@@ -59,9 +59,14 @@ from the browser, offline:
   characters (the result shows under Try-outs). A create run is tried on the Generate page.
 - **Generate** draws a character from your words, with a create LoRA or the plain model, and
   turns it with a rotate LoRA. Everything it made is listed below the form.
+- **Animate** makes idle, walk or attack clips with Wan 2.2 (see Step 4 of `training/README.md`
+  for the downloads). Pick a generated character (or click Animate next to one on the Generate
+  page), or upload a PNG of your own and say which way it faces. Uploads are saved again as a clean
+  PNG in `data/uploads/`, at most 2048 pixels a side. The GIFs and sheets of every run show below
+  the form.
 
-One job runs at a time, since each fills most of a 32 GB Mac; its output shows at the top of both
-pages, with a Stop button. Each job keeps its settings and output in `data/jobs/`. Stopping the
+One job runs at a time, since each fills most of a 32 GB Mac; its output shows at the top of each
+page, with a Stop button. Each job keeps its settings and output in `data/jobs/`. Stopping the
 dashboard stops its job too, so keep it open while training. Only pages of the dashboard itself
 can start a job.
 

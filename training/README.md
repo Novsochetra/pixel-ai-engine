@@ -152,16 +152,21 @@ With `--create-lora`, the front view is drawn at the LoRA's size scaled with `--
 
 ## Step 4: animate a character (try-out)
 
-`pixel-train animate` gives a sprite from `generate` to Wan 2.2 image-to-video with the
+`pixel-train animate` gives a sprite from `generate`, or a PNG of your own, to Wan 2.2 image-to-video with the
 [pixel-animate LoRA](https://huggingface.co/styly-agents/Wan2-2-pixel-animate) (Apache-2.0, trained
 on 226 pixel sprite animations). It copies that LoRA's own ComfyUI workflow: the LoRA on both
 experts, the lightx2v 4-step speed-up LoRA, guidance 1, shift 5.
 
 Wan 2.2 I2V A14B is two 14B experts, about 56 GB at full size. On a 32 GB Mac they run as 4-bit
-GGUF files from `QuantStack/Wan2.2-I2V-A14B-GGUF`. The text encoder (11 GB) encodes all prompts
-first and is then let go, so it is never in memory with the experts.
+GGUF files from `QuantStack/Wan2.2-I2V-A14B-GGUF`. With its LoRAs one expert takes about 13 GB;
+both at once pushed the Mac into swap. So only one model is in memory at a time: the text encoder
+(11 GB) encodes all prompts and is let go, the high-noise expert does its 2 steps for every clip
+and is let go, then the low-noise expert finishes every clip.
 
-Download once, about 33 GB (use Wi-Fi):
+On an M1 Max (32 GB) a 33-frame clip takes about 11 minutes at 384 pixels (the default) and 15 at
+512. Once snapped to 64x64 the two look the same.
+
+Download once, about 36 GB (use Wi-Fi):
 
 ```bash
 uv sync --extra models
@@ -176,8 +181,23 @@ Run:
 ```bash
 uv run pixel-train animate knight --seeds 0 --views right --actions walk --frames 17   # one short clip, to see the speed
 uv run pixel-train animate knight                                                      # idle and walk, front and right
+uv run pixel-train animate knight --subject "a knight in grey armour with a blue cape, empty hands"
 uv run pixel-train animate knight --pixel-strength 0 --name knight-no-lora              # the same without the LoRA
+uv run pixel-train animate my-hero.png --subject "a hero in a red coat" --views right   # a PNG of your own
 ```
+
+A PNG of your own needs `--subject` (what it shows) and one `--views` (the way it faces; front if
+left out). A tall or wide PNG is put in the middle of a clear square. Each frame is snapped back to
+the PNG's own size, up to 128 pixels; a bigger picture is snapped to 128.
+
+The prompt uses the words the character was made from. The model draws in anything those words
+name, even when the sprite does not show it (a sword in the words gave the knight a sword). Give
+`--subject` to describe only what the sprite shows.
+
+Idle and walk are given the sprite as the first and the last frame (Wan's first-last-frame mode),
+so the clip must come back to it. The clip is cut at the frame closest to the first one again, so
+the GIF and sheet loop. `--open-end` gives only the first frame, as before. Attack never gets a
+last frame.
 
 Results go to `../dataset/data/animated/<name>/`, per clip: `<id>-raw.gif` (the video as made),
 `<id>.gif` (every frame snapped to a 64x64 sprite in the input sprite's colours) and

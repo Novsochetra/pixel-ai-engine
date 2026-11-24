@@ -148,6 +148,12 @@ button.danger { background: transparent; color: var(--bad); border-color: var(--
 img.sheet { display: block; width: 100%; max-width: 768px; height: auto; image-rendering: pixelated; border-radius: 6px; margin-top: 6px;
   background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 12px 12px; }
 
+[hidden] { display: none !important; }
+.clips { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 8px; }
+.clip { margin: 0; display: flex; flex-direction: column; gap: 2px; font-size: 13px; color: var(--muted); }
+.clip img.gif, img.preview { display: block; width: 128px; height: 128px; object-fit: contain; image-rendering: pixelated; border-radius: 6px;
+  background: repeating-conic-gradient(var(--check-a) 0 25%, var(--check-b) 0 50%) 0 0 / 12px 12px; }
+
 @media (max-width: 480px) {
   .top strong { display: none; }
   .top { gap: 14px; overflow-x: auto; }

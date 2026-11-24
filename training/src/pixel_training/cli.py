@@ -128,8 +128,15 @@ def train_command(args) -> None:
         print(f"Try it: uv run pixel-train tryout --models {args.model} --lora {run}")
 
 
-def trained_lora(path: Path, task: str, flag: str) -> tuple[Path, dict]:
-    """The LoRA folder and its run settings, refusing one trained for the other task."""
+def trained_lora(path: Path, task: str, flag: str, data: Path | None = None) -> tuple[Path, dict]:
+    """The LoRA folder and its run settings, refusing one trained for the other task.
+
+    A bare run name, like create-v1, is looked for in <data>/runs.
+    """
+    if not path.exists() and data is not None and (data / "runs" / path).exists():
+        path = data / "runs" / path
+    if not path.exists():
+        raise SystemExit(f"{flag}: {path} not found. Give a run folder, or a run name in data/runs.")
     lora = lora_folder(path)
     trained = run_settings(lora)
     if trained.get("task", "rotate") != task:
@@ -152,12 +159,12 @@ def generate_command(args) -> None:
     info = {"prompt": args.prompt, "text": text, "seeds": seeds, "front_model": args.front_model, "sprite": args.sprite}
     create, front_size = None, args.front_size or 1024
     if args.create_lora:
-        create, made_by = trained_lora(args.create_lora, "create", "--create-lora")
+        create, made_by = trained_lora(args.create_lora, "create", "--create-lora", args.data)
         # As for turning: the LoRA's own size, scaled with the sprite.
         front_size = args.front_size or made_by.get("size", 256) * args.sprite // 64
         info |= {"create_lora": str(create)}
     if args.lora:
-        trained_lora(args.lora, "rotate", "--lora")
+        trained_lora(args.lora, "rotate", "--lora", args.data)
 
     print(f"== front view: {args.front_model}, {front_size}px, {len(seeds)} seeds" + (f", LoRA {create}" if create else ""))
     front = generator_for(PRESETS[args.front_model], device, front_size, create)
@@ -167,7 +174,7 @@ def generate_command(args) -> None:
     info |= {"front_size": front_size}
 
     if args.lora:
-        lora, trained = trained_lora(args.lora, "rotate", "--lora")
+        lora, trained = trained_lora(args.lora, "rotate", "--lora", args.data)
         model = args.turn_model or trained.get("model", "flux2-klein-base-4b")
         # The LoRA learnt on 64-pixel sprites, each pixel a block of size/64. A bigger sprite gets a
         # bigger picture, so its pixels are blocks of the same size.
@@ -188,17 +195,28 @@ def animate_command(args) -> None:
     from pixel_training import animate
     from pixel_training.models import pick_device
 
-    source = args.source if args.source.is_dir() else args.data / "generated" / args.source
-    if not (source / "generated.json").exists():
-        raise SystemExit(f"No character at {source}. Make one with `uv run pixel-train generate` first.")
-
-    seeds = sorted(int(path.name.split("-")[0][1:]) for path in source.glob("s*-front.png"))
-    jobs = animate.jobs_for(source, args.seeds or seeds, args.views, args.actions, args.subject)
-    if not jobs:
-        raise SystemExit(f"No sprites for views {args.views} in {source}.")
+    if args.source.is_file():
+        # A PNG of your own: nothing says what it shows or which way it faces, so you say it.
+        source = args.source
+        if not args.subject:
+            raise SystemExit("A PNG needs --subject: what the sprite shows, for example \"a knight in grey armour\".")
+        views = args.views or ["front"]
+        if len(views) != 1:
+            raise SystemExit("A PNG is one view: give one --views, the way the sprite faces.")
+        jobs = animate.image_jobs(source, args.subject, views[0], args.actions, args.seeds or [0])
+    else:
+        source = args.source if args.source.is_dir() else args.data / "generated" / args.source
+        if not (source / "generated.json").exists():
+            raise SystemExit(f"No character at {source}. Make one with `uv run pixel-train generate` first, "
+                             f"or give a PNG file.")
+        views = args.views or ["front", "right"]
+        seeds = sorted(int(path.name.split("-")[0][1:]) for path in source.glob("s*-front.png"))
+        jobs = animate.jobs_for(source, args.seeds or seeds, views, args.actions, args.subject)
+        if not jobs:
+            raise SystemExit(f"No sprites for views {views} in {source}.")
 
     steps = args.steps or (4 if args.lightning else 20)
-    folder = args.data / "animated" / (args.name or f"{datetime.now():%Y%m%d-%H%M}-{source.name}")
+    folder = args.data / "animated" / (args.name or f"{datetime.now():%Y%m%d-%H%M}-{source.stem}")
     device = pick_device()
     print(f"{len(jobs)} clips of {args.frames} frames, {args.size}px, {steps} steps, Wan 2.2 {args.quant}, on {device}")
     print("Encoding the prompts...")
@@ -206,8 +224,9 @@ def animate_command(args) -> None:
     animator = animate.wan_animator([job.prompt for job in jobs], device, args.size, args.frames, steps, args.quant,
                                     args.lightning, args.pixel_strength)
     info = {"source": str(source), "subject": args.subject, "size": args.size, "frames": args.frames, "steps": steps,
-            "quant": args.quant, "lightning": args.lightning, "pixel_strength": args.pixel_strength}
-    animate.run(folder, jobs, animator, args.size, args.keep, info)
+            "quant": args.quant, "lightning": args.lightning, "pixel_strength": args.pixel_strength,
+            "same_end": args.same_end}
+    animate.run(folder, jobs, animator, args.size, args.keep, info, same_end=args.same_end)
 
     seconds = time.monotonic() - started
     print(f"\n{seconds:.0f}s in all, {seconds / len(jobs):.0f}s per clip. Results in {folder}")
@@ -268,13 +287,15 @@ def parser() -> argparse.ArgumentParser:
     generate.add_argument("--name", help="folder name under data/generated (default: <date>-<prompt>)")
 
     animate = commands.add_parser("animate", help="animate a generated character with Wan 2.2 and the pixel-animate LoRA")
-    animate.add_argument("source", type=Path, help="a folder from `generate`, or its name under data/generated")
+    animate.add_argument("source", type=Path, help="a folder from `generate`, its name under data/generated, "
+                                                   "or a PNG of your own (then give --subject and one --views)")
     animate.add_argument("--actions", nargs="+", choices=["idle", "walk", "attack"], default=["idle", "walk"])
-    animate.add_argument("--views", nargs="+", choices=["front", "left", "back", "right"], default=["front", "right"])
+    animate.add_argument("--views", nargs="+", choices=["front", "left", "back", "right"],
+                         help="views to animate (default: front right); for a PNG, the one way it faces (default: front)")
     animate.add_argument("--seeds", type=int, nargs="+", help="which characters of the folder (default: all)")
     animate.add_argument("--subject", help="what the sprite shows, for the prompt (default: the words it was made from); "
                                            "leave out items the sprite does not show, or the model draws them in")
-    animate.add_argument("--size", type=int, default=512, help="video size in pixels, a multiple of 16")
+    animate.add_argument("--size", type=int, default=384, help="video size in pixels, a multiple of 16 (384 looks the same as 512 once snapped to 64x64, and is faster)")
     animate.add_argument("--frames", type=int, default=33, help="video frames, 4n+1 (33 is about 2 seconds)")
     animate.add_argument("--keep", type=int, default=8, help="frames in the sprite sheet")
     animate.add_argument("--steps", type=int, help="sampling steps (default: 4 with the speed-up LoRA, else 20)")
@@ -283,6 +304,8 @@ def parser() -> argparse.ArgumentParser:
     animate.add_argument("--no-lightning", dest="lightning", action="store_false",
                          help="without the 4-step speed-up LoRA: slower, uses guidance")
     animate.add_argument("--pixel-strength", type=float, default=1.0, help="weight of the pixel-animate LoRA, 0 to leave it out")
+    animate.add_argument("--open-end", dest="same_end", action="store_false",
+                         help="do not give the sprite as the last frame of idle and walk too")
     animate.add_argument("--name", help="folder name under data/animated (default: <date>-<source>)")
 
     return root

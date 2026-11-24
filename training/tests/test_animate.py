@@ -2,7 +2,7 @@ import json
 
 from PIL import Image
 
-from pixel_training.animate import cycle, jobs_for, pick, run, snap
+from pixel_training.animate import cycle, image_jobs, jobs_for, pick, run, snap, square
 from pixel_training.cli import parser
 from pixel_training.pixelate import palette_of
 
@@ -21,8 +21,8 @@ def character(folder, seeds=(0,), views=("front", "right")):
 
 def fake(calls: list, count: int = 9):
     def animate_all(inputs):
-        for prompt, image, seed in inputs:
-            calls.append((prompt, image.size, seed))
+        for prompt, image, seed, last in inputs:
+            calls.append((prompt, image.size, seed, last is not None))
             frames = []
             for index in range(count):
                 frame = Image.new("RGB", image.size, (250, 250, 250))
@@ -96,7 +96,7 @@ def test_run_writes_the_raw_gif_the_sprite_gif_and_the_sheet(tmp_path):
 
     rows = run(tmp_path / "out", jobs, fake(calls), 512, keep=4, info={"size": 512})
 
-    assert calls == [(jobs[0].prompt, (512, 512), 0)]
+    assert calls == [(jobs[0].prompt, (512, 512), 0, True)]
     assert rows[0]["frames"] == 9 and rows[0]["used"] == 8 and rows[0]["kept"] == 4
     assert json.loads((tmp_path / "out" / "animated.json").read_text())["clips"] == rows
     assert Image.open(tmp_path / "out" / "s0-front-walk-sheet.png").size == (4 * 256, 256)
@@ -105,9 +105,47 @@ def test_run_writes_the_raw_gif_the_sprite_gif_and_the_sheet(tmp_path):
     assert (tmp_path / "out" / "s0-front-walk-raw.gif").is_file()
 
 
+def test_only_looping_actions_end_on_the_sprite_and_open_end_turns_it_off(tmp_path):
+    source = character(tmp_path / "knight")
+    jobs = jobs_for(source, [0], ["front"], ["walk", "attack"])
+
+    calls = []
+    rows = run(tmp_path / "out", jobs, fake(calls), 384, keep=4)
+    assert [call[3] for call in calls] == [True, False]
+    assert [row["same_end"] for row in rows] == [True, False]
+
+    calls = []
+    run(tmp_path / "open", jobs, fake(calls), 384, keep=4, same_end=False)
+    assert [call[3] for call in calls] == [False, False]
+
+
+def test_a_png_of_your_own_makes_jobs_from_the_subject_and_view(tmp_path):
+    image = tmp_path / "hero.png"
+    block_at(20).save(image)
+
+    jobs = image_jobs(image, "a hero in red", "right", ["idle", "walk"], [0, 3])
+
+    assert [job.id for job in jobs] == ["s0-right-idle", "s0-right-walk", "s3-right-idle", "s3-right-walk"]
+    assert all(job.sprite == image for job in jobs)
+    assert "a hero in red" in jobs[0].prompt and "facing right" in jobs[0].prompt
+
+
+def test_a_tall_sprite_is_centred_on_a_square_and_snapped_at_its_own_size(tmp_path):
+    tall = Image.new("RGBA", (32, 48), (0, 0, 0, 0))
+    tall.paste((200, 30, 30, 255), (8, 8, 24, 40))
+    assert square(tall).size == (48, 48) and square(tall).getpixel((24, 24))[3] == 255
+    assert square(tall).getpixel((2, 24))[3] == 0
+
+    tall.save(tmp_path / "tall.png")
+    jobs = image_jobs(tmp_path / "tall.png", "a red block", "front", ["walk"], [0])
+    run(tmp_path / "out", jobs, fake([]), 384, keep=4)
+    assert Image.open(tmp_path / "out" / "s0-front-walk.gif").size == (256, 256)
+
+
 def test_animate_defaults():
     args = parser().parse_args(["animate", "knight"])
 
-    assert (args.actions, args.views, args.size, args.frames, args.keep) == (["idle", "walk"], ["front", "right"], 512, 33, 8)
-    assert (args.quant, args.lightning, args.pixel_strength) == ("Q4_K_M", True, 1.0)
+    assert (args.actions, args.views, args.size, args.frames, args.keep) == (["idle", "walk"], None, 384, 33, 8)
+    assert (args.quant, args.lightning, args.pixel_strength, args.same_end) == ("Q4_K_M", True, 1.0, True)
+    assert parser().parse_args(["animate", "hero.png", "--open-end"]).same_end is False
     assert parser().parse_args(["animate", "knight", "--no-lightning"]).lightning is False

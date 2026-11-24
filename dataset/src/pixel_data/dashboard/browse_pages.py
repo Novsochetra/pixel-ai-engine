@@ -18,7 +18,7 @@ def layout(title: str, body: str, has_downloads: bool) -> str:
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{escape(title)}</title><link rel="stylesheet" href="/style.css"></head>
-<body><nav class="top"><strong>Pixel engine data</strong><a href="/">Imported</a><a href="/characters">Characters</a><a href="/flagged">Flagged</a><a href="/exports">Exports</a><a href="/tryouts">Try-outs</a><a href="/training">Training</a><a href="/generate">Generate</a>{downloads}</nav>
+<body><nav class="top"><strong>Pixel engine data</strong><a href="/">Imported</a><a href="/characters">Characters</a><a href="/flagged">Flagged</a><a href="/exports">Exports</a><a href="/tryouts">Try-outs</a><a href="/training">Training</a><a href="/generate">Generate</a><a href="/animate">Animate</a>{downloads}</nav>
 <main>{body}</main></body></html>"""
 
 

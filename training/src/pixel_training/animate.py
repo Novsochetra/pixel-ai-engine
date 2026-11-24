@@ -11,8 +11,9 @@ step take minutes. So the clips are made in two phases: the high-noise expert do
 every clip, is let go, then the low-noise expert finishes every clip. Only one is in memory at a time.
 
 A video model does not keep the pixel grid, so every frame is snapped back to a sprite with the
-colours of the input sprite. Looping actions (idle, walk) are cut where the motion comes back to
-the first frame, and a few evenly spaced frames of that make the sprite sheet.
+colours of the input sprite. Looping actions (idle, walk) are given the sprite as the last frame
+too (Wan's first-last-frame mode), so the clip must come back to it; the loop is cut where the
+motion is closest to the first frame again, and a few evenly spaced frames of that make the sheet.
 """
 
 import json
@@ -32,7 +33,10 @@ LIGHTNING_REPO = "lightx2v/Wan2.2-Lightning"
 LIGHTNING_DIR = "Wan2.2-I2V-A14B-4steps-lora-rank64-Seko-V1"
 
 SPRITE = 64
-SHEET_SCALE = 4
+# The largest sprite a frame is snapped to: a bigger picture is not pixel art, so it becomes this size.
+LARGEST_SPRITE = 128
+# GIFs and sheets show every sprite at this size.
+SHOW = 256
 FPS = 16
 # A loop is at least this many frames, so a still second frame does not count as "back to the start".
 SHORTEST_LOOP = 8
@@ -50,8 +54,8 @@ VIEW_WORDS = {"front": "facing the viewer", "left": "facing left, side view", "b
 TEMPLATE = ("pixel art game sprite animation of {subject}, {view}. {action}. Crisp pixel art, the same character "
             "with the same clothes and items in every frame, plain flat white background, the camera does not move")
 
-# The frames for each (prompt, picture, seed), in order, as each clip is done.
-AnimateAll = Callable[[list[tuple[str, Image.Image, int]]], Iterator[list[Image.Image]]]
+# The frames for each (prompt, first picture, seed, last picture or None), in order, as each clip is done.
+AnimateAll = Callable[[list[tuple[str, Image.Image, int, Image.Image | None]]], Iterator[list[Image.Image]]]
 
 
 @dataclass(frozen=True)
@@ -84,6 +88,31 @@ def jobs_for(source: Path, seeds: list[int], views: list[str], actions: list[str
     return jobs
 
 
+def image_jobs(image: Path, subject: str, view: str, actions: list[str], seeds: list[int]) -> list[Job]:
+    """Jobs for one PNG of your own: you say what it shows and which way it faces."""
+    jobs = []
+    for seed in seeds:
+        for action in actions:
+            words, loops = ACTIONS[action]
+            prompt = TEMPLATE.format(subject=subject, view=VIEW_WORDS[view], action=words)
+            jobs.append(Job(f"s{seed}-{view}-{action}", image, prompt, seed, loops))
+
+    return jobs
+
+
+def square(sprite: Image.Image) -> Image.Image:
+    """The sprite in the middle of a clear square, so a tall or wide one is not stretched."""
+    sprite = sprite.convert("RGBA")
+    if sprite.width == sprite.height:
+        return sprite
+
+    side = max(sprite.size)
+    page = Image.new("RGBA", (side, side), (0, 0, 0, 0))
+    page.alpha_composite(sprite, ((side - sprite.width) // 2, (side - sprite.height) // 2))
+
+    return page
+
+
 def difference(a: Image.Image, b: Image.Image) -> float:
     """Mean colour difference of two sprites on white, 0 when they are the same."""
     def flat(sprite):
@@ -112,13 +141,13 @@ def pick(frames: list, count: int) -> list:
     return [frames[round(index * len(frames) / count)] for index in range(count)]
 
 
-def snap(frame: Image.Image, palette: Image.Image) -> Image.Image:
-    """A video frame back to a 64x64 sprite in the input sprite's colours, so frames do not flicker."""
-    return clear_background(block_mode(frame, SPRITE, palette))
+def snap(frame: Image.Image, palette: Image.Image, size: int = SPRITE) -> Image.Image:
+    """A video frame back to a sprite in the input sprite's colours, so frames do not flicker."""
+    return clear_background(block_mode(frame, size, palette))
 
 
 def save_gif(sprites: list[Image.Image], path: Path, fps: int) -> None:
-    size = SPRITE * SHEET_SCALE
+    size = SHOW
     frames = []
     for sprite in sprites:
         flat = Image.new("RGBA", sprite.size, (255, 255, 255, 255))
@@ -128,7 +157,7 @@ def save_gif(sprites: list[Image.Image], path: Path, fps: int) -> None:
 
 
 def save_strip(sprites: list[Image.Image], path: Path) -> None:
-    size = SPRITE * SHEET_SCALE
+    size = SHOW
     strip = Image.new("RGBA", (size * len(sprites), size), (255, 255, 255, 255))
     for index, sprite in enumerate(sprites):
         strip.alpha_composite(sprite.convert("RGBA").resize((size, size), Image.NEAREST), (index * size, 0))
@@ -136,31 +165,37 @@ def save_strip(sprites: list[Image.Image], path: Path) -> None:
 
 
 def run(folder: Path, jobs: list[Job], animate_all: AnimateAll, size: int, keep: int, info: dict | None = None,
-        fps: int = FPS) -> list[dict]:
+        fps: int = FPS, same_end: bool = True) -> list[dict]:
     """Animate every job; keep the raw video as a GIF, the snapped loop as a GIF, and a sheet of `keep` frames.
 
-    With `info`, animated.json is written after every clip, so a crash keeps what is done.
+    With `same_end`, a looping action gets the sprite as its last frame too. With `info`,
+    animated.json is written after every clip, so a crash keeps what is done.
     """
     folder.mkdir(parents=True, exist_ok=True)
-    sources = [Image.open(job.sprite) for job in jobs]
-    inputs = [(job.prompt, blow_up(source, size), job.seed) for job, source in zip(jobs, sources)]
+    sources = [square(Image.open(job.sprite)) for job in jobs]
+    inputs = []
+    for job, source in zip(jobs, sources):
+        picture = blow_up(source, size)
+        inputs.append((job.prompt, picture, job.seed, picture if job.loops and same_end else None))
 
     rows = []
-    for job, source, frames in zip(jobs, sources, animate_all(inputs)):
+    for job, source, (*_, last), frames in zip(jobs, sources, inputs, animate_all(inputs)):
         small = [frame.convert("RGB").resize((256, 256), Image.LANCZOS) for frame in frames]
         small[0].save(folder / f"{job.id}-raw.gif", save_all=True, append_images=small[1:],
                       duration=round(1000 / fps), loop=0)
 
         palette = palette_of(source)
-        sprites = [snap(frame, palette) for frame in frames]
-        # The first frame of the video is the input picture itself; a loop starts there.
+        sprites = [snap(frame, palette, min(source.width, LARGEST_SPRITE)) for frame in frames]
+        # The first frame of the video is the input picture itself; a loop starts there. With the same
+        # last frame, the last one is the first again, so the cut drops it.
         used = cycle(sprites) if job.loops else sprites[1:]
         save_gif(used, folder / f"{job.id}.gif", fps)
 
         chosen = pick(used, keep)
         save_strip(chosen, folder / f"{job.id}-sheet.png")
         rows.append({"id": job.id, "sprite": str(job.sprite), "prompt": job.prompt, "seed": job.seed,
-                     "frames": len(frames), "used": len(used), "kept": len(chosen)})
+                     "same_end": last is not None, "frames": len(frames), "used": len(used),
+                     "kept": len(chosen)})
         if info is not None:
             write_info(folder, {**info, "clips": rows})
 
@@ -258,14 +293,18 @@ def wan_animator(prompts: list[str], device: str, size: int, frames: int, steps:
 
         return pipe.video_processor.postprocess_video(video, output_type="pil")[0]
 
-    def animate_all(inputs: list[tuple[str, Image.Image, int]]) -> Iterator[list[Image.Image]]:
+    def pixels_of(image: Image.Image):
+        return pipe.video_processor.preprocess(image, height=size, width=size).to(device, dtype=torch.float32)
+
+    def animate_all(inputs: list[tuple[str, Image.Image, int, Image.Image | None]]) -> Iterator[list[Image.Image]]:
         with torch.no_grad():
             started = []
-            for prompt, image, seed in inputs:
-                pixels = pipe.video_processor.preprocess(image, height=size, width=size).to(device, dtype=torch.float32)
+            for prompt, image, seed, last in inputs:
+                # With a last picture, the condition holds the first and the last frame, and the mask
+                # marks both as given: the model fills the frames between.
                 latents, condition = pipe.prepare_latents(
-                    pixels, 1, pipe.vae.config.z_dim, size, size, frames, torch.float32, device,
-                    torch.Generator("cpu").manual_seed(seed), None, None,
+                    pixels_of(image), 1, pipe.vae.config.z_dim, size, size, frames, torch.float32, device,
+                    torch.Generator("cpu").manual_seed(seed), None, None if last is None else pixels_of(last),
                 )
                 started.append((prompt, latents.cpu(), condition.cpu()))
 

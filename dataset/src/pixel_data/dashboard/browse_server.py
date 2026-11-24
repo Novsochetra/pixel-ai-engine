@@ -2,6 +2,8 @@ import json
 import sqlite3
 import threading
 from contextlib import closing
+from email import policy
+from email.parser import BytesParser
 from functools import lru_cache
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from importlib.resources import files
@@ -10,7 +12,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 from pixel_data.dashboard import browse_pages as pages
 from pixel_data.dashboard import browse_queries as queries
-from pixel_data.dashboard import exports, flagged, studio, tryouts
+from pixel_data.dashboard import animate_page, exports, flagged, studio, tryouts
 from pixel_data.dashboard.jobs import Jobs
 from pixel_data.images import load_image, png_bytes
 from pixel_data.records import connect
@@ -50,10 +52,23 @@ def make_handler(layout: Layout, jobs: Jobs) -> type[BaseHTTPRequestHandler]:
                 self.send(404, "text/plain", b"Not found")
                 return
 
-            length = min(int(self.headers.get("Content-Length") or 0), 64_000)
-            fields = parse_qs(self.rfile.read(length).decode("utf-8", "replace"), keep_blank_values=True)
+            kind = self.headers.get("Content-Type", "")
+            length = int(self.headers.get("Content-Length") or 0)
+            files = {}
+            if kind.startswith("multipart/form-data"):
+                # A form with a file (the Animate page's PNG).
+                if length > UPLOAD_LIMIT:
+                    self.send(413, "text/plain", f"Too big: upload at most {UPLOAD_LIMIT // 1_000_000} MB.".encode())
+                    return
+                fields, files = parse_multipart(kind, self.rfile.read(length))
+            else:
+                length = min(length, 64_000)
+                fields = parse_qs(self.rfile.read(length).decode("utf-8", "replace"), keep_blank_values=True)
             form = {key: values[0] for key, values in fields.items()}
-            form["sources_list"] = fields.get("sources", [])
+            # Every field as a list too, for checkboxes that send one value each.
+            form.update({f"{key}_list": values for key, values in fields.items()})
+            form.setdefault("sources_list", [])
+            form["files"] = files
             route(self, form)
 
         def same_site(self) -> bool:
@@ -90,6 +105,31 @@ def make_handler(layout: Layout, jobs: Jobs) -> type[BaseHTTPRequestHandler]:
     Handler.image_bytes = staticmethod(image_bytes)
 
     return Handler
+
+
+UPLOAD_LIMIT = 10_000_000
+
+
+def parse_multipart(kind: str, body: bytes) -> tuple[dict[str, list[str]], dict[str, tuple[str, bytes]]]:
+    """The fields and files of a multipart/form-data body: {name: [values]}, {name: (filename, bytes)}."""
+    message = BytesParser(policy=policy.HTTP).parsebytes(f"Content-Type: {kind}\r\n\r\n".encode() + body)
+    fields, files = {}, {}
+    if not message.is_multipart():
+        return fields, files
+
+    for part in message.iter_parts():
+        name = part.get_param("name", header="content-disposition")
+        if not name:
+            continue
+        data = part.get_payload(decode=True) or b""
+        filename = part.get_filename()
+        if filename is None:
+            fields.setdefault(name, []).append(data.decode("utf-8", "replace"))
+        elif data:
+            # An empty file input still sends a part, with no bytes.
+            files[name] = (filename, data)
+
+    return fields, files
 
 
 def open_db(layout: Layout) -> closing:
@@ -171,14 +211,17 @@ def downloads(handler, params: dict) -> None:
     handler.send(200, "text/html; charset=utf-8", page.read_bytes())
 
 
-def send_png_under(handler, folder: Path, relative: str) -> None:
+KINDS = {".png": "image/png", ".gif": "image/gif"}
+
+
+def send_png_under(handler, folder: Path, relative: str, suffixes: tuple = (".png",)) -> None:
     target = (folder / relative).resolve()
 
-    if not target.is_relative_to(folder.resolve()) or not target.is_file() or target.suffix != ".png":
+    if not target.is_relative_to(folder.resolve()) or not target.is_file() or target.suffix not in suffixes:
         handler.send(404, "text/plain", b"Not found")
         return
 
-    handler.send(200, "image/png", target.read_bytes())
+    handler.send(200, KINDS[target.suffix], target.read_bytes())
 
 
 def thumbs(handler, params: dict) -> None:
@@ -206,6 +249,14 @@ def generated_file(handler, params: dict) -> None:
     send_png_under(handler, handler.layout.data / "generated", params["path"].removeprefix("/generated/"))
 
 
+def animated_file(handler, params: dict) -> None:
+    send_png_under(handler, handler.layout.data / "animated", params["path"].removeprefix("/animated/"), (".png", ".gif"))
+
+
+def upload_file(handler, params: dict) -> None:
+    send_png_under(handler, handler.layout.data / "uploads", params["path"].removeprefix("/uploads/"))
+
+
 def latest_job(handler) -> tuple[dict | None, str]:
     job = handler.jobs.latest()
 
@@ -223,6 +274,13 @@ def training_page(handler, params: dict, message: str = "", status: int = 200) -
     job, log = latest_job(handler)
     body = studio.training_page(handler.layout.data, job, log, params, message)
     html = pages.layout("Training", body, (handler.layout.reports / "dashboard.html").exists())
+    handler.send(status, "text/html; charset=utf-8", html.encode())
+
+
+def animate(handler, params: dict, message: str = "", status: int = 200) -> None:
+    job, log = latest_job(handler)
+    body = animate_page.animate_page(handler.layout.data, job, log, params, message)
+    html = pages.layout("Animate", body, (handler.layout.reports / "dashboard.html").exists())
     handler.send(status, "text/html; charset=utf-8", html.encode())
 
 
@@ -248,7 +306,7 @@ def start_job(make, page, where: str):
 
 def stop_job(handler, form: dict) -> None:
     handler.jobs.stop()
-    handler.redirect(form.get("back") if form.get("back") in ("/generate", "/training") else "/training")
+    handler.redirect(form.get("back") if form.get("back") in ("/generate", "/training", "/animate") else "/training")
 
 
 ROUTES = {
@@ -263,14 +321,17 @@ ROUTES = {
     "/tryouts": tryout_list,
     "/generate": generate_page,
     "/training": training_page,
+    "/animate": animate,
     "/jobs/current": current_job,
 }
-FILE_ROUTES = {"/thumbs/": thumbs, "/exports/": export_file, "/tryouts/": tryout_file, "/generated/": generated_file}
+FILE_ROUTES = {"/thumbs/": thumbs, "/exports/": export_file, "/tryouts/": tryout_file, "/generated/": generated_file,
+               "/animated/": animated_file, "/uploads/": upload_file}
 POST_ROUTES = {
     "/generate": start_job(studio.generate_job, generate_page, "/generate"),
     "/training/start": start_job(studio.train_job, training_page, "/training"),
     "/training/resume": start_job(studio.resume_job, training_page, "/training"),
     "/training/tryout": start_job(studio.tryout_job, training_page, "/training"),
+    "/animate": start_job(animate_page.animate_job, animate, "/animate"),
     "/jobs/stop": stop_job,
 }
 
