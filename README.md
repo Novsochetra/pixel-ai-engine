@@ -3,6 +3,8 @@
 A pixel art engine that runs locally: create a character from text, rotate it to 4 or 8 directions,
 animate it, and make landscapes. Planned in ticket RAPA-2.
 
+New to AI training? Start with the [beginner guide](docs/beginner-guide.md).
+
 ## Folders
 
 Each step of building the engine gets its own folder:
