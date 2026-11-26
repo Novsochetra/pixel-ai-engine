@@ -4,6 +4,9 @@ import type { Clip } from './animate-client';
 const GIF_FPS = 16;
 const USUAL_FPS = 8;
 
+// A turnaround steps front, left, back, right slowly enough to see each view.
+export const TURN_FPS = 3;
+
 export const FPS_RANGE = { min: 1, max: 24 } as const;
 
 export const frameDelay = (fps: number) => Math.round(1000 / fps);

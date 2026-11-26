@@ -1,6 +1,7 @@
 import { useState, type SyntheticEvent } from 'react';
 import { fitScale } from '@/library/pixel-scale';
 import { frameBox, frameCount } from './sprite-frames';
+import './sheet-frame.css';
 
 export interface SheetMeasure {
   count: number;

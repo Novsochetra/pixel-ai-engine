@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { galleryItem, turnText } from '@/create/create-view';
+import { galleryItem, tileText, turnText } from '@/create/create-view';
 import { DRAGON, FROG } from '../integration/create-server';
 
 describe('a made character', () => {
@@ -16,6 +16,11 @@ describe('a made character', () => {
     expect(item.character).toBeNull();
     expect(item.facts).toContainEqual({ label: 'Drawn with', value: 'The model as it is' });
     expect(item.facts).toContainEqual({ label: 'Characters', value: '1' });
+  });
+
+  it('says on a tile when it was made and how many characters it holds', () => {
+    expect(tileText(DRAGON)).toBe('Nov 24 · 2 characters');
+    expect(tileText(FROG)).toBe('Nov 21 · 1 character');
   });
 
   it('reads a missing date as unknown', () => {

@@ -1,4 +1,4 @@
-import { dateText } from '@/library/library-view';
+import { dateText, dayText } from '@/library/library-view';
 import type { MadeTarget } from '@/made/made-client';
 import type { AnimatedRun, Clip } from './animate-client';
 
@@ -34,15 +34,20 @@ export function runSubtitle(run: AnimatedRun) {
   return parts.filter(Boolean).join(' · ');
 }
 
+const clipsText = (count: number) => (count === 1 ? '1 clip' : `${count} clips`);
+
+export const tileText = (run: AnimatedRun) =>
+  `${dayText(run.createdAt)} · ${run.clips.length ? clipsText(run.clips.length) : 'No clips yet'}`;
+
 export interface ClipChoice {
   folder: string;
   clipId: string;
 }
 
-// Nothing chosen yet shows the newest clip.
-export function chosenClip(runs: readonly AnimatedRun[], choice: ClipChoice | null) {
-  const run = runs.find((entry) => entry.folder === choice?.folder) ?? runs[0];
-  const clip = run?.clips.find((entry) => entry.id === choice?.clipId) ?? run?.clips[0];
+// A run that is gone closes the player; a clip that is gone shows the run's first.
+export function chosenClip(runs: readonly AnimatedRun[], choice: ClipChoice) {
+  const run = runs.find((entry) => entry.folder === choice.folder);
+  const clip = run?.clips.find((entry) => entry.id === choice.clipId) ?? run?.clips[0];
 
   return run && clip ? { run, clip } : null;
 }

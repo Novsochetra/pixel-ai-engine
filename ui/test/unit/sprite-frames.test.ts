@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chosenClip, clipText, findClip, runSubtitle } from '@/animate/clip-view';
+import { chosenClip, clipText, findClip, runSubtitle, tileText } from '@/animate/clip-view';
 import {
   clipFps,
   frameBox,
@@ -61,12 +61,22 @@ describe('the clips of a run', () => {
     expect(findClip(DRAGON_RUN, 'back', 'idle')!.id).toBe('s0-front-idle');
   });
 
-  it('plays the newest clip until another is chosen', () => {
+  it('plays the chosen clip, the run’s first when the clip is gone, and nothing when the run is', () => {
     const runs = [DRAGON_RUN, SLIME_RUN];
 
-    expect(chosenClip(runs, null)!.clip.id).toBe('s0-front-idle');
     expect(chosenClip(runs, { folder: SLIME_RUN.folder, clipId: 's0-hops' })!.run).toBe(SLIME_RUN);
-    expect(chosenClip([], null)).toBeNull();
+    expect(chosenClip(runs, { folder: DRAGON_RUN.folder, clipId: 'gone' })!.clip.id).toBe(
+      's0-front-idle',
+    );
+    expect(
+      chosenClip([SLIME_RUN], { folder: DRAGON_RUN.folder, clipId: 's0-front-idle' }),
+    ).toBeNull();
+  });
+
+  it('says on a tile when it was made and how many clips it has', () => {
+    expect(tileText(DRAGON_RUN)).toBe('Nov 24 · 4 clips');
+    expect(tileText(SLIME_RUN)).toBe('Nov 23 · 1 clip');
+    expect(tileText({ ...SLIME_RUN, createdAt: '', clips: [] })).toBe('Unknown · No clips yet');
   });
 
   it('says when, how big and how long a run is', () => {

@@ -15,8 +15,8 @@ const openSheet = () =>
   screen.getAllByRole('dialog', { hidden: true }).find((dialog) => dialog.hasAttribute('open'))!;
 
 const titles = () =>
-  [...screen.getByRole('list', { name: 'Made so far' }).querySelectorAll('.made-card')].map(
-    (card) => card.querySelector('.made-card__title')!.textContent,
+  [...screen.getByRole('list', { name: 'Made so far' }).querySelectorAll('.made-tile')].map(
+    (tile) => tile.querySelector('.made-tile__title')!.textContent,
   );
 
 function posts(server: { mock: { calls: [string, RequestInit?][] } }, path: string) {
@@ -28,7 +28,7 @@ function posts(server: { mock: { calls: [string, RequestInit?][] } }, path: stri
 async function openDragon() {
   const list = await screen.findByRole('list', { name: 'Made so far' });
 
-  await userEvent.click(list.querySelector<HTMLElement>('.made-card')!);
+  await userEvent.click(list.querySelector<HTMLElement>('.made-tile__open')!);
 }
 
 describe('deleting what was made', () => {
@@ -110,6 +110,18 @@ describe('the trash button in the corner of a card', () => {
     await vi.waitFor(() =>
       expect(screen.queryByRole('button', { name: 'Delete dragon' })).toBeNull(),
     );
+  });
+
+  it('deletes an animation from its player sheet, closing the sheet', async () => {
+    const server = animateServer(animateStart());
+    renderApp('/animate', server);
+
+    await userEvent.click(await screen.findByRole('button', { name: /^dragon/ }));
+    await userEvent.click(within(openSheet()).getByRole('button', { name: 'Delete' }));
+    await userEvent.click(within(openSheet()).getByRole('button', { name: 'Delete' }));
+
+    expect(posts(server, '/api/animated/trash')).toEqual([{ folder: DRAGON_RUN.folder }]);
+    await vi.waitFor(() => expect(screen.queryByRole('region', { name: 'Player' })).toBeNull());
   });
 
   it('deletes a turned character from Rotate, with its whole set', async () => {

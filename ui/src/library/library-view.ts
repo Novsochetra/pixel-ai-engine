@@ -61,6 +61,12 @@ export const countText = (count: number) => count.toLocaleString('en-US');
 export const dateText = (stamp: string) =>
   new Date(stamp).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
 
+// A tile has room for the day only; its sheet gives the full time.
+export const dayText = (stamp: string) =>
+  stamp
+    ? new Date(stamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    : 'Unknown';
+
 export function listText(counts: Record<string, number>): string {
   const parts = Object.entries(counts).map(([name, count]) => `${name} ${countText(count)}`);
 

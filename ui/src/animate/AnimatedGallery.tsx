@@ -2,17 +2,17 @@ import type { UseQueryResult } from '@tanstack/react-query';
 import { EmptyState } from '@/components/empty-state/EmptyState';
 import { Progress } from '@/components/progress/Progress';
 import type { MadeTarget } from '@/made/made-client';
-import type { AnimatedRun, Clip } from './animate-client';
-import { type ClipChoice } from './clip-view';
-import { RunCard } from './RunCard';
-import './run-card.css';
+import { MadeGrid, MadeTile } from '@/made/MadeTile';
+import { StripArt } from '@/made/TileArt';
+import type { AnimatedRun } from './animate-client';
+import { clipText, runTarget, tileText } from './clip-view';
+import { clipFps } from './sprite-frames';
 
 type RunsQuery = UseQueryResult<{ runs: AnimatedRun[] }>;
 
-interface GalleryProps {
-  query: RunsQuery;
-  chosen: ClipChoice | null;
-  onChoose: (run: AnimatedRun, clip: Clip) => void;
+interface TileProps {
+  run: AnimatedRun;
+  onOpen: (run: AnimatedRun) => void;
   onDelete: (target: MadeTarget) => void;
 }
 
@@ -34,8 +34,41 @@ function GalleryError({ query }: { query: RunsQuery }) {
   );
 }
 
-// Every animated run, newest first; a click on a clip plays it, the corner deletes the run.
-export function AnimatedGallery({ query, chosen, onChoose, onDelete }: GalleryProps) {
+// The run's first clip stands for it, still until the pointer is over it, then at its own speed.
+function RunTile({ run, onOpen, onDelete }: TileProps) {
+  const cover = run.clips[0];
+
+  return (
+    <MadeTile
+      title={run.source}
+      subtitle={tileText(run)}
+      target={runTarget(run)}
+      fps={cover ? clipFps(cover) : 1}
+      art={(frame, onCount) =>
+        cover ? (
+          <StripArt
+            src={cover.sheet}
+            alt={`${run.source}, ${clipText(cover)}`}
+            kept={cover.kept}
+            frame={frame}
+            onCount={onCount}
+          />
+        ) : null
+      }
+      onOpen={() => onOpen(run)}
+      onDelete={onDelete}
+    />
+  );
+}
+
+interface GalleryProps {
+  query: RunsQuery;
+  onOpen: (run: AnimatedRun) => void;
+  onDelete: (target: MadeTarget) => void;
+}
+
+// Every animated run as a grid, newest first; a click plays it in a sheet, the corner deletes it.
+export function AnimatedGallery({ query, onOpen, onDelete }: GalleryProps) {
   if (query.isError) {
     return <GalleryError query={query} />;
   }
@@ -57,21 +90,10 @@ export function AnimatedGallery({ query, chosen, onChoose, onDelete }: GalleryPr
   }
 
   return (
-    <section className="animated-gallery" aria-labelledby="animated-title">
-      <h2 className="animated-gallery__title" id="animated-title">
-        Animated so far
-      </h2>
-      <ul className="run-list" aria-label="Animated so far">
-        {query.data.runs.map((run) => (
-          <RunCard
-            key={run.folder}
-            run={run}
-            chosen={chosen}
-            onChoose={onChoose}
-            onDelete={onDelete}
-          />
-        ))}
-      </ul>
-    </section>
+    <MadeGrid label="Animated so far">
+      {query.data.runs.map((run) => (
+        <RunTile key={run.folder} run={run} onOpen={onOpen} onDelete={onDelete} />
+      ))}
+    </MadeGrid>
   );
 }

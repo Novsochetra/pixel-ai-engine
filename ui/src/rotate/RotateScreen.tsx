@@ -13,7 +13,6 @@ import { useRotated } from './use-rotate';
 import { useRotateScreen } from './use-rotate-screen';
 import '@/animate/animate.css';
 import '@/create/create.css';
-import '@/create/made-card.css';
 import '@/library/library.css';
 import './rotate.css';
 

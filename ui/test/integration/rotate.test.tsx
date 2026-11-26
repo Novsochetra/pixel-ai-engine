@@ -103,21 +103,24 @@ describe('the rotate form', () => {
 });
 
 describe('the rotate content', () => {
-  it('shows each turned character as its views side by side, opening large', async () => {
+  it('shows each turned character as a tile that turns under the pointer, opening large', async () => {
     renderApp('/rotate', rotateServer(startState()));
 
     const list = await screen.findByRole('list', { name: 'Turned characters' });
-    const cards = [...list.querySelectorAll<HTMLElement>('.made-card')];
-    expect(cards.map((card) => card.textContent)).toEqual([
+    const tiles = [...list.querySelectorAll<HTMLElement>('.made-tile')];
+    const shownView = () => within(tiles[0]!).getByRole('img').getAttribute('alt');
+    expect(tiles.map((tile) => tile.textContent)).toEqual([
       expect.stringContaining('Turned from dragon'),
       expect.stringContaining('Made and turned in Create'),
     ]);
-    const views = within(cards[0]!).getAllByRole('img');
-    expect(views.map((image) => image.getAttribute('alt'))).toEqual(
-      ['Front', 'Left', 'Back', 'Right'].map((name) => `a lava dragon, ${name}`),
-    );
+    expect(shownView()).toBe('a lava dragon, Front');
 
-    await userEvent.click(cards[0]!);
+    await userEvent.hover(tiles[0]!);
+    await vi.waitFor(() => expect(shownView()).toBe('a lava dragon, Left'));
+    await userEvent.unhover(tiles[0]!);
+    expect(shownView()).toBe('a lava dragon, Front');
+
+    await userEvent.click(tiles[0]!.querySelector<HTMLElement>('.made-tile__open')!);
     expect(within(openSheet()).getByRole('group', { name: 'Views' })).toBeTruthy();
     expect(within(openSheet()).getByText('s0 of 20261126-090000-turned-dragon')).toBeTruthy();
   });

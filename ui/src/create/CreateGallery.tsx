@@ -1,38 +1,47 @@
 import type { UseQueryResult } from '@tanstack/react-query';
 import { EmptyState } from '@/components/empty-state/EmptyState';
 import { Progress } from '@/components/progress/Progress';
-import { PixelImage } from '@/library/PixelImage';
+import { TURN_FPS } from '@/animate/sprite-frames';
 import type { LibraryItem } from '@/library/library-view';
-import { CornerDelete } from '@/made/CornerDelete';
 import type { MadeTarget } from '@/made/made-client';
+import { MadeGrid, MadeTile } from '@/made/MadeTile';
+import { StripArt } from '@/made/TileArt';
 import type { GeneratedEntry } from './create-client';
-import { galleryItem } from './create-view';
-import './made-card.css';
+import { galleryItem, tileText } from './create-view';
 
 type GeneratedQuery = UseQueryResult<{ items: GeneratedEntry[] }>;
 
-interface CardProps {
-  item: LibraryItem;
-  onOpen: () => void;
+interface TileProps {
+  entry: GeneratedEntry;
+  onOpen: (item: LibraryItem) => void;
   onDelete: (target: MadeTarget) => void;
 }
 
-function MadeCard({ item, onOpen, onDelete }: CardProps) {
+// The first character stands for its set; under the pointer it turns through its views.
+function CreateTile({ entry, onOpen, onDelete }: TileProps) {
+  const item = galleryItem(entry);
+  const cover = item.pictures[0];
+
   return (
-    <li className="made-item">
-      <button className="made-card" type="button" onClick={onOpen}>
-        <span className="made-card__title">{item.title}</span>
-        <span className="made-card__subtitle">{item.subtitle}</span>
-        <span className="made-card__sheets">
-          {item.pictures.map((sheet) => (
-            <span className="made-card__sheet pixel-art" key={sheet.src}>
-              <PixelImage src={sheet.src} alt={`${item.title}, ${sheet.label}`} />
-            </span>
-          ))}
-        </span>
-      </button>
-      <CornerDelete target={item.made!} onDelete={onDelete} />
-    </li>
+    <MadeTile
+      title={item.title}
+      subtitle={tileText(entry)}
+      target={item.made!}
+      fps={TURN_FPS}
+      art={(frame, onCount) =>
+        cover ? (
+          <StripArt
+            src={cover.src}
+            alt={`${item.title}, ${cover.label}`}
+            kept={0}
+            frame={frame}
+            onCount={onCount}
+          />
+        ) : null
+      }
+      onOpen={() => onOpen(item)}
+      onDelete={onDelete}
+    />
   );
 }
 
@@ -60,7 +69,7 @@ interface GalleryProps {
   onDelete: (target: MadeTarget) => void;
 }
 
-// What was made so far, newest first; a click opens its sheets large, the corner deletes it.
+// What was made so far as a grid, newest first; a click opens its sheets large, the corner deletes it.
 export function CreateGallery({ query, onOpen, onDelete }: GalleryProps) {
   if (query.isError) {
     return <GalleryError query={query} />;
@@ -74,9 +83,9 @@ export function CreateGallery({ query, onOpen, onDelete }: GalleryProps) {
     );
   }
 
-  const items = query.data.items.map(galleryItem);
+  const entries = query.data.items;
 
-  if (!items.length) {
+  if (!entries.length) {
     return (
       <EmptyState icon="create" title="Nothing made yet">
         Write what to draw, then Generate.
@@ -85,10 +94,10 @@ export function CreateGallery({ query, onOpen, onDelete }: GalleryProps) {
   }
 
   return (
-    <ul className="made-list" aria-label="Made so far">
-      {items.map((item) => (
-        <MadeCard key={item.key} item={item} onOpen={() => onOpen(item)} onDelete={onDelete} />
+    <MadeGrid label="Made so far">
+      {entries.map((entry) => (
+        <CreateTile key={entry.folder} entry={entry} onOpen={onOpen} onDelete={onDelete} />
       ))}
-    </ul>
+    </MadeGrid>
   );
 }

@@ -1,4 +1,4 @@
-import { dateText, type Fact, type LibraryItem } from '@/library/library-view';
+import { dateText, dayText, type Fact, type LibraryItem } from '@/library/library-view';
 import type { GeneratedEntry } from './create-client';
 
 const whenText = (stamp: string) => (stamp ? dateText(stamp) : 'Unknown');
@@ -13,6 +13,11 @@ export function turnText(entry: GeneratedEntry): string {
 
 export const subtitleText = (entry: GeneratedEntry) =>
   `${whenText(entry.createdAt)} · ${entry.sprite} px · ${turnText(entry)}`;
+
+const charactersText = (count: number) => (count === 1 ? '1 character' : `${count} characters`);
+
+export const tileText = (entry: GeneratedEntry) =>
+  `${dayText(entry.createdAt)} · ${charactersText(entry.sheets.length)}`;
 
 function facts(entry: GeneratedEntry): Fact[] {
   const turning = entry.turningModel ? [{ label: 'Turning model', value: entry.turningModel }] : [];

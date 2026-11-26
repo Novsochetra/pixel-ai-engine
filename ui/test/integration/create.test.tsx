@@ -23,18 +23,20 @@ async function fillPrompt(text: string) {
 }
 
 describe('the create screen', () => {
-  it('shows what was made, newest first, with its settings', async () => {
+  it('shows what was made as a grid, newest first, its first character standing for it', async () => {
     renderApp('/create', createServer(startState()));
 
     const list = await screen.findByRole('list', { name: 'Made so far' });
-    const cards = [...list.querySelectorAll<HTMLElement>('.made-card')];
+    const tiles = [...list.querySelectorAll<HTMLElement>('.made-tile')];
 
-    expect(cards.map((card) => card.querySelector('.made-card__title')!.textContent)).toEqual([
+    expect(tiles.map((tile) => tile.querySelector('.made-tile__title')!.textContent)).toEqual([
       'a lava dragon',
       'a frog wizard',
     ]);
-    expect(within(cards[0]!).getByText(/128 px · rotate-v2 · final/)).toBeTruthy();
-    expect(within(cards[0]!).getAllByRole('img')).toHaveLength(2);
+    expect(within(tiles[0]!).getByText('Nov 24 · 2 characters')).toBeTruthy();
+    expect(within(tiles[0]!).getByRole('img').getAttribute('alt')).toBe(
+      'a lava dragon, Character 1',
+    );
   });
 
   it('opens a made character large, with zoom and its details', async () => {

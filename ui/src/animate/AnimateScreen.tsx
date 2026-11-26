@@ -6,19 +6,19 @@ import { MadeLayer } from '@/made/MadeLayer';
 import { useMadeView } from '@/made/use-made-view';
 import { AnimatedGallery } from './AnimatedGallery';
 import { AnimateInspector } from './AnimateInspector';
-import { SpritePlayer } from './SpritePlayer';
+import { PlayerSheet } from './PlayerSheet';
 import { useAnimated } from './use-animate';
 import { useAnimateScreen } from './use-animate-screen';
 import { useClipChoice } from './use-clip-choice';
 import '@/create/create.css';
 import './animate.css';
 
-// The player and the gallery of animated runs; the inspector holds the form, the toolbar Animate.
+// Animated runs, each playing in a sheet; the inspector holds the form, the toolbar Animate.
 export function AnimateScreen() {
   const screen = useAnimateScreen();
   const runs = useAnimated();
   const isNarrow = useMediaQuery(NARROW);
-  const { chosen, shown, player, choose, play } = useClipChoice(runs.data?.runs);
+  const clips = useClipChoice(runs.data?.runs);
   const made = useMadeView();
 
   const error = screen.error ? (
@@ -35,18 +35,14 @@ export function AnimateScreen() {
     <ScreenFrame title="Animate" actions={animate} inspector={inspector}>
       <div className="create-body">
         {isNarrow ? error : null}
-        <div className="animate-player" ref={player}>
-          {chosen ? (
-            <SpritePlayer
-              key={chosen.run.folder}
-              run={chosen.run}
-              clip={chosen.clip}
-              onChoose={(clip) => choose(chosen.run, clip)}
-            />
-          ) : null}
-        </div>
-        <AnimatedGallery query={runs} chosen={shown} onChoose={play} onDelete={made.ask} />
+        <AnimatedGallery query={runs} onOpen={clips.open} onDelete={made.ask} />
       </div>
+      <PlayerSheet
+        chosen={clips.chosen}
+        trash={made.trash}
+        onChoose={clips.choose}
+        onClosed={clips.close}
+      />
       <MadeLayer view={made} />
     </ScreenFrame>
   );

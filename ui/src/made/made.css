@@ -39,11 +39,6 @@
   color: var(--color-error);
 }
 
-/* The title keeps clear of the trash button instead of running under it. */
-.made-item :is(.made-card__title, .made-card__subtitle, .run-card__title, .run-card__subtitle) {
-  padding-inline-end: calc(var(--size-glass-button) + var(--space-2));
-}
-
 /* A floating glass capsule at the bottom, above the phone's tab bar, as an iOS toast. */
 .undo-toast {
   position: fixed;

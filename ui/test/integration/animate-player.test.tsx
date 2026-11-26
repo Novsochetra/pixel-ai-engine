@@ -13,6 +13,9 @@ const player = () => screen.getByRole('region', { name: 'Player' });
 
 const frameText = () => within(player()).getByText(/^Frame \d+ of \d+$/).textContent;
 
+const openSheet = () =>
+  screen.getAllByRole('dialog', { hidden: true }).find((dialog) => dialog.hasAttribute('open'));
+
 async function playerShown() {
   return within(await screen.findByRole('region', { name: 'Player' }));
 }
@@ -27,24 +30,47 @@ function reduceMotion() {
   vi.stubGlobal('matchMedia', matchMedia);
 }
 
+async function openRun(name: RegExp) {
+  await userEvent.click(await screen.findByRole('button', { name }));
+
+  return playerShown();
+}
+
 describe('the animate gallery and player', () => {
-  it('lists the runs newest first, and plays the newest clip', async () => {
+  it('lists the runs as a grid, newest first, with nothing playing yet', async () => {
     renderApp('/animate', animateServer(startState()));
 
     const list = await screen.findByRole('list', { name: 'Animated so far' });
-    const titles = within(list)
-      .getAllByRole('heading')
-      .map((heading) => heading.textContent);
+    const titles = [...list.querySelectorAll('.made-tile__title')].map(
+      (title) => title.textContent,
+    );
 
     expect(titles).toEqual(['dragon', 'slime.png']);
-    expect((await playerShown()).getByRole('img', { name: 'dragon, Front · idle' })).toBeTruthy();
-    expect(
-      screen.getByRole('button', { name: 'dragon, Front · idle' }).getAttribute('aria-pressed'),
-    ).toBe('true');
+    expect(within(list).getByText('Nov 24 · 4 clips')).toBeTruthy();
+    expect(within(list).getByRole('img', { name: 'dragon, Front · idle' })).toBeTruthy();
+    expect(screen.queryByRole('region', { name: 'Player' })).toBeNull();
+  });
+
+  it('plays a run in a sheet, from its first clip', async () => {
+    renderApp('/animate', animateServer(startState()));
+
+    const view = await openRun(/^slime\.png/);
+
+    expect(within(openSheet()!).getByRole('heading', { name: 'slime.png' })).toBeTruthy();
+    expect(view.getByRole('img', { name: 'slime.png, hops' })).toBeTruthy();
+  });
+
+  it('closes the sheet, and the player with it', async () => {
+    renderApp('/animate', animateServer(startState()));
+
+    await openRun(/^dragon/);
+    await userEvent.click(within(openSheet()!).getByRole('button', { name: 'Close' }));
+
+    await vi.waitFor(() => expect(screen.queryByRole('region', { name: 'Player' })).toBeNull());
   });
 
   it('steps the frames, and stays on one when paused', async () => {
-    const view = await renderAndWait();
+    const view = await renderAndOpen();
 
     await vi.waitFor(() => expect(frameText()).not.toBe('Frame 1 of 8'), { timeout: 2000 });
     await userEvent.click(view.getByRole('button', { name: 'Pause' }));
@@ -58,7 +84,7 @@ describe('the animate gallery and player', () => {
 
   it('waits for Play when motion is reduced', async () => {
     reduceMotion();
-    const view = await renderAndWait();
+    const view = await renderAndOpen();
 
     expect(view.getByRole('button', { name: 'Play' })).toBeTruthy();
     await userEvent.click(view.getByRole('button', { name: 'Previous frame' }));
@@ -66,7 +92,7 @@ describe('the animate gallery and player', () => {
   });
 
   it('switches the clip by view and by action', async () => {
-    const view = await renderAndWait();
+    const view = await renderAndOpen();
 
     await userEvent.click(view.getByRole('button', { name: 'Left' }));
     await userEvent.selectOptions(view.getByLabelText('Action'), 'flying');
@@ -80,19 +106,10 @@ describe('the animate gallery and player', () => {
     );
   });
 
-  it('plays a clip chosen in the gallery', async () => {
-    renderApp('/animate', animateServer(startState()));
-
-    await userEvent.click(await screen.findByRole('button', { name: 'slime.png, hops' }));
-
-    expect((await playerShown()).getByRole('img', { name: 'slime.png, hops' })).toBeTruthy();
-  });
-
   it('says what to do when nothing was animated yet', async () => {
     renderApp('/animate', animateServer({ ...startState(), runs: [] }));
 
     expect(await screen.findByText('Nothing animated yet')).toBeTruthy();
-    expect(screen.queryByRole('region', { name: 'Player' })).toBeNull();
   });
 
   it('refreshes the gallery when the job ends', async () => {
@@ -110,8 +127,8 @@ describe('the animate gallery and player', () => {
   });
 });
 
-async function renderAndWait() {
+async function renderAndOpen() {
   renderApp('/animate', animateServer(startState()));
 
-  return playerShown();
+  return openRun(/^dragon/);
 }

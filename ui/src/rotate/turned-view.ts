@@ -1,4 +1,4 @@
-import { dateText, type Fact, type LibraryItem } from '@/library/library-view';
+import { dateText, dayText, type Fact, type LibraryItem } from '@/library/library-view';
 import type { TurnedCharacter } from './rotate-client';
 
 const whenText = (stamp: string) => (stamp ? dateText(stamp) : 'Unknown');
@@ -8,6 +8,9 @@ export const fromText = (character: TurnedCharacter) =>
 
 export const subtitleText = (character: TurnedCharacter) =>
   `${whenText(character.createdAt)} · ${character.sprite} px · ${character.turnWith || 'Unknown LoRA'}`;
+
+export const tileText = (character: TurnedCharacter) =>
+  `${dayText(character.createdAt)} · ${fromText(character)}`;
 
 function facts(character: TurnedCharacter): Fact[] {
   return [

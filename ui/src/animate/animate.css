@@ -49,6 +49,8 @@
   margin-block-start: var(--space-1);
 }
 
-.animate-player {
-  scroll-margin-block-start: var(--space-4);
+.player-sheet__about {
+  font-size: var(--font-size-footnote);
+  line-height: var(--leading-footnote);
+  color: var(--color-label-secondary);
 }

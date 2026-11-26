@@ -1,0 +1,108 @@
+.made-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--size-made-tile), 1fr));
+  gap: var(--space-3);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.made-tile__open {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  inline-size: 100%;
+  padding: var(--space-2);
+  font: inherit;
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-card);
+  outline: none;
+  transition:
+    scale var(--duration-press) var(--easing-standard),
+    background-color var(--duration-normal) var(--easing-standard);
+}
+
+.made-tile__open:focus-visible {
+  outline: var(--border-width-ring) solid var(--color-focus-ring);
+}
+
+.made-tile__open:active {
+  scale: var(--scale-pressed);
+  opacity: var(--dim-pressed);
+}
+
+/* Concentric: the art's corners sit inside the tile's, less its padding. */
+.made-tile__art {
+  display: flex;
+  aspect-ratio: 1;
+  margin-block-end: var(--space-1);
+  overflow: hidden;
+  border-radius: calc(var(--radius-card) - var(--space-2));
+}
+
+.made-tile__title,
+.made-tile__subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.made-tile__title {
+  font-size: var(--font-size-footnote);
+  font-weight: var(--font-weight-semibold);
+}
+
+.made-tile__subtitle {
+  font-size: var(--font-size-caption);
+  color: var(--color-label-secondary);
+}
+
+/* The views share one cell; only the one whose turn it is shows. */
+.made-views {
+  display: grid;
+  flex: 1;
+}
+
+.made-views__view {
+  display: flex;
+  grid-area: 1 / 1;
+}
+
+.made-views__view[aria-hidden='true'] {
+  visibility: hidden;
+}
+
+/* The trash sits over the art's corner; with a pointer it shows only on the tile under it. */
+.made-tile .made-delete {
+  inset-block-start: var(--space-3);
+  inset-inline-end: var(--space-3);
+}
+
+@media (hover: hover) {
+  .made-tile__open:hover {
+    background: var(--color-row-hover);
+  }
+
+  .made-tile .made-delete {
+    opacity: 0;
+    transition: opacity var(--duration-normal) var(--easing-standard);
+  }
+
+  .made-tile:is(:hover, :focus-within) .made-delete {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .made-tile__open {
+    transition: none;
+  }
+
+  .made-tile__open:active {
+    scale: none;
+  }
+}

@@ -1,44 +1,38 @@
 import type { UseQueryResult } from '@tanstack/react-query';
 import { EmptyState } from '@/components/empty-state/EmptyState';
 import { Progress } from '@/components/progress/Progress';
-import { PixelImage } from '@/library/PixelImage';
+import { TURN_FPS } from '@/animate/sprite-frames';
 import type { LibraryItem } from '@/library/library-view';
-import { CornerDelete } from '@/made/CornerDelete';
 import type { MadeTarget } from '@/made/made-client';
+import { MadeGrid, MadeTile } from '@/made/MadeTile';
+import { ViewsArt } from '@/made/TileArt';
 import type { TurnedCharacter } from './rotate-client';
-import { fromText, turnedItem } from './turned-view';
+import { tileText, turnedItem } from './turned-view';
 
 type TurnedQuery = UseQueryResult<{ characters: TurnedCharacter[] }>;
 
-interface CardProps {
+interface TileProps {
   character: TurnedCharacter;
-  onOpen: () => void;
+  onOpen: (item: LibraryItem) => void;
   onDelete: (target: MadeTarget) => void;
 }
 
-function TurnedCard({ character, onOpen, onDelete }: CardProps) {
+// Under the pointer the character turns through its views in turning order.
+function TurnedTile({ character, onOpen, onDelete }: TileProps) {
   const item = turnedItem(character);
 
   return (
-    <li className="made-item">
-      <button className="made-card" type="button" onClick={onOpen}>
-        <span className="made-card__title">{item.title}</span>
-        <span className="made-card__subtitle">
-          {item.subtitle} · {fromText(character)}
-        </span>
-        <span className="turned-card__views">
-          {character.views.map((view) => (
-            <span className="turned-card__view" key={view.src}>
-              <span className="turned-card__art pixel-art">
-                <PixelImage src={view.src} alt={`${item.title}, ${view.label}`} />
-              </span>
-              <span className="turned-card__label">{view.label}</span>
-            </span>
-          ))}
-        </span>
-      </button>
-      <CornerDelete target={item.made!} onDelete={onDelete} />
-    </li>
+    <MadeTile
+      title={item.title}
+      subtitle={tileText(character)}
+      target={item.made!}
+      fps={TURN_FPS}
+      art={(frame, onCount) => (
+        <ViewsArt title={item.title} views={character.views} frame={frame} onCount={onCount} />
+      )}
+      onOpen={() => onOpen(item)}
+      onDelete={onDelete}
+    />
   );
 }
 
@@ -60,13 +54,13 @@ function GalleryError({ query }: { query: TurnedQuery }) {
   );
 }
 
-// Every character a rotate LoRA turned, newest first, its views side by side in turning order.
 interface GalleryProps {
   query: TurnedQuery;
   onOpen: (item: LibraryItem) => void;
   onDelete: (target: MadeTarget) => void;
 }
 
+// Every character a rotate LoRA turned, as a grid, newest first.
 export function TurnedGallery({ query, onOpen, onDelete }: GalleryProps) {
   if (query.isError) {
     return <GalleryError query={query} />;
@@ -89,15 +83,10 @@ export function TurnedGallery({ query, onOpen, onDelete }: GalleryProps) {
   }
 
   return (
-    <ul className="made-list" aria-label="Turned characters">
+    <MadeGrid label="Turned characters">
       {query.data.characters.map((character) => (
-        <TurnedCard
-          key={character.key}
-          character={character}
-          onOpen={() => onOpen(turnedItem(character))}
-          onDelete={onDelete}
-        />
+        <TurnedTile key={character.key} character={character} onOpen={onOpen} onDelete={onDelete} />
       ))}
-    </ul>
+    </MadeGrid>
   );
 }

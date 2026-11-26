@@ -1,0 +1,15 @@
+.sheet-frame {
+  display: block;
+  flex: none;
+  margin: auto;
+  overflow: hidden;
+}
+
+.sheet-frame__sheet {
+  display: block;
+  max-inline-size: none;
+}
+
+.sheet-frame[data-loaded='false'] .sheet-frame__sheet {
+  opacity: 0;
+}
