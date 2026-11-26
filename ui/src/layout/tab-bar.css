@@ -3,11 +3,14 @@
 }
 
 @media (max-width: 47.99rem) {
-  /* A floating glass capsule above the bottom edge, as the iOS tab bar. */
+  /* A floating glass capsule, centred above the bottom edge as the iOS tab bar; the screen scrolls
+     on under it instead of stopping at its top edge. */
   .tab-bar {
     position: fixed;
     inset-inline: var(--size-panel-gap);
     inset-block-end: calc(env(safe-area-inset-bottom) + var(--space-2));
+    max-inline-size: var(--size-tab-bar-width);
+    margin-inline: auto;
     z-index: var(--layer-bar);
     display: grid;
     grid-auto-columns: minmax(0, 1fr);

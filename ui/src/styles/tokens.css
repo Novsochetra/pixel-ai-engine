@@ -122,6 +122,8 @@
   --size-inspector: 20rem;
   --size-toolbar: 3.75rem;
   --size-tab-bar: 3.5rem;
+  --size-tab-bar-width: 26rem;
+  --size-tab-bar-room: calc(var(--size-tab-bar) + env(safe-area-inset-bottom) + 2 * var(--space-2));
   --size-row: 2.75rem;
   --size-target: 2.75rem;
   --size-glass-button: 2.75rem;

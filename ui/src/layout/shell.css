@@ -35,9 +35,11 @@
   }
 
   .shell__main {
-    block-size: calc(
-      100dvh - var(--size-tab-bar) - env(safe-area-inset-bottom) - 2 * var(--space-2)
-    );
+    block-size: 100dvh;
+  }
+
+  .screen__content {
+    padding-block-end: var(--size-tab-bar-room);
   }
 }
 
