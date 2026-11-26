@@ -11,11 +11,7 @@
   z-index: -1;
   pointer-events: none;
   content: '';
-  background:
-    radial-gradient(60% 50% at 15% 0%, var(--color-glow-1), var(--color-clear)),
-    radial-gradient(50% 45% at 100% 30%, var(--color-glow-2), var(--color-clear)),
-    radial-gradient(55% 50% at 50% 110%, var(--color-glow-3), var(--color-clear)),
-    var(--color-background);
+  background: var(--background-app);
 }
 
 .shell__main {
@@ -40,6 +36,13 @@
 
   .screen__content {
     padding-block-end: var(--size-tab-bar-room);
+  }
+
+  /* A screen slides over another here, so both carry the glow and the one on top hides the other;
+     the column is the whole window, so the glow lines up with the one behind the app. */
+  .screen-layer--front,
+  .screen-layer--back {
+    background: var(--background-app);
   }
 }
 

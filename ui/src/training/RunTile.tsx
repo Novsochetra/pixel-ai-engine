@@ -1,8 +1,6 @@
-import { ViewTransition } from 'react';
 import { Link } from 'react-router';
 import type { Choice } from '@/create/create-client';
 import { RunNumbers, TrainingNow } from './RunNumbers';
-import { runTransitionName } from './run-transition';
 import { lastValLoss, passesText, runSubtitle } from './run-view';
 import { SPARK_HEIGHT, SPARK_WIDTH, sparklinePoints } from './sparkline';
 import type { Run } from './training-client';
@@ -28,26 +26,21 @@ function Sparkline({ run }: { run: Run }) {
   );
 }
 
-// The whole card opens the run's own screen, growing into its chart card as its name moves up
-// to the toolbar.
+// The whole card opens the run's own screen.
 export function RunTile({ run, models }: RunTileProps) {
   const val = run.val.length ? `Val loss ${lastValLoss(run)}` : '';
 
   return (
-    <ViewTransition name={runTransitionName(run.name, 'card')} share="run-card">
-      <li className="training-run">
-        <Link className="training-run__select" to={runPath(run.name)}>
-          <span className="training-run__head">
-            <ViewTransition name={runTransitionName(run.name, 'title')}>
-              <span className="training-run__name">{run.name}</span>
-            </ViewTransition>
-            {run.isTraining ? <TrainingNow /> : null}
-          </span>
-          <span className="training-run__subtitle">{runSubtitle(run, models)}</span>
-          <Sparkline run={run} />
-          <RunNumbers run={run} facts={[passesText(run.passes), val]} />
-        </Link>
-      </li>
-    </ViewTransition>
+    <li className="training-run">
+      <Link className="training-run__select" to={runPath(run.name)}>
+        <span className="training-run__head">
+          <span className="training-run__name">{run.name}</span>
+          {run.isTraining ? <TrainingNow /> : null}
+        </span>
+        <span className="training-run__subtitle">{runSubtitle(run, models)}</span>
+        <Sparkline run={run} />
+        <RunNumbers run={run} facts={[passesText(run.passes), val]} />
+      </Link>
+    </li>
   );
 }

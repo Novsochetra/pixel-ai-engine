@@ -22,3 +22,12 @@ export const readDuration = (document, name) => parseDuration(readToken(document
 export function prefersReducedMotion(window) {
   return Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
 }
+
+// Script-driven motion reads its timing from the tokens like the CSS does; without them (the tests)
+// its length is 0, so it does not play.
+export function readTiming(document, { duration, easing }) {
+  return {
+    duration: readDuration(document, duration),
+    easing: readToken(document, easing) || 'linear',
+  };
+}

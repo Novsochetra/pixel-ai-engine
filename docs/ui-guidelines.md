@@ -65,6 +65,8 @@ Reuse the components in `ui/src/components/`. Make a new one only when none fits
 - Motion shows where a thing comes from and where it goes. It never only decorates.
 - Use springs or short eases (150 to 350 ms) from the motion tokens.
 - Motion never blocks input.
+- Screens are a live stack, as in iOS: going into a screen slides it in over a narrow window and
+  zooms it in beside a sidebar; Back plays it in reverse. Switching sections cross-fades, as tabs.
 - With `prefers-reduced-motion`, a fade replaces movement.
 
 ## Accessibility

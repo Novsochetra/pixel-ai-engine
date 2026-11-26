@@ -1,30 +1,29 @@
-import { useState, ViewTransition } from 'react';
-import { Outlet } from 'react-router';
+import { useState } from 'react';
 import { JobStatus } from '@/jobs/JobStatus';
+import { ScreenRoutes } from '@/navigation/ScreenRoutes';
+import { ScreenStack } from '@/navigation/stack/ScreenStack';
 import { Sidebar } from './Sidebar';
 import { TabBar } from './TabBar';
-import type { ShellContext } from './shell-context';
-import '@/styles/transitions.css';
+import { ShellContext, type ShellState } from './shell-context';
 import './shell.css';
 
 export function AppShell() {
   const [isInspectorShown, setInspectorShown] = useState(true);
-  const context: ShellContext = {
+  const shell: ShellState = {
     isInspectorShown,
     toggleInspector: () => setInspectorShown((shown) => !shown),
   };
 
-  // The router navigates in a React Transition, so each change of screen animates in the boundary.
   return (
-    <div className="shell">
-      <Sidebar />
-      <ViewTransition>
+    <ShellContext value={shell}>
+      <div className="shell">
+        <Sidebar />
         <main className="shell__main">
-          <Outlet context={context} />
+          <ScreenStack renderScreen={(path) => <ScreenRoutes path={path} />} />
         </main>
-      </ViewTransition>
-      <JobStatus placement="floating" />
-      <TabBar />
-    </div>
+        <JobStatus placement="floating" />
+        <TabBar />
+      </div>
+    </ShellContext>
   );
 }

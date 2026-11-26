@@ -1,8 +1,13 @@
-import { useOutletContext } from 'react-router';
+import { createContext, use } from 'react';
 
-export interface ShellContext {
+export interface ShellState {
   isInspectorShown: boolean;
   toggleInspector: () => void;
 }
 
-export const useShell = () => useOutletContext<ShellContext>();
+export const ShellContext = createContext<ShellState>({
+  isInspectorShown: true,
+  toggleInspector: () => {},
+});
+
+export const useShell = () => use(ShellContext);

@@ -1,0 +1,30 @@
+/* The screens, stacked as in an iOS navigation stack: each a layer over the whole content column.
+   A screen left under the stack stays rendered but unseen, so it shows again as it was left. */
+.screen-stack {
+  position: relative;
+  block-size: 100%;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Each layer is a stacking context of its own, so a screen's own layers stay under the screen over
+   it, not only while a move's transform makes one. */
+.screen-layer {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+  outline: none;
+}
+
+.screen-layer--front {
+  z-index: 1;
+}
+
+.screen-layer--hidden {
+  visibility: hidden;
+}
+
+/* The screen leaving lets clicks through to the one arriving, so motion never holds input. */
+.screen-layer[inert] {
+  pointer-events: none;
+}

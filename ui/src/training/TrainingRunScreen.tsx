@@ -1,4 +1,3 @@
-import { ViewTransition } from 'react';
 import { Link, useParams } from 'react-router';
 import { EmptyState } from '@/components/empty-state/EmptyState';
 import { Progress } from '@/components/progress/Progress';
@@ -7,7 +6,6 @@ import { JobButton } from '@/jobs/JobButton';
 import { ScreenFrame } from '@/layout/ScreenFrame';
 import { NARROW, useMediaQuery } from '@/layout/use-media-query';
 import { RunOverview } from './RunOverview';
-import { runTransitionName } from './run-transition';
 import { TrainingInspector } from './TrainingInspector';
 import { useTrainingScreen, type TrainingScreenState } from './use-training-screen';
 import '@/create/create.css';
@@ -54,14 +52,9 @@ export function TrainingRunScreen() {
   ) : null;
   const inspector = <TrainingInspector screen={screen} error={isNarrow ? null : error} />;
   const action = <JobButton {...screen.button} onRun={screen.run} />;
-  const title = (
-    <ViewTransition name={runTransitionName(name, 'title')}>
-      <span className="toolbar__title-text">{name}</span>
-    </ViewTransition>
-  );
 
   return (
-    <ScreenFrame title={title} back={BACK} actions={action} inspector={inspector}>
+    <ScreenFrame title={name} back={BACK} actions={action} inspector={inspector}>
       <div className="create-body">
         {isNarrow ? error : null}
         <RunBody screen={screen} name={name} />

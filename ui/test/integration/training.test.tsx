@@ -11,7 +11,8 @@ afterEach(() => {
 
 const inspector = () => screen.getByRole('complementary', { name: 'Inspector' });
 
-const toolbar = () => document.querySelector<HTMLElement>('.toolbar')!;
+// The Training screen stays under a run's screen, so only the shown layer's toolbar counts.
+const toolbar = () => document.querySelector<HTMLElement>('.screen-layer:not([inert]) .toolbar')!;
 
 const primary = () => within(toolbar()).getAllByRole('button')[0] as HTMLButtonElement;
 

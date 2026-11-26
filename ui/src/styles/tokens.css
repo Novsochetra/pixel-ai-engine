@@ -188,6 +188,12 @@
   --shadow-panel:
     inset 0 0 0 1px var(--color-glass-edge), inset 0 1px 0 var(--color-glass-highlight),
     0 12px 40px rgb(0 0 0 / 35%);
+  --shadow-navigation: -12px 0 40px rgb(0 0 0 / 45%);
+  --background-app:
+    radial-gradient(60% 50% at 15% 0%, var(--color-glow-1), var(--color-clear)),
+    radial-gradient(50% 45% at 100% 30%, var(--color-glow-2), var(--color-clear)),
+    radial-gradient(55% 50% at 50% 110%, var(--color-glow-3), var(--color-clear)),
+    var(--color-background);
 
   --blur-glass: blur(24px) saturate(180%);
   --blur-sheet-backdrop: blur(12px);
@@ -199,6 +205,10 @@
   --scale-pressed: 0.96;
   --offset-sheet-grabber: 5px;
   --offset-rise: 0.75rem;
+  --offset-under: -30%;
+  --dim-under: 0.55;
+  --scale-under: 1.03;
+  --scale-away: 0.96;
 
   --duration-fast: 120ms;
   --duration-press: 180ms;
@@ -210,12 +220,16 @@
   --duration-sheet: 450ms;
   --duration-pulse: 800ms;
   --duration-loading-delay: 400ms;
+  --duration-navigation: 350ms;
+  --duration-swap: 200ms;
 
   --easing-standard: cubic-bezier(0.2, 0, 0, 1);
   --easing-spring: cubic-bezier(0.2, 0.8, 0.2, 1);
   --easing-segment: cubic-bezier(0.3, 0.8, 0.2, 1);
   --easing-sheet-phone: cubic-bezier(0.32, 0.72, 0, 1);
   --easing-step-8: steps(8);
+  --easing-navigation: var(--easing-sheet-phone);
+  --motion-navigation: slide;
 
   --layer-content: 1;
   --layer-bar: 40;
@@ -274,6 +288,17 @@
   --shadow-panel:
     inset 0 0 0 1px var(--color-glass-edge), inset 0 1px 0 var(--color-glass-highlight),
     0 12px 40px rgb(0 0 0 / 10%);
+  --shadow-navigation: -8px 0 32px rgb(0 0 0 / 16%);
+  --dim-under: 0.88;
+}
+
+/* Beside a sidebar the screens are a desktop's: going in zooms, as a Mac app opens a folder, and
+   sooner, instead of sliding over from the side (stack-motion.ts). */
+@media (min-width: 48rem) {
+  :root {
+    --duration-navigation: 300ms;
+    --motion-navigation: zoom;
+  }
 }
 
 @media (prefers-reduced-transparency: reduce) {
