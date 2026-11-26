@@ -44,7 +44,11 @@ def counts_table(summary: dict) -> str:
     return f'<div class="table"><table><thead><tr><th></th>{header}<th>all</th></tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
 
 
-def leak_line(leaks: dict) -> str:
+def leak_line(leaks: dict | None) -> str:
+    # Some exports (opengameart-v1) were made without a leak check.
+    if leaks is None:
+        return '<p><span class="outcome check">not run</span> Leak check: not run.</p>'
+
     clean = not any(leaks.values())
     state = "ok" if clean else "drop"
     words = "no character, group or picture is in two splits" if clean else (
@@ -72,12 +76,12 @@ def sample_rows(name: str, picks: dict[str, list[dict]]) -> str:
 
 def export_card(folder: Path, summary: dict) -> str:
     name = summary["name"]
-    left_out = ", ".join(f"{count:,} {reason}" for reason, count in summary["left_out"].items()) or "nothing"
+    left_out = ", ".join(f"{count:,} {reason}" for reason, count in summary.get("left_out", {}).items()) or "nothing"
     licences = ", ".join(f"{source}: {note['license']}" for source, note in summary["sources"].items())
 
     return f"""<section class="card export">
 <h2>{escape(name)}</h2><p class="muted">Made {escape(readable_time(summary['created_at']))} · folder <code>data/exports/{escape(name)}</code></p>
-{counts_table(summary)}{leak_line(summary['leaks'])}
+{counts_table(summary)}{leak_line(summary.get('leaks'))}
 <p class="muted">Left out: {escape(left_out)}.</p><p class="muted">Licences: {escape(licences)}.</p>
 <h2>Samples</h2>{sample_rows(name, samples(folder, name))}</section>"""
 

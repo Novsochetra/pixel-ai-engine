@@ -197,3 +197,20 @@ def test_tryouts_show_each_model_and_its_pictures(browser, tmp_path):
     assert b"12.5s per image" in body and b"401 gated" in body
     assert fetch(browser + "/tryouts/run-1/model-a/p00-s0-pixel.png")[0] == 200
     assert fetch(browser + "/tryouts/run-1/results.json")[0] == 404
+
+
+# opengameart-v1 keeps no left_out or leaks, and the whole exports page fell over on it.
+def test_an_export_without_a_leak_check_is_still_shown(exported_browser, tmp_path):
+    folder = tmp_path / "exports" / "opengameart-v1"
+    folder.mkdir(parents=True)
+    summary = {"name": "opengameart-v1", "created_at": "2026-11-24T03:48:36+00:00",
+               "sources": {"opengameart-2d": {"license": "CC0"}}, "characters": {"train": {"opengameart-2d": 1}}}
+    (folder / "export.json").write_text(json.dumps(summary))
+    entry = {"character": "opengameart-2d/0", "split": "train", "views": {"front": "images/front.png"}}
+    (folder / "characters.jsonl").write_text(json.dumps(entry) + "\n")
+
+    status, _, body = fetch(exported_browser + "/exports")
+
+    assert status == 200
+    assert b"opengameart-v1" in body and b"rotation-test" in body
+    assert b"Leak check: not run" in body
