@@ -42,9 +42,11 @@ Reuse the components in `ui/src/components/`. Make a new one only when none fits
   body, callout, subheadline, footnote, caption). Regular, semibold and bold weights only.
 - Frosted glass, as in the Retro Arcade: a soft color glow sits behind the app, and glass floats
   over it. Panels (sidebar, inspector, tab bar, sheets) use `--color-panel` with `--blur-panel` and
-  `--shadow-panel`; controls (glass buttons, `pill-button--glass`, segmented) use `--color-glass`
-  with `--blur-glass`. Pixel art never sits on glass: it keeps its solid checkerboard. Glass never
-  sits behind long text. With `prefers-reduced-transparency`, panels turn solid.
+  `--shadow-panel`; controls (glass buttons, `pill-button--glass`) use `--color-glass` with
+  `--blur-glass`. The segmented control sits on `--color-segment-track`, as on iOS, so it and its
+  thumb still show on a glass panel. Pixel art never sits on glass: it keeps its solid
+  checkerboard. Glass never sits behind long text. With `prefers-reduced-transparency`, panels turn
+  solid.
 - Concentric corners: inner radius = outer radius minus padding.
 - Icons look like SF Symbols: one stroke weight and one size per place. An icon-only button has an
   `aria-label` and a tooltip.
