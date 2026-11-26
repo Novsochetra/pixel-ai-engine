@@ -140,6 +140,8 @@
   --size-tile: 8.5rem;
   --size-stage: min(24rem, 55dvh);
   --size-view-thumb: 2.75rem;
+  --size-sheet-preview: 8rem;
+  --size-sheet-preview-min: 14rem;
   --size-zoom-value: 3rem;
   --size-search: 16rem;
   --size-filter: 22rem;

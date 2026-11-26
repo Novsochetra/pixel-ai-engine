@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchCurrentJob, stopJob, type JobView } from './jobs-client';
 
-const CURRENT_JOB = ['jobs', 'current'];
+export const CURRENT_JOB = ['jobs', 'current'];
 const RUNNING_POLL_MS = 2000;
 const IDLE_POLL_MS = 10000;
 

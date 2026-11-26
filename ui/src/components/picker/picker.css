@@ -40,3 +40,32 @@
   color: var(--color-tint);
   pointer-events: none;
 }
+
+.picker__select:disabled {
+  cursor: default;
+  opacity: var(--dim-disabled);
+}
+
+.picker__select:disabled + .picker__chevron {
+  opacity: var(--dim-disabled);
+}
+
+.picker--stacked {
+  display: grid;
+  gap: var(--space-1);
+  block-size: auto;
+}
+
+.picker--stacked .picker__select {
+  grid-area: 2 / 1;
+  inline-size: 100%;
+  max-inline-size: none;
+  block-size: var(--size-target);
+}
+
+.picker--stacked .picker__chevron {
+  position: static;
+  grid-area: 2 / 1;
+  place-self: center end;
+  margin-inline-end: var(--space-3);
+}

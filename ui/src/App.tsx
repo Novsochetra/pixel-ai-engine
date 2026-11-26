@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router';
 import type { ComponentType } from 'react';
+import { CreateScreen } from '@/create/CreateScreen';
 import { AppShell } from '@/layout/AppShell';
 import { LibraryScreen } from '@/library/LibraryScreen';
 import { SECTIONS } from '@/navigation/sections';
@@ -8,7 +9,10 @@ import { SectionScreen } from '@/screens/SectionScreen';
 const FIRST_SECTION = SECTIONS[0]!.path;
 
 // The sections built so far; the others show a placeholder until their step of the plan.
-const SCREENS: Partial<Record<string, ComponentType>> = { library: LibraryScreen };
+const SCREENS: Partial<Record<string, ComponentType>> = {
+  create: CreateScreen,
+  library: LibraryScreen,
+};
 
 export function App() {
   return (

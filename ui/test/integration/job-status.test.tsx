@@ -20,7 +20,7 @@ describe('the job status', () => {
       expect(server).toHaveBeenCalledWith('/api/jobs/current', expect.anything()),
     );
 
-    expect(screen.queryByRole('progressbar')).toBeNull();
+    expect(screen.queryByRole('progressbar', { name: 'Job progress' })).toBeNull();
   });
 
   it('shows a running job with its progress', async () => {

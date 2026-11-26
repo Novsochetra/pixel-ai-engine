@@ -22,9 +22,13 @@ export const RUNNING: JobView = {
   log: 'Loading pipeline components...\nturning 2 of 3: s0 back...',
 };
 
-// The server is replaced by a fetch that answers each API path with its view.
+// The server is replaced by a fetch that answers the job paths with this view, and no other.
 export function fakeServer(current: JobView) {
   return vi.fn(async (url: string, init?: RequestInit) => {
+    if (!url.startsWith('/api/jobs/')) {
+      return new Response('{}', { status: 404 });
+    }
+
     const isStop = url === '/api/jobs/stop' && init?.method === 'POST';
     const view =
       isStop && current.job ? { ...current, job: { ...current.job, status: 'stopped' } } : current;

@@ -8,7 +8,7 @@ from pixel_data.dashboard.thumbs import THUMB_LIMIT
 from pixel_data.images import load_image, png_bytes
 from pixel_data.sources import Layout
 
-FILE_FOLDERS = ("exports", "tryouts")
+FILE_FOLDERS = ("exports", "tryouts", "generated")
 FILE_SUFFIXES = (".png",)
 
 
@@ -33,7 +33,7 @@ def image_png(data: Path, image_id: str, thumb: bool) -> bytes | None:
     return png_bytes(image)
 
 
-# Only pictures inside data/exports and data/tryouts: never records.sqlite, a .json or a path with ..
+# Only pictures inside data/exports, data/tryouts and data/generated: never records.sqlite, a .json or a path with ..
 def file_under(data: Path, folder: str, relative: str) -> Path | None:
     if folder not in FILE_FOLDERS:
         return None

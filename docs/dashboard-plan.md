@@ -42,7 +42,7 @@ A creative tool, like Pixelmator or Final Cut: the art in the middle, settings o
 
 | Screen | Replaces | Content | Inspector |
 |---|---|---|---|
-| Create | `/generate` | gallery of made characters | prompt, LoRA, size, steps, seed |
+| Create | `/generate` | gallery of made characters | prompt, pose, facing, characters, sprite size, LoRAs and models |
 | Rotate | part of `/training` try-outs | one character, its 4 or 8 views side by side | source, directions |
 | Animate | `/animate` | sprite player: play, pause, fps, zoom, direction | character, actions |
 | Landscape | (new) | gallery of backgrounds | prompt, size |
@@ -53,7 +53,7 @@ Selecting an image opens it large in a sheet, with zoom and download.
 
 ## API
 
-Built (steps 1 and 2):
+Built (steps 1 to 3):
 
 ```
 GET  /api/health                            GET  /api/jobs/current      POST /api/jobs/stop
@@ -62,19 +62,26 @@ GET  /api/characters/{id}                   GET  /api/flagged?flag=&page=
 GET  /api/exports                           GET  /api/tryouts?run=
 GET  /api/images/{id}.png                   GET  /api/thumbs/{id}.png
 GET  /api/files/exports/{path}              GET  /api/files/tryouts/{path}
+GET  /api/files/generated/{path}            GET  /api/generated
+GET  /api/generate/options                  GET  /api/loras?task=create|rotate
+POST /api/generate
 ```
 
 Character and image ids hold slashes (`pac/train/0/front`), so they are the rest of the path.
 `/api/thumbs/` shrinks a big picture to 256 px at most, nearest neighbour. `/api/files/` serves only
-`.png` files inside `data/exports/` and `data/tryouts/`.
+`.png` files inside `data/exports/`, `data/tryouts/` and `data/generated/`.
+
+`POST /api/generate` takes JSON (`prompt`, `pose`, `facing`, `characters`, `sprite`, `drawWith`,
+`drawingModel`, `turnWith`, `turningModel`) and checks it with `studio.generate_job`. A bad form
+answers 400 and a second job while one runs answers 409, each with the reason in `detail`.
+`/api/generate/options` lists the models, sprite sizes and facings from the same constants.
 
 Still to build:
 
 ```
-GET  /api/generated            GET  /api/animated            GET  /api/runs
-GET  /api/loras?task=
-POST /api/generate             POST /api/animate             POST /api/uploads
-POST /api/training/start       POST /api/training/resume     POST /api/training/tryout
+GET  /api/animated            GET  /api/runs
+POST /api/animate             POST /api/uploads
+POST /api/training/start      POST /api/training/resume     POST /api/training/tryout
 ```
 
 The job functions in `studio.py` and `animate_page.py` already return the command to run.
@@ -85,7 +92,7 @@ The API calls them as they are and sends JSON, not HTML.
 1. Make `server/` and `ui/`: tokens, the base components, the layout shell (sidebar, toolbar,
    inspector) and the job status. One command runs both. Done.
 2. Library (read only, so it is the safest first real screen). Done.
-3. Create.
+3. Create. Done.
 4. Animate.
 5. Training.
 6. Rotate and Landscape, when their models are ready.
