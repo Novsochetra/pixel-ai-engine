@@ -296,7 +296,7 @@ def parser() -> argparse.ArgumentParser:
     tryout.add_argument("--models", nargs="+", choices=sorted(PRESETS), default=sorted(PRESETS))
     tryout.add_argument("--seeds", type=int, default=2, help="pictures per prompt")
     tryout.add_argument("--rotate", type=int, default=4, help="test characters to turn to left, back and right")
-    tryout.add_argument("--export", default="rotation-v1", help="the export the test characters come from")
+    tryout.add_argument("--export", default="rotation-v1-data", help="the export the test characters come from")
     tryout.add_argument("--prompts", type=Path, default=Path("prompts.json"))
     tryout.add_argument("--name", help="folder name under data/tryouts (default: tryout-<date>-<time>)")
     tryout.add_argument("--no-create", action="store_true", help="only the rotations, no text-to-character pictures")
@@ -309,10 +309,10 @@ def parser() -> argparse.ArgumentParser:
                        help="rotate: front view to left, back, right; create: caption or AI label to front view")
     train.add_argument("--model", choices=["flux2-klein-base-4b", "flux2-klein-4b"], default="flux2-klein-base-4b",
                        help="the base model is made for training; the 4-step model trains blurry")
-    train.add_argument("--export", default="rotation-v1", help="the export to train on")
+    train.add_argument("--export", default="rotation-v1-data", help="the export to train on")
     train.add_argument("--sources", nargs="+", help="train on these sources only (default: all in the export)")
     train.add_argument("--more-exports", nargs="+", default=[], metavar="EXPORT",
-                       help="create only: also train on the captioned characters of these exports (e.g. opengameart-v1)")
+                       help="create only: also train on the captioned characters of these exports (e.g. opengameart-v1-data)")
     train.add_argument("--more-repeat", type=int, default=1,
                        help="show each character of --more-exports this many times, so a small export is not lost")
     train.add_argument("--repeat", nargs="+", type=source_times, default=[], metavar="SOURCE=TIMES",

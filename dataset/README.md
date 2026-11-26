@@ -40,7 +40,7 @@ open data/reports/dashboard.html              # look at it
 
 uv run pixel import pac lpc-4view             # turn downloads into records (all but lpc-generator, opengameart-2d, itch-8dir-cc0)
 uv run pixel analyze                          # measure every imported image and flag bad ones
-uv run pixel export                           # write data/exports/rotation-v1 for training
+uv run pixel export                           # write data/exports/rotation-v1-data for training
 ```
 
 The dashboard (`server/` and `ui/` in the repo root) shows what these steps made. Open it with:
@@ -150,7 +150,7 @@ differ only in the face), so the split puts the whole group on one side.
 
 ## Export
 
-`pixel export [name]` (default `rotation-v1`) writes `data/exports/<name>/`:
+`pixel export [name]` (default `rotation-v1-data`) writes `data/exports/<name>/`:
 
 - `images/<split>/<source>/<character>/<view>.png`, fixed: half-transparent pixels snapped to solid
   or clear, art drawn at 2x shrunk to its true size,

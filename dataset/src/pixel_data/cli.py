@@ -127,7 +127,7 @@ def parser() -> argparse.ArgumentParser:
     analyzing.add_argument("ids", nargs="*", help="sources to measure again (default: every imported source)")
 
     exporting = commands.add_parser("export", help="write the training files: fixed PNGs split by character")
-    exporting.add_argument("name", nargs="?", default="rotation-v1", help="folder name under data/exports")
+    exporting.add_argument("name", nargs="?", default="rotation-v1-data", help="folder name under data/exports")
     exporting.add_argument("--include-check", action="store_true", help="also take images marked check")
     exporting.add_argument("--experimental", action="store_true", help="also take experimental sources")
 

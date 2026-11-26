@@ -1,6 +1,6 @@
 [project]
 name = "pixel-training"
-version = "0.2.0"
+version = "0.2.1"
 description = "Tries, trains and evaluates the models of the pixel art engine"
 requires-python = ">=3.11"
 dependencies = [

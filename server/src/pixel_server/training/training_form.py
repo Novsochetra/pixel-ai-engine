@@ -12,16 +12,29 @@ def old_fields(body: dict, fields: dict) -> dict:
     return {field: form_value(name, body[name]) for name, field in fields.items() if name in body}
 
 
-def source_list(value) -> list[str]:
-    if not isinstance(value, list) or not all(isinstance(source, str) for source in value):
-        raise Invalid("sources must be a list of source names.")
+def name_list(value, what: str) -> list[str]:
+    if not isinstance(value, list) or not all(isinstance(name, str) for name in value):
+        raise Invalid(f"{what} must be a list of names.")
+
+    return value
+
+
+# train_job checks each source and its times; here only the shape is checked.
+def repeat_map(value) -> dict:
+    if not isinstance(value, dict):
+        raise Invalid("repeat must map each source to how many times it is shown.")
 
     return value
 
 
 # The old HTML form sent each checked source as its own field, which train_job reads as sources_list.
 def start_form(body: dict) -> dict:
-    return {**old_fields(body, START), "sources_list": source_list(body.get("sources", []))}
+    return {
+        **old_fields(body, START),
+        "sources_list": name_list(body.get("sources", []), "sources"),
+        "more_exports": name_list(body.get("moreExports", []), "moreExports"),
+        "repeat": repeat_map(body.get("repeat", {})),
+    }
 
 
 def resume_form(body: dict) -> dict:

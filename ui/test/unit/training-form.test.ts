@@ -39,6 +39,8 @@ describe('the new run form', () => {
       size: '256',
       steps: 2000,
       sources: ['lpc-4view', 'pac'],
+      moreExports: [],
+      repeat: {},
     });
   });
 
@@ -72,7 +74,7 @@ describe('the new run form', () => {
     expect(newRunProblem({ ...good, steps: NaN }, OPTIONS, runs)).toBe(
       'Steps must be a whole number from 1 to 50,000.',
     );
-    expect(startBody(good).name).toBe('rotate-v3');
+    expect(startBody(good, OPTIONS).name).toBe('rotate-v3');
   });
 });
 

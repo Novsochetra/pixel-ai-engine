@@ -20,11 +20,14 @@ export const OPTIONS: TrainingOptions = {
     {
       name: 'characters-v2',
       sources: [
-        { name: 'lpc-4view', licence: 'CC-BY-SA-3.0', use: 'train' },
-        { name: 'pac', licence: 'CC-BY-NC-4.0', use: 'train' },
+        { name: 'lpc-4view', licence: 'CC-BY-SA-3.0', use: 'train', count: 45016 },
+        { name: 'pac', licence: 'CC-BY-NC-4.0', use: 'train', count: 10898 },
       ],
     },
-    { name: 'opengameart-v1', sources: [{ name: 'opengameart-2d', licence: 'CC0', use: 'train' }] },
+    {
+      name: 'opengameart-v1',
+      sources: [{ name: 'opengameart-2d', licence: 'CC0', use: 'train', count: 5188 }],
+    },
   ],
   namePattern: '^[A-Za-z0-9_-]{1,40}$',
   mostSteps: 50000,

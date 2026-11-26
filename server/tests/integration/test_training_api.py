@@ -144,8 +144,8 @@ def test_the_form_choices_list_each_export_and_its_licences(client):
     options = client.get("/api/training/options").json()
 
     assert options["exports"] == [{"name": "rotation-v1", "sources": [
-        {"name": "lpc-4view", "licence": "CC-BY-SA-3.0", "use": "train"},
-        {"name": "pac", "licence": "CC-BY-NC-4.0", "use": "train"},
+        {"name": "lpc-4view", "licence": "CC-BY-SA-3.0", "use": "train", "count": None},
+        {"name": "pac", "licence": "CC-BY-NC-4.0", "use": "train", "count": None},
     ]}]
     assert [task["value"] for task in options["tasks"]] == ["rotate", "create"]
     assert options["defaults"]["addSteps"] == 500

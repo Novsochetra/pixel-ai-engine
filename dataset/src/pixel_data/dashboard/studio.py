@@ -2,6 +2,9 @@ import json
 import re
 from pathlib import Path
 
+from pixel_data.dashboard.invalid import Invalid
+from pixel_data.dashboard.train_data import more_exports, repeat_args, trainable_sources
+
 
 MODELS = {"flux2-klein-4b": "fast (4 steps, ~40 s a view)", "flux2-klein-base-4b": "base (28 steps, ~6 min a view)"}
 SPRITES = (64, 96, 128)
@@ -11,10 +14,6 @@ FACING = {"front": "front, then turned to left, back, right", "side": "side, fac
 TASKS = {"rotate": "rotate: turn a front view", "create": "create: draw a front view from text"}
 NAME = re.compile(r"^[A-Za-z0-9_-]{1,40}$")
 GALLERY = 40
-
-
-class Invalid(ValueError):
-    """A form value the dashboard will not pass on."""
 
 
 # Reading what is on disk
@@ -101,10 +100,6 @@ def read_generated(data: Path) -> list[dict]:
     return sorted(items, key=lambda item: item.get("created_at", ""), reverse=True)
 
 
-def export_sources(data: Path, export: str) -> list[str]:
-    return sorted(read_json(data / "exports" / export / "export.json").get("sources", {}))
-
-
 def exports(data: Path) -> list[str]:
     return sorted(path.parent.name for path in (data / "exports").glob("*/characters.jsonl"))
 
@@ -169,20 +164,25 @@ def train_job(data: Path, form: dict) -> tuple[str, list[str]]:
     if (data / "runs" / name).exists():
         raise Invalid(f"There is already a run called {name}. Resume it, or pick another name.")
 
-    export = one_of(form.get("export", ""), exports(data), "export")
+    known = exports(data)
+    export = one_of(form.get("export", ""), known, "export")
     task = one_of(form.get("task", "rotate"), TASKS, "task")
     model = one_of(form.get("model", "flux2-klein-base-4b"), MODELS, "model")
     size = one_of(form.get("size", "256"), SIZES, "size")
     steps = number(form.get("steps", "2000"), 1, 50000, "Steps")
-    chosen = form.get("sources_list", [])
-    available = export_sources(data, export)
+    more = more_exports(form, task, export, known)
+    chosen = sorted(set(form.get("sources_list", [])))
+    available = sorted({source for folder in [export, *more] for source in trainable_sources(data, folder)})
     if not chosen or any(source not in available for source in chosen):
         raise Invalid("Pick at least one source.")
 
     args = ["train", "--name", name, "--task", task, "--export", export, "--model", model, "--size", size,
             "--steps", str(steps)]
-    if sorted(chosen) != available:
-        args += ["--sources", *sorted(chosen)]
+    if more:
+        args += ["--more-exports", *more]
+    if chosen != available:
+        args += ["--sources", *chosen]
+    args += repeat_args(form, chosen)
 
     return f"Train {name}: {steps} steps", args
 

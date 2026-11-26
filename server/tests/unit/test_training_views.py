@@ -11,7 +11,8 @@ RUNNING = {"status": "running", "args": ["train", "--name", "pixie-draw-v1", "--
 def test_the_sources_become_the_old_checkbox_list():
     body = {"name": "rotate-v3", "steps": 400, "sources": ["pac"], "extra": 1}
 
-    assert start_form(body) == {"name": "rotate-v3", "steps": "400", "sources_list": ["pac"]}
+    assert start_form(body) == {"name": "rotate-v3", "steps": "400", "sources_list": ["pac"], "more_exports": [],
+                                "repeat": {}}
 
 
 def test_a_new_run_with_no_sources_sends_an_empty_list():
@@ -66,7 +67,7 @@ def test_a_run_entry_lists_only_its_own_checkpoints():
 
 
 def test_a_source_without_details_has_no_licence():
-    assert source_entry("odd", "CC0") == {"name": "odd", "licence": "", "use": ""}
+    assert source_entry("odd", "CC0", None) == {"name": "odd", "licence": "", "use": "", "count": None}
 
 
 def test_the_options_come_from_the_old_form(tmp_path):

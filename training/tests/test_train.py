@@ -126,7 +126,7 @@ def test_train_defaults():
     args = parser().parse_args(["train"])
 
     assert (args.model, args.export, args.steps, args.size, args.rank, args.resume) == \
-        ("flux2-klein-base-4b", "rotation-v1", 1000, 512, 16, False)
+        ("flux2-klein-base-4b", "rotation-v1-data", 1000, 512, 16, False)
 
 
 TEMPLATE = "pixel art game sprite of {subject}, front view"

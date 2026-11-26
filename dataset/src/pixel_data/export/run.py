@@ -15,7 +15,7 @@ NAME = re.compile(r"[a-z0-9][a-z0-9_-]*")
 
 def check_name(name: str) -> str:
     if not NAME.fullmatch(name):
-        raise SystemExit("An export name uses only lowercase letters, digits, - and _, like rotation-v1.")
+        raise SystemExit("An export name uses only lowercase letters, digits, - and _, like rotation-v1-data.")
 
     return name
 

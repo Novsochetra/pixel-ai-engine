@@ -18,7 +18,7 @@ CELL, GRID, LABEL = 192, 4, 22
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("out", type=Path)
-    parser.add_argument("--export", type=Path, default=Path("data/exports/rotation-v1"))
+    parser.add_argument("--export", type=Path, default=Path("data/exports/rotation-v1-data"))
     parser.add_argument("--source", default="lpc-4view")
     parser.add_argument("--split", default="train", help="train, val, test or all")
     parser.add_argument("--count", type=int, default=1000, help="0 for every character, in export order")

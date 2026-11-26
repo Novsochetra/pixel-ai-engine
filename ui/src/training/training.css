@@ -189,3 +189,28 @@
     scale: none;
   }
 }
+
+.source-checks__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: var(--space-2);
+  align-items: center;
+}
+
+.source-checks__repeat {
+  min-inline-size: var(--size-target);
+  block-size: var(--size-segment-height);
+  padding-inline: var(--space-2);
+  font: inherit;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-tint);
+  cursor: pointer;
+  background: var(--color-fill);
+  border: 0;
+  border-radius: var(--radius-segment);
+}
+
+.source-checks__repeat:focus-visible {
+  outline: var(--border-width-ring) solid var(--color-focus-ring);
+  outline-offset: 0;
+}

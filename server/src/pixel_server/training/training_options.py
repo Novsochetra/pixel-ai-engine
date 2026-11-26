@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from pixel_data.dashboard import studio
+from pixel_data.dashboard.train_data import read_export, train_counts, trainable_sources
 
 from pixel_server.create.form_options import choices
 
@@ -31,12 +32,14 @@ def training_options(data: Path) -> dict:
 
 
 def export_entry(data: Path, name: str) -> dict:
-    sources = studio.read_json(data / "exports" / name / "export.json").get("sources", {})
+    licences = read_export(data, name).get("sources", {})
+    counts = train_counts(data, name) or {}
+    sources = [source_entry(source, licences[source], counts.get(source)) for source in trainable_sources(data, name)]
 
-    return {"name": name, "sources": [source_entry(source, sources[source]) for source in sorted(sources)]}
+    return {"name": name, "sources": sources}
 
 
-def source_entry(name: str, info) -> dict:
+def source_entry(name: str, info, count: int | None) -> dict:
     info = info if isinstance(info, dict) else {}
 
-    return {"name": name, "licence": info.get("license", ""), "use": info.get("use", "")}
+    return {"name": name, "licence": info.get("license", ""), "use": info.get("use", ""), "count": count}

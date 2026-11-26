@@ -28,7 +28,7 @@ Learn these first. Every other part of this guide uses them.
 | Record | One row that describes one image: character, view, size, source, licence. | Stored in `data/records.sqlite`. It points at the image, it does not copy it. |
 | View | The way the character faces. | `front`, `back`, `left`, `right` (+ 4 diagonals for 8-direction). |
 | Caption / label | Words that describe an image. The model learns "these words → this picture". | LPC has exact captions. `pac` got labels written by Haiku 5.5. |
-| Export | A clean, fixed copy of the data, ready for training. | `data/exports/rotation-v1/` |
+| Export | A clean, fixed copy of the data, ready for training. | `data/exports/rotation-v1-data/` |
 | Train / val / test split | Train = what the model learns from (90%). Val = checked during training (5%). Test = only used at the end (5%). | Split by character group. |
 | Leak | When the same character is in train and test. Then the test score lies. | The export checks for leaks. |
 

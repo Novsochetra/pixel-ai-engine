@@ -52,7 +52,42 @@ describe('the new run form', () => {
       size: '512',
       steps: 400,
       sources: ['lpc-4view'],
+      moreExports: [],
+      repeat: {},
     });
+  });
+
+  it('adds another export to a create run and shows a small source more often', async () => {
+    const server = trainingServer(startState());
+    renderApp('/training', server);
+    await screenLoaded();
+
+    expect((field('Name') as HTMLInputElement).placeholder).toBe('pixie-turn-v1');
+    expect(within(inspector()).queryByLabelText(/^opengameart-v1/)).toBeNull();
+    await userEvent.click(within(inspector()).getByRole('button', { name: 'Create' }));
+    expect((field('Name') as HTMLInputElement).placeholder).toBe('pixie-draw-v1');
+    await userEvent.type(field('Name'), 'pixie-draw-v2');
+    await userEvent.click(field(/^opengameart-v1/));
+    await userEvent.selectOptions(field('Times to show opengameart-2d'), '5');
+    await userEvent.click(primary());
+
+    await vi.waitFor(() => expect(postedBody(server, '/api/training/start')).toBeDefined());
+    expect(postedBody(server, '/api/training/start')).toMatchObject({
+      name: 'pixie-draw-v2',
+      task: 'create',
+      sources: ['lpc-4view', 'pac', 'opengameart-2d'],
+      moreExports: ['opengameart-v1'],
+      repeat: { 'opengameart-2d': 5 },
+    });
+  });
+
+  it('trains on the base model, with no model to pick', async () => {
+    renderApp('/training', trainingServer(startState()));
+    await screenLoaded();
+
+    expect(within(inspector()).queryByLabelText('Model')).toBeNull();
+    expect(within(inspector()).getByText(/^Trains on the base model/)).toBeTruthy();
+    expect(field(/^lpc-4view/).closest('label')?.textContent).toContain('45,016 characters');
   });
 
   it('says a non-commercial source makes the run non-commercial', async () => {

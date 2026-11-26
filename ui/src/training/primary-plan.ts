@@ -40,7 +40,9 @@ function newRunPlan({ options, runs, newRun }: PlanState): Plan {
 
   const problem = newRunProblem(newRun, options, runs);
 
-  return problem ? refuse(problem) : { problem: null, post: () => postStart(startBody(newRun)) };
+  return problem
+    ? refuse(problem)
+    : { problem: null, post: () => postStart(startBody(newRun, options)) };
 }
 
 function resumePlan({ options, run, target }: PlanState): Plan {

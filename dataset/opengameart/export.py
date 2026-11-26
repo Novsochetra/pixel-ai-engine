@@ -1,6 +1,6 @@
 """Turn the cut OpenGameArt sprites into an export that create training can read.
 
-    uv run python opengameart/export.py data/opengameart data/exports/opengameart-v1
+    uv run python opengameart/export.py data/opengameart data/exports/opengameart-v1-data
 
 Every sprite becomes a character with only a front view, and no caption: the AI labels in
 data/labels/opengameart give it one (a "skip" label leaves it out). The split goes by page, so the

@@ -8,8 +8,8 @@ Cut the sprites, make the export and the sheets, run the labellers as for pac (s
 
 ```bash
 uv run --with numpy --with scipy --with zstandard python opengameart/cut.py data/opengameart
-uv run python opengameart/export.py data/opengameart data/exports/opengameart-v1
-uv run python labelling/make_sheets.py data/labels/opengameart --export data/exports/opengameart-v1 --source opengameart-2d --split all --count 0
+uv run python opengameart/export.py data/opengameart data/exports/opengameart-v1-data
+uv run python labelling/make_sheets.py data/labels/opengameart --export data/exports/opengameart-v1-data --source opengameart-2d --split all --count 0
 python3 labelling/collect.py data/labels/opengameart
 ```
 

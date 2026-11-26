@@ -30,6 +30,7 @@ export interface ExportSource {
   name: string;
   licence: string;
   use: string;
+  count: number | null;
 }
 
 export interface TrainingExport {
@@ -63,6 +64,8 @@ export interface StartBody {
   size: string;
   steps: number;
   sources: string[];
+  moreExports: string[];
+  repeat: Record<string, number>;
 }
 
 export interface ResumeBody {

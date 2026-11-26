@@ -1,4 +1,5 @@
-import type { Run, StartBody, TrainingExport, TrainingOptions } from './training-client';
+import { exportSources, formSources, sentData } from './run-data';
+import type { Run, StartBody, TrainingOptions } from './training-client';
 
 export type NewRunValues = StartBody;
 
@@ -7,16 +8,8 @@ const NON_COMMERCIAL = /\bNC\b|non-?commercial|no commercial/i;
 
 export const isNonCommercial = (licence: string) => NON_COMMERCIAL.test(licence);
 
-export const findExport = (options: TrainingOptions, name: string): TrainingExport | null =>
-  options.exports.find((entry) => entry.name === name) ?? null;
-
-export const exportSources = (options: TrainingOptions, name: string) =>
-  (findExport(options, name)?.sources ?? []).map((source) => source.name);
-
 export function nonCommercialSources(options: TrainingOptions, values: NewRunValues): string[] {
-  const sources = findExport(options, values.export)?.sources ?? [];
-
-  return sources
+  return formSources(options, values)
     .filter((source) => values.sources.includes(source.name) && isNonCommercial(source.licence))
     .map((source) => source.name);
 }
@@ -33,6 +26,8 @@ export function defaultValues(options: TrainingOptions): NewRunValues {
     size: defaults.size,
     steps: defaults.steps,
     sources: exportSources(options, exportName),
+    moreExports: [],
+    repeat: {},
   };
 }
 
@@ -61,7 +56,7 @@ export function newRunProblem(
     return `There is already a run called ${name}. Resume it, or pick another name.`;
   }
 
-  if (!values.sources.length) {
+  if (!sentData(options, values).sources.length) {
     return 'Pick at least one source.';
   }
 
@@ -76,7 +71,8 @@ export function stepsProblem(steps: number, low: number, high: number): string |
   return null;
 }
 
-export const startBody = (values: NewRunValues): StartBody => ({
+export const startBody = (values: NewRunValues, options: TrainingOptions): StartBody => ({
   ...values,
+  ...sentData(options, values),
   name: values.name.trim(),
 });

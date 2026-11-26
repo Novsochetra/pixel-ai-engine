@@ -168,7 +168,7 @@ labelled by Haiku; see `../dataset/opengameart/README.md`). They are their own e
 `--more-exports`; it is small next to LPC, so `--more-repeat` shows each of its characters more often:
 
 ```bash
-HF_HUB_OFFLINE=1 caffeinate -i uv run pixel-train train --task create --name create-v2 --size 256 --steps 2000 --sources lpc-4view opengameart-2d --more-exports opengameart-v1 --more-repeat 5
+HF_HUB_OFFLINE=1 caffeinate -i uv run pixel-train train --task create --name create-v2 --size 256 --steps 2000 --sources lpc-4view opengameart-2d --more-exports opengameart-v1-data --more-repeat 5
 ```
 
 Each caption is put in the same words `generate` puts around your prompt (the `create` template
@@ -197,12 +197,12 @@ Two older runs are kept: `rotate-v2` (the turning model until `pixie-turn-v1` is
 
 ### One create LoRA on all character data, a little each day
 
-`characters-v2` is the export with every character source that has 4 views: lpc-4view, pac and
+`characters-v2-data` is the export with every character source that has 4 views: lpc-4view, pac and
 pixellab (moss-64 is only in its test split). With the OpenGameArt export next to it, that is all
 the character data:
 
 ```bash
-cd dataset && uv run pixel export characters-v2 && cd ../training
+cd dataset && uv run pixel export characters-v2-data && cd ../training
 ```
 
 Run the same command every day. `--add-steps 500` trains 500 more steps than the last checkpoint
@@ -210,13 +210,17 @@ Run the same command every day. `--add-steps 500` trains 500 more steps than the
 pixels on an M1 Max:
 
 ```bash
-HF_HUB_OFFLINE=1 caffeinate -i uv run pixel-train train --task create --name pixie-draw-v1 --export characters-v2 --size 256 --more-exports opengameart-v1 --repeat opengameart-2d=5 pixellab=10 --add-steps 500
+HF_HUB_OFFLINE=1 caffeinate -i uv run pixel-train train --task create --name pixie-draw-v1 --export characters-v2-data --size 256 --more-exports opengameart-v1-data --repeat opengameart-2d=5 pixellab=10 --add-steps 500
 ```
 
 `--repeat` shows a small source more often (`pixellab=10`: each of its characters 10 times), or a
 big one less (`lpc-4view=0.5`: a fixed half). The run goes through every pair once, in a shuffled
 order, before any comes back; the log and the screen say how much of the data it has seen. Keep the
 command the same each day: other sources or repeats make another set of pairs, and so another order.
+
+The same run from the dashboard's Training screen: name it `pixie-draw-v1`, pick Create, the export
+`characters-v2-data`, check `opengameart-v1-data` under More exports, set opengameart-2d to ×5 and
+pixellab to ×10, and Steps to 500. Each day after, select the run and press Add 500 steps.
 
 Try it at any time with `uv run pixel-train generate "a frog wizard" --create-lora pixie-draw-v1`.
 

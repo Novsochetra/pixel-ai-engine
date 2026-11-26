@@ -1,11 +1,22 @@
-import type { ExportSource } from './training-client';
+import { charactersText, REPEATS, setRepeat } from './run-data';
+import type { ExportSource, StartBody } from './training-client';
 import { toggleSource } from './training-form';
+
+type Changes = Partial<Pick<StartBody, 'sources' | 'repeat'>>;
 
 interface SourceChecksProps {
   sources: readonly ExportSource[];
-  chosen: readonly string[];
+  values: Pick<StartBody, 'sources' | 'repeat'>;
   nonCommercial: readonly string[];
-  onChange: (sources: string[]) => void;
+  onChange: (changes: Changes) => void;
+}
+
+interface SourceRowProps {
+  source: ExportSource;
+  isChosen: boolean;
+  times: number;
+  onToggle: () => void;
+  onRepeat: (times: number) => void;
 }
 
 function NonCommercialNote({ names }: { names: readonly string[] }) {
@@ -22,8 +33,43 @@ function NonCommercialNote({ names }: { names: readonly string[] }) {
   );
 }
 
-// Each source with its licence beside it, so what the model may be used for is clear before it trains.
-export function SourceChecks({ sources, chosen, nonCommercial, onChange }: SourceChecksProps) {
+function detailText(source: ExportSource) {
+  const licence =
+    source.use && source.use !== 'train' ? `${source.licence}, for ${source.use}` : source.licence;
+
+  return source.count === null ? licence : `${charactersText([source])} · ${licence}`;
+}
+
+function SourceRow({ source, isChosen, times, onToggle, onRepeat }: SourceRowProps) {
+  return (
+    <div className="source-checks__row">
+      <label className="source-checks__source">
+        <input type="checkbox" checked={isChosen} onChange={onToggle} />
+        <span className="source-checks__name">{source.name}</span>
+        <span className="source-checks__licence">{detailText(source)}</span>
+      </label>
+      {isChosen ? (
+        <select
+          className="source-checks__repeat"
+          aria-label={`Times to show ${source.name}`}
+          title="Times each picture is shown"
+          value={times}
+          onChange={(event) => onRepeat(Number(event.target.value))}
+        >
+          {REPEATS.map((option) => (
+            <option key={option} value={option}>
+              ×{option}
+            </option>
+          ))}
+        </select>
+      ) : null}
+    </div>
+  );
+}
+
+// Each source with its characters and licence beside it, so what the model learns from, and may be
+// used for, is clear before it trains.
+export function SourceChecks({ sources, values, nonCommercial, onChange }: SourceChecksProps) {
   const order = sources.map((source) => source.name);
 
   if (!sources.length) {
@@ -38,20 +84,18 @@ export function SourceChecks({ sources, chosen, nonCommercial, onChange }: Sourc
     <fieldset className="source-checks">
       <legend className="form-field__label">Sources</legend>
       {sources.map((source) => (
-        <label className="source-checks__source" key={source.name}>
-          <input
-            type="checkbox"
-            checked={chosen.includes(source.name)}
-            onChange={() => onChange(toggleSource(chosen, source.name, order))}
-          />
-          <span className="source-checks__name">{source.name}</span>
-          <span className="source-checks__licence">
-            {source.use && source.use !== 'train'
-              ? `${source.licence}, for ${source.use}`
-              : source.licence}
-          </span>
-        </label>
+        <SourceRow
+          key={source.name}
+          source={source}
+          isChosen={values.sources.includes(source.name)}
+          times={values.repeat[source.name] ?? 1}
+          onToggle={() => onChange({ sources: toggleSource(values.sources, source.name, order) })}
+          onRepeat={(times) => onChange({ repeat: setRepeat(values.repeat, source.name, times) })}
+        />
       ))}
+      <p className="form-note">
+        ×5 shows each picture of a small source 5 times, so it is not lost.
+      </p>
       <NonCommercialNote names={nonCommercial} />
     </fieldset>
   );

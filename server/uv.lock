@@ -351,7 +351,7 @@ wheels = [
 
 [[package]]
 name = "pixel-dataset"
-version = "0.3.0"
+version = "0.4.0"
 source = { editable = "../dataset" }
 dependencies = [
     { name = "huggingface-hub" },
@@ -371,7 +371,7 @@ dev = [{ name = "pytest", specifier = ">=8" }]
 
 [[package]]
 name = "pixel-server"
-version = "0.8.0"
+version = "0.9.0"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi" },

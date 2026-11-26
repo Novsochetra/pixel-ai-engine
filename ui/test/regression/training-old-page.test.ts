@@ -9,7 +9,7 @@ import { OPTIONS, ROTATE_RUN } from '../integration/training-server';
 // The old /training page's choices when only the name was filled; the new forms must match them.
 describe('the training forms, as the old /training page', () => {
   it('starts a run with the old defaults and every source', () => {
-    expect(startBody({ ...defaultValues(OPTIONS), name: 'rotate-v3' })).toEqual({
+    expect(startBody({ ...defaultValues(OPTIONS), name: 'rotate-v3' }, OPTIONS)).toEqual({
       name: 'rotate-v3',
       task: 'rotate',
       export: 'characters-v2',
@@ -17,6 +17,8 @@ describe('the training forms, as the old /training page', () => {
       size: '256',
       steps: 2000,
       sources: ['lpc-4view', 'pac'],
+      moreExports: [],
+      repeat: {},
     });
   });
 

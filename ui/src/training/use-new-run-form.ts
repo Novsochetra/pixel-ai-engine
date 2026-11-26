@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { TrainingOptions } from './training-client';
-import { defaultValues, exportSources, type NewRunValues } from './training-form';
+import { exportSources } from './run-data';
+import { defaultValues, type NewRunValues } from './training-form';
 
 type Changes = Partial<NewRunValues>;
 
@@ -18,6 +19,7 @@ export function useNewRunForm(options: TrainingOptions | undefined) {
         ...current,
         export: name,
         sources: options ? exportSources(options, name) : [],
+        moreExports: [],
       })),
 
     clearName: () => setChanges(({ name: _name, ...current }) => current),
