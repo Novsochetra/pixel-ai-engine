@@ -2,6 +2,7 @@ import type { AnimateSources } from '@/animate/animate-client';
 import { SourceField } from '@/animate/SourceField';
 import { ViewChecks } from '@/animate/ViewChecks';
 import { Picker } from '@/components/picker/Picker';
+import { modelFor } from '@/create/create-form';
 import type { RotateOptions } from './rotate-client';
 import { turnText, type RotateValues } from './rotate-form';
 import type { RotateForm as Form } from './use-rotate-form';
@@ -24,7 +25,9 @@ function TurningFields({ form, options, values }: FieldsProps) {
         options={form.loras.length ? form.loras : NO_LORA}
         isStacked
         isDisabled={!form.loras.length}
-        onChange={(lora) => form.change({ lora })}
+        onChange={(lora) =>
+          form.change({ lora, turningModel: modelFor(form.loras, lora, options.defaults.model) })
+        }
       />
       <Picker
         label="Turning model"

@@ -1,7 +1,5 @@
-import { FactList } from '@/components/fact-list/FactList';
 import { Segmented } from '@/components/segmented/Segmented';
 import { CreateRunNote, ResumeFields, TryoutFields } from './RunActions';
-import { runFacts, runSubtitle } from './run-view';
 import type { Mode, RunAction } from './training-actions';
 import type { Run, TrainingOptions } from './training-client';
 import type { RunChoice } from './use-run-choice';
@@ -18,19 +16,12 @@ interface RunDetailsProps {
   mode: Mode;
 }
 
-// The selected run: what it is, then the action the toolbar's button runs, then its numbers.
+// What the toolbar's button does to the run: resume it, or try a checkpoint of a rotate run.
 export function RunDetails({ run, choice, options, mode }: RunDetailsProps) {
   const isCreate = run.task === 'create';
 
   return (
     <div className="run-details">
-      <div className="run-details__head">
-        <h2 className="run-details__title">{run.name}</h2>
-        <p className="run-details__subtitle">{runSubtitle(run, options.models)}</p>
-        <button className="pill-button pill-button--plain" type="button" onClick={choice.clear}>
-          New run
-        </button>
-      </div>
       <form
         className="create-form"
         aria-label={`${run.name}: ${mode === 'tryout' ? 'try out' : 'resume'}`}
@@ -51,7 +42,6 @@ export function RunDetails({ run, choice, options, mode }: RunDetailsProps) {
         )}
         {isCreate ? <CreateRunNote /> : null}
       </form>
-      <FactList title="Run" facts={runFacts(run, options.models)} />
     </div>
   );
 }

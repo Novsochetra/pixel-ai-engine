@@ -5,13 +5,13 @@ import { NEW_UPLOAD, SOURCES } from '../integration/animate-server';
 import { LORAS, OPTIONS, TURNED } from '../integration/rotate-server';
 
 describe('the rotate form', () => {
-  it('starts on the first character with a front view, and the first LoRA', () => {
+  it('starts on the first character with a front view, and the first LoRA on its model', () => {
     const values = defaultValues(OPTIONS, turnable(SOURCES), LORAS);
 
     expect(values).toEqual({
       source: 'generated/dragon/s0',
       lora: 'runs/rotate-v2/final',
-      turningModel: 'flux2-klein-4b',
+      turningModel: 'flux2-klein-base-4b',
       sprite: '128',
       views: ['left', 'back', 'right'],
     });

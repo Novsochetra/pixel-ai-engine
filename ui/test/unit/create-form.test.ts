@@ -4,11 +4,12 @@ import {
   defaultValues,
   drawWithNote,
   isReady,
+  modelFor,
   turnWithNote,
 } from '@/create/create-form';
-import { OPTIONS } from '../integration/create-server';
+import { BASE, OPTIONS } from '../integration/create-server';
 
-const ROTATE = [{ value: 'runs/rotate-v2/final', label: 'rotate-v2 · final' }];
+const ROTATE = [{ value: 'runs/rotate-v2/final', label: 'rotate-v2 · final', model: BASE }];
 const values = { ...defaultValues(OPTIONS, ROTATE), prompt: ' a frog ', drawWith: 'runs/c/final' };
 
 describe('the create form', () => {
@@ -19,8 +20,19 @@ describe('the create form', () => {
       sprite: '128',
       drawWith: '',
       turnWith: 'runs/rotate-v2/final',
+      drawingModel: 'flux2-klein-4b',
+      turningModel: BASE,
     });
-    expect(defaultValues(OPTIONS, []).turnWith).toBe('');
+    expect(defaultValues(OPTIONS, [])).toMatchObject({
+      turnWith: '',
+      turningModel: 'flux2-klein-4b',
+    });
+  });
+
+  it('picks the model a LoRA learnt on, and the default for none', () => {
+    expect(modelFor(ROTATE, 'runs/rotate-v2/final', 'fast')).toBe(BASE);
+    expect(modelFor(ROTATE, '', 'fast')).toBe('fast');
+    expect(modelFor(ROTATE, 'runs/gone/final', 'fast')).toBe('fast');
   });
 
   it('lets a create LoRA draw only a standing front view', () => {

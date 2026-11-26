@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 import type { UploadSource } from '@/animate/animate-client';
-import type { Choice } from '@/create/create-client';
+import type { LoraChoice } from '@/create/create-client';
 import type { JobView } from '@/jobs/jobs-client';
 import type { TryoutList } from '@/library/library-client';
 import type { RotateOptions, TurnedCharacter } from '@/rotate/rotate-client';
@@ -19,9 +19,15 @@ export const OPTIONS: RotateOptions = {
   defaults: { sprite: '128', model: 'flux2-klein-4b', views: ['left', 'back', 'right'] },
 };
 
-export const LORAS: Choice[] = [
-  { value: 'runs/rotate-v2/final', label: 'rotate-v2 · final' },
-  { value: 'runs/rotate-v2/checkpoints/step-000500', label: 'rotate-v2 · step-000500' },
+const BASE = 'flux2-klein-base-4b';
+
+export const LORAS: LoraChoice[] = [
+  { value: 'runs/rotate-v2/final', label: 'rotate-v2 · final', model: BASE },
+  {
+    value: 'runs/rotate-v2/checkpoints/step-000500',
+    label: 'rotate-v2 · step-000500',
+    model: BASE,
+  },
 ];
 
 const view = (folder: string, name: string) => ({
@@ -69,7 +75,7 @@ export const TRYOUTS: TryoutList = {
 
 interface RotateState {
   job: JobView;
-  loras: Choice[];
+  loras: LoraChoice[];
   turned: TurnedCharacter[];
   uploads: UploadSource[];
   refusal?: { status: number; detail: string };

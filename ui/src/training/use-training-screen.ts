@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { usePrimaryShortcut } from '@/create/use-primary-shortcut';
 import type { JobView } from '@/jobs/jobs-client';
 import { CURRENT_JOB, useCurrentJob } from '@/jobs/use-current-job';
-import { primaryPlan } from './primary-plan';
-import { modeOf, PRIMARY_LABELS } from './training-actions';
+import { primaryPlan, type Plan, type PlanState } from './primary-plan';
+import { modeOf, PRIMARY_LABELS, type Mode, type RunAction } from './training-actions';
 import { useNewRunForm } from './use-new-run-form';
 import { useRunChoice } from './use-run-choice';
 import { RUNS, useRuns, useTrainingOptions } from './use-training';
@@ -22,21 +22,34 @@ function useSend() {
   });
 }
 
-export function useTrainingScreen() {
+// A run's screen whose run is not there (yet) must not offer to start a new one instead.
+function screenPlan(
+  name: string | null,
+  action: RunAction,
+  state: PlanState,
+): { mode: Mode; plan: Plan } {
+  if (name !== null && !state.run) {
+    const problem = state.runs ? `No run called ${name}.` : 'The run is still loading.';
+
+    return { mode: 'resume', plan: { problem, post: null } };
+  }
+
+  const mode = modeOf(state.run, action);
+
+  return { mode, plan: primaryPlan(mode, state) };
+}
+
+// The runs' screen (no name) starts a new run; a run's own screen (its name) resumes or tries it.
+export function useTrainingScreen(name: string | null) {
   const options = useTrainingOptions();
   const runs = useRuns();
   const newRun = useNewRunForm(options.data);
-  const choice = useRunChoice(runs.data?.runs, options.data);
+  const choice = useRunChoice(runs.data?.runs, options.data, name);
   const send = useSend();
   const isBusy = useCurrentJob().data?.job?.status === 'running';
 
-  const mode = modeOf(choice.run, choice.action);
-  const plan = primaryPlan(mode, {
-    options: options.data,
-    runs: runs.data?.runs,
-    newRun: newRun.values,
-    ...choice,
-  });
+  const state = { options: options.data, runs: runs.data?.runs, newRun: newRun.values, ...choice };
+  const { mode, plan } = screenPlan(name, choice.action, state);
 
   const run = () => {
     if (plan.post && !isBusy && !send.isPending) {
@@ -47,6 +60,7 @@ export function useTrainingScreen() {
   usePrimaryShortcut(run);
 
   return {
+    name,
     options,
     runs,
     newRun,

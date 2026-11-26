@@ -2,19 +2,12 @@ import type { UseQueryResult } from '@tanstack/react-query';
 import { EmptyState } from '@/components/empty-state/EmptyState';
 import { Progress } from '@/components/progress/Progress';
 import type { Choice } from '@/create/create-client';
-import { RunCard } from './RunCard';
+import { RunTile } from './RunTile';
 import type { Run } from './training-client';
 
 type RunsQuery = UseQueryResult<{ runs: Run[] }>;
 
-interface RunListProps {
-  query: RunsQuery;
-  models: readonly Choice[];
-  chosen: string | null;
-  onChoose: (name: string) => void;
-}
-
-function ListError({ query }: { query: RunsQuery }) {
+function GridError({ query }: { query: RunsQuery }) {
   const retry = (
     <button
       className="pill-button pill-button--glass"
@@ -32,10 +25,10 @@ function ListError({ query }: { query: RunsQuery }) {
   );
 }
 
-// Every training run, newest first, each with its loss chart.
-export function RunList({ query, models, chosen, onChoose }: RunListProps) {
+// Every training run, newest first, as a card that opens it.
+export function RunGrid({ query, models }: { query: RunsQuery; models: readonly Choice[] }) {
   if (query.isError) {
-    return <ListError query={query} />;
+    return <GridError query={query} />;
   }
 
   if (!query.data) {
@@ -57,13 +50,7 @@ export function RunList({ query, models, chosen, onChoose }: RunListProps) {
   return (
     <ul className="training-runs" aria-label="Training runs">
       {query.data.runs.map((run) => (
-        <RunCard
-          key={run.name}
-          run={run}
-          models={models}
-          isChosen={run.name === chosen}
-          onChoose={onChoose}
-        />
+        <RunTile key={run.name} run={run} models={models} />
       ))}
     </ul>
   );

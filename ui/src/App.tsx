@@ -7,6 +7,7 @@ import { LibraryScreen } from '@/library/LibraryScreen';
 import { SECTIONS } from '@/navigation/sections';
 import { RotateScreen } from '@/rotate/RotateScreen';
 import { SectionScreen } from '@/screens/SectionScreen';
+import { TrainingRunScreen } from '@/training/TrainingRunScreen';
 import { TrainingScreen } from '@/training/TrainingScreen';
 
 const FIRST_SECTION = SECTIONS[0]!.path;
@@ -35,6 +36,7 @@ export function App() {
             />
           );
         })}
+        <Route path="/training/:name" element={<TrainingRunScreen />} />
         <Route path="*" element={<Navigate to={FIRST_SECTION} replace />} />
       </Route>
     </Routes>

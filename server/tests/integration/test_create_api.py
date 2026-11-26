@@ -13,11 +13,12 @@ SAME_SITE = {"sec-fetch-site": "same-origin"}
 FAKE_JOB = "import time; time.sleep(30)"
 
 
-def write_run(data, name: str, task: str) -> None:
+def write_run(data, name: str, task: str, model: str | None = None) -> None:
     folder = data / "runs" / name
     (folder / "final").mkdir(parents=True)
     (folder / "final" / "pytorch_lora_weights.safetensors").write_bytes(b"")
-    (folder / "run.json").write_text(json.dumps({"settings": {"task": task}, "created_at": "2026-11-20"}))
+    settings = {"task": task} | ({"model": model} if model else {})
+    (folder / "run.json").write_text(json.dumps({"settings": settings, "created_at": "2026-11-20"}))
 
 
 def write_generated(data, folder: str, info: dict) -> None:
@@ -127,9 +128,20 @@ def test_the_loras_are_listed_by_task(client):
     rotate = client.get("/api/loras", params={"task": "rotate"}).json()["loras"]
     create = client.get("/api/loras", params={"task": "create"}).json()["loras"]
 
-    assert rotate == [{"value": "runs/rotate-v2/final", "label": "rotate-v2 · final"}]
-    assert create == [{"value": "runs/create-v1/final", "label": "create-v1 · final"}]
+    assert rotate == [{"value": "runs/rotate-v2/final", "label": "rotate-v2 · final", "model": "flux2-klein-base-4b"}]
+    assert create == [{"value": "runs/create-v1/final", "label": "create-v1 · final", "model": "flux2-klein-base-4b"}]
     assert client.get("/api/loras", params={"task": "paint"}).status_code == 422
+
+
+def test_a_lora_names_the_model_it_was_trained_on(client, studio_data):
+    write_run(studio_data, "rotate-fast", "rotate", model="flux2-klein-4b")
+
+    rotate = client.get("/api/loras", params={"task": "rotate"}).json()["loras"]
+
+    assert {lora["value"]: lora["model"] for lora in rotate} == {
+        "runs/rotate-v2/final": "flux2-klein-base-4b",
+        "runs/rotate-fast/final": "flux2-klein-4b",
+    }
 
 
 def test_the_form_options_are_listed(client):

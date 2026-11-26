@@ -1,0 +1,35 @@
+/* Navigations run as view transitions: a run card grows into its screen, other screens fade. */
+::view-transition-group(*) {
+  animation-duration: var(--duration-panel);
+  animation-timing-function: var(--easing-spring);
+}
+
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: var(--duration-normal);
+  animation-timing-function: var(--easing-standard);
+}
+
+/* A run card grows like a window over its screen: each side keeps its own size, so its text stays
+   sharp instead of stretching, and the window clips it. */
+::view-transition-image-pair(.run-card) {
+  overflow: clip;
+  border-radius: var(--radius-card);
+}
+
+::view-transition-old(.run-card),
+::view-transition-new(.run-card) {
+  inline-size: auto;
+  block-size: auto;
+}
+
+::view-transition-old(.run-card) {
+  animation-duration: var(--duration-fast);
+}
+
+/* A fade replaces the movement: the card and title stay put while the screens cross-fade. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*) {
+    animation: none;
+  }
+}

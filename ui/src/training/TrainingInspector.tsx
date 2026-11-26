@@ -9,8 +9,8 @@ interface InspectorProps {
   error: ReactNode;
 }
 
-// The selected run's details and actions, or the New run form when nothing is selected. The
-// server's last refusal sits above, so it is read before the fields.
+// A run's actions on its own screen, or the New run form on the runs' screen. The server's last
+// refusal sits above, so it is read before the fields.
 export function TrainingInspector({ screen, error }: InspectorProps) {
   const { options, newRun, choice } = screen;
 
@@ -40,16 +40,17 @@ export function TrainingInspector({ screen, error }: InspectorProps) {
   return (
     <>
       {error}
-      {choice.run ? (
-        <RunDetails run={choice.run} choice={choice} options={options.data} mode={screen.mode} />
-      ) : (
+      {screen.name === null ? (
         <NewRunForm
           form={newRun}
           options={options.data}
           values={newRun.values}
           problem={screen.problem}
         />
-      )}
+      ) : null}
+      {choice.run ? (
+        <RunDetails run={choice.run} choice={choice} options={options.data} mode={screen.mode} />
+      ) : null}
     </>
   );
 }

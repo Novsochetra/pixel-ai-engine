@@ -7,6 +7,11 @@ export interface Choice {
   label: string;
 }
 
+// A LoRA comes with the model it learnt on, which it draws best with.
+export interface LoraChoice extends Choice {
+  model: string;
+}
+
 export interface FormOptions {
   models: Choice[];
   sprites: Choice[];
@@ -49,7 +54,7 @@ export type LoraTask = 'create' | 'rotate';
 export const fetchFormOptions = () => getJson<FormOptions>('/api/generate/options');
 
 export const fetchLoras = (task: LoraTask) =>
-  getJson<{ loras: Choice[] }>(`/api/loras?task=${task}`).then((reply) => reply.loras);
+  getJson<{ loras: LoraChoice[] }>(`/api/loras?task=${task}`).then((reply) => reply.loras);
 
 export const fetchGenerated = () => getJson<{ items: GeneratedEntry[] }>('/api/generated');
 

@@ -1,11 +1,18 @@
-import type { Choice, Facing, FormOptions, GenerateBody } from './create-client';
+import type { Facing, FormOptions, GenerateBody, LoraChoice } from './create-client';
 
 export type CreateValues = GenerateBody;
 
 export const STANDING = 'standing';
 
-export function defaultValues(options: FormOptions, rotateLoras: readonly Choice[]): CreateValues {
+export const modelFor = (loras: readonly LoraChoice[], value: string, fallback: string) =>
+  loras.find((lora) => lora.value === value)?.model ?? fallback;
+
+export function defaultValues(
+  options: FormOptions,
+  rotateLoras: readonly LoraChoice[],
+): CreateValues {
   const { defaults } = options;
+  const turnWith = rotateLoras[0]?.value ?? '';
 
   return {
     prompt: '',
@@ -15,8 +22,8 @@ export function defaultValues(options: FormOptions, rotateLoras: readonly Choice
     sprite: defaults.sprite,
     drawWith: '',
     drawingModel: defaults.model,
-    turnWith: rotateLoras[0]?.value ?? '',
-    turningModel: defaults.model,
+    turnWith,
+    turningModel: modelFor(rotateLoras, turnWith, defaults.model),
   };
 }
 

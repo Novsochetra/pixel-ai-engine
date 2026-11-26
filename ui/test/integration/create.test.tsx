@@ -80,8 +80,20 @@ describe('the create screen', () => {
       drawWith: '',
       drawingModel: 'flux2-klein-4b',
       turnWith: 'runs/rotate-v1/final',
-      turningModel: 'flux2-klein-4b',
+      turningModel: 'flux2-klein-base-4b',
     });
+  });
+
+  it('draws with the model a create LoRA learnt on, and fast with none', async () => {
+    renderApp('/create', createServer(startState()));
+    const drawWith = await within(inspector()).findByLabelText('Draw with');
+    const drawingModel = () => within(inspector()).getByLabelText('Drawing model');
+
+    expect(drawingModel()).toHaveProperty('value', 'flux2-klein-4b');
+    await userEvent.selectOptions(drawWith, 'runs/create-v1/final');
+    expect(drawingModel()).toHaveProperty('value', 'flux2-klein-base-4b');
+    await userEvent.selectOptions(drawWith, '');
+    expect(drawingModel()).toHaveProperty('value', 'flux2-klein-4b');
   });
 
   it('generates with ⌘↩ from the form', async () => {

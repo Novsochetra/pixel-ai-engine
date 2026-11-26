@@ -3,6 +3,8 @@ import type { FormOptions, GeneratedEntry } from '@/create/create-client';
 import type { JobView } from '@/jobs/jobs-client';
 import { NO_JOB, RUNNING } from './render-app';
 
+export const BASE = 'flux2-klein-base-4b';
+
 export const OPTIONS: FormOptions = {
   models: [
     { value: 'flux2-klein-4b', label: 'fast (4 steps, ~40 s a view)' },
@@ -66,7 +68,9 @@ const GETS: Record<string, (state: CreateState) => object> = {
 function loras(url: string) {
   const task = new URL(url, 'http://test').searchParams.get('task');
 
-  return { loras: [{ value: `runs/${task}-v1/final`, label: `${task}-v1 · final` }] };
+  return {
+    loras: [{ value: `runs/${task}-v1/final`, label: `${task}-v1 · final`, model: BASE }],
+  };
 }
 
 // Delete moves a folder to the trash and Undo brings it back, as the server does.

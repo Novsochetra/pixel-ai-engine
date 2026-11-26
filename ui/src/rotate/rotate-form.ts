@@ -1,6 +1,7 @@
 import type { AnimateSources } from '@/animate/animate-client';
 import { firstSource } from '@/animate/animate-form';
-import type { Choice } from '@/create/create-client';
+import type { LoraChoice } from '@/create/create-client';
+import { modelFor } from '@/create/create-form';
 import type { RotateBody, RotateOptions } from './rotate-client';
 
 export type RotateValues = RotateBody;
@@ -14,21 +15,22 @@ export const turnable = (sources: AnimateSources): AnimateSources => ({
 export function defaultValues(
   options: RotateOptions,
   sources: AnimateSources,
-  loras: readonly Choice[],
+  loras: readonly LoraChoice[],
 ): RotateValues {
   const { defaults } = options;
+  const lora = loras[0]?.value ?? '';
 
   return {
     source: firstSource('made', sources) || firstSource('upload', sources),
-    lora: loras[0]?.value ?? '',
-    turningModel: defaults.model,
+    lora,
+    turningModel: modelFor(loras, lora, defaults.model),
     sprite: defaults.sprite,
     views: defaults.views,
   };
 }
 
 // The same refusals as the server's, said before Rotate rather than after it.
-export function formProblem(values: RotateValues, loras: readonly Choice[]): string | null {
+export function formProblem(values: RotateValues, loras: readonly LoraChoice[]): string | null {
   if (!values.source) {
     return 'Choose a character, or upload a PNG.';
   }

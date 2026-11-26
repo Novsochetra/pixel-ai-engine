@@ -2,16 +2,16 @@ import { FormError } from '@/create/FormError';
 import { JobButton } from '@/jobs/JobButton';
 import { ScreenFrame } from '@/layout/ScreenFrame';
 import { NARROW, useMediaQuery } from '@/layout/use-media-query';
-import { RunList } from './RunList';
+import { RunGrid } from './RunGrid';
 import { TrainingInspector } from './TrainingInspector';
 import { useTrainingScreen } from './use-training-screen';
 import '@/create/create.css';
 import './training.css';
 
-// The runs with their loss charts; the inspector holds a new run, or the selected run's actions,
-// and the toolbar's one button runs whichever it shows.
+// The runs as cards, each opening its own screen; the inspector holds a new run, which the
+// toolbar's one button starts.
 export function TrainingScreen() {
-  const screen = useTrainingScreen();
+  const screen = useTrainingScreen(null);
   const isNarrow = useMediaQuery(NARROW);
 
   const error = screen.error ? (
@@ -27,12 +27,7 @@ export function TrainingScreen() {
     <ScreenFrame title="Training" actions={action} inspector={inspector}>
       <div className="create-body">
         {isNarrow ? error : null}
-        <RunList
-          query={screen.runs}
-          models={screen.options.data?.models ?? []}
-          chosen={screen.choice.run?.name ?? null}
-          onChoose={screen.choice.select}
-        />
+        <RunGrid query={screen.runs} models={screen.options.data?.models ?? []} />
       </div>
     </ScreenFrame>
   );

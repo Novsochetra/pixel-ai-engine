@@ -1,6 +1,6 @@
 import { Picker } from '@/components/picker/Picker';
 import type { Choice, FormOptions } from './create-client';
-import { createBody, drawWithNote, turnWithNote, type CreateValues } from './create-form';
+import { createBody, drawWithNote, modelFor, turnWithNote, type CreateValues } from './create-form';
 import type { CreateForm } from './use-create-form';
 
 const NO_CREATE_LORA = { value: '', label: 'None: the model as it is' };
@@ -46,7 +46,12 @@ function drawingGroup({ form, values, options }: ModelFieldsProps): GroupProps {
       label: 'Draw with',
       value: createBody(values).drawWith,
       choices: [NO_CREATE_LORA, ...form.createLoras],
-      onChange: (drawWith) => form.change({ drawWith }),
+
+      onChange: (drawWith) =>
+        form.change({
+          drawWith,
+          drawingModel: modelFor(form.createLoras, drawWith, options.defaults.model),
+        }),
     },
     model: {
       label: 'Drawing model',
@@ -67,7 +72,12 @@ function turningGroup({ form, values, options }: ModelFieldsProps): GroupProps {
       label: 'Turn with',
       value: createBody(values).turnWith,
       choices: [NO_ROTATE_LORA, ...form.rotateLoras],
-      onChange: (turnWith) => form.change({ turnWith }),
+
+      onChange: (turnWith) =>
+        form.change({
+          turnWith,
+          turningModel: modelFor(form.rotateLoras, turnWith, options.defaults.model),
+        }),
     },
     model: {
       label: 'Turning model',

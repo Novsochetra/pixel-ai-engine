@@ -22,10 +22,12 @@ async function screenLoaded() {
   await screen.findByRole('list', { name: 'Training runs' });
 }
 
+// A card opens the run's own screen, whose inspector holds what to do with it.
 async function chooseRun(name: string) {
   const cards = screen.getByRole('list', { name: 'Training runs' });
 
-  await userEvent.click(within(cards).getByRole('button', { name: new RegExp(`^${name}`) }));
+  await userEvent.click(within(cards).getByRole('link', { name: new RegExp(`^${name}`) }));
+  await screen.findByRole('heading', { name, level: 1 });
 }
 
 describe('the new run form', () => {
@@ -202,15 +204,35 @@ describe('a selected run', () => {
     expect(primary().textContent).toBe('Resume');
   });
 
-  it('goes back to a new run', async () => {
+  it('goes back to the runs and a new run', async () => {
     renderApp('/training', trainingServer(startState()));
     await screenLoaded();
 
     await chooseRun('rotate-v2');
-    await userEvent.click(within(inspector()).getByRole('button', { name: 'New run' }));
+    await userEvent.click(screen.getByRole('link', { name: 'Back to Training' }));
 
+    expect(await within(inspector()).findByLabelText('Name')).toBeTruthy();
     expect(primary().textContent).toBe('Start training');
-    expect(field('Name')).toBeTruthy();
+  });
+
+  it('shows its chart and its facts on its own screen', async () => {
+    renderApp('/training/rotate-v2', trainingServer(startState()));
+
+    const chart = await screen.findByRole('img', { name: /^Loss of rotate-v2/ });
+
+    expect(chart.getAttribute('aria-label')).toBe(
+      'Loss of rotate-v2 over 2,000 steps, val loss 0.0805 at step 2,000.',
+    );
+    expect(screen.getByRole('heading', { name: 'Run' })).toBeTruthy();
+    expect(screen.getByText('rotation-v1')).toBeTruthy();
+    expect(screen.getByText('Step 2,000 of 2,000')).toBeTruthy();
+  });
+
+  it('says when there is no run of that name', async () => {
+    renderApp('/training/nope', trainingServer(startState()));
+
+    expect(await screen.findByText('No run called nope')).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'Back to Training' })).toBeTruthy();
   });
 
   it('waits while a job runs, and says so', async () => {
@@ -227,23 +249,20 @@ describe('a selected run', () => {
 });
 
 describe('the runs', () => {
-  it('lists each run newest first with its steps, data seen and chart', async () => {
+  it('shows each run as a card, newest first, with its steps and data seen', async () => {
     renderApp('/training', trainingServer(startState()));
     await screenLoaded();
 
     const list = screen.getByRole('list', { name: 'Training runs' });
-    const cards = Array.from(list.children) as HTMLElement[];
+    const cards = within(list).getAllByRole('link');
 
-    expect(cards.map((card) => card.querySelector('.training-run__name')!.textContent)).toEqual([
-      'pixie-draw-v1',
-      'rotate-v2',
+    expect(cards.map((card) => card.getAttribute('href'))).toEqual([
+      '/training/pixie-draw-v1',
+      '/training/rotate-v2',
     ]);
     expect(cards[0]!.textContent).toContain('42% of the data seen');
     expect(cards[1]!.textContent).toContain('Step 2,000 of 2,000');
-    expect(cards[1]!.textContent).toContain('27 s a step');
-    expect(within(cards[1]!).getByRole('img').getAttribute('aria-label')).toBe(
-      'Loss of rotate-v2 over 2,000 steps, val loss 0.0805 at step 2,000.',
-    );
+    expect(cards[1]!.textContent).toContain('Val loss 0.0805');
   });
 
   it('marks the run being trained', async () => {
@@ -258,7 +277,7 @@ describe('the runs', () => {
   it('says a run that has just started has no steps yet', async () => {
     const state = startState();
     state.runs = [{ ...state.runs[0]!, step: 0, loss: [], val: [], isTraining: true }];
-    renderApp('/training', trainingServer(state));
+    renderApp('/training/pixie-draw-v1', trainingServer(state));
 
     expect(await screen.findByText(/^No steps yet/)).toBeTruthy();
   });

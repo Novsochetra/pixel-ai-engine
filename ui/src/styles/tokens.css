@@ -150,11 +150,13 @@
   --size-view-thumb: 2.75rem;
   --size-sheet-preview: 8rem;
   --size-made-tile: 10rem;
+  --size-run-tile: 17rem;
   --size-zoom-value: 3rem;
   --size-frame-text: 6.5rem;
   --size-speed: 15rem;
   --size-search: 16rem;
   --size-chart-line: 2px;
+  --size-spark: 2.5rem;
   --size-chart-key: 0.75rem;
   --size-chart-readout: 13.5rem;
   --size-filter: 22rem;

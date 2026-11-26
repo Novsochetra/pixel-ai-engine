@@ -24,6 +24,18 @@ async function formLoaded() {
 }
 
 describe('the rotate form', () => {
+  it('turns with the model the LoRA learnt on, unless another is picked', async () => {
+    const server = rotateServer(startState());
+    renderApp('/rotate', server);
+    await formLoaded();
+
+    expect(field('Turning model')).toHaveProperty('value', 'flux2-klein-base-4b');
+    await userEvent.selectOptions(field('Turning model'), 'flux2-klein-4b');
+    await userEvent.keyboard('{Meta>}{Enter}{/Meta}');
+
+    await vi.waitFor(() => expect(postedBody(server)?.turningModel).toBe('flux2-klein-4b'));
+  });
+
   it('posts the front view, LoRA, model, sprite and views', async () => {
     const server = rotateServer(startState());
     renderApp('/rotate', server);
