@@ -40,7 +40,11 @@ Reuse the components in `ui/src/components/`. Make a new one only when none fits
   separator, fill, tint). Tint (blue) marks only what you can press. Red marks only destructive acts.
 - Type: Inter as the stand-in for SF Pro, on Apple text styles (large title, title 1 to 3, headline,
   body, callout, subheadline, footnote, caption). Regular, semibold and bold weights only.
-- Glass (blur and saturate) is for bars, sheets and floating controls, never behind long text.
+- Frosted glass, as in the Retro Arcade: a soft color glow sits behind the app, and glass floats
+  over it. Panels (sidebar, inspector, tab bar, sheets) use `--color-panel` with `--blur-panel` and
+  `--shadow-panel`; controls (glass buttons, `pill-button--glass`, segmented) use `--color-glass`
+  with `--blur-glass`. Pixel art never sits on glass: it keeps its solid checkerboard. Glass never
+  sits behind long text. With `prefers-reduced-transparency`, panels turn solid.
 - Concentric corners: inner radius = outer radius minus padding.
 - Icons look like SF Symbols: one stroke weight and one size per place. An icon-only button has an
   `aria-label` and a tooltip.

@@ -11,11 +11,11 @@
   color: var(--color-label);
   text-align: start;
   cursor: pointer;
-  background: var(--color-surface-raised);
+  background: var(--color-glass);
   border: 0;
   border-radius: var(--radius-card);
   outline: none;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-glass);
   transition: scale var(--duration-press) var(--easing-standard);
 }
 
@@ -65,13 +65,13 @@
 .job-status--floating {
   position: fixed;
   inset-inline: var(--space-4);
-  inset-block-end: calc(var(--size-tab-bar) + env(safe-area-inset-bottom) + var(--space-3));
+  inset-block-end: calc(var(--size-tab-bar) + env(safe-area-inset-bottom) + var(--space-5));
   z-index: var(--layer-bar);
   inline-size: auto;
-  background: var(--color-material);
-  box-shadow: var(--shadow-floating);
-  -webkit-backdrop-filter: var(--blur-glass);
-  backdrop-filter: var(--blur-glass);
+  background: var(--color-panel);
+  box-shadow: var(--shadow-panel);
+  -webkit-backdrop-filter: var(--blur-panel);
+  backdrop-filter: var(--blur-panel);
 }
 
 .job-sheet__meta {

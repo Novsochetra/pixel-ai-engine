@@ -27,9 +27,14 @@
   --color-apple-gray-6-light: #f2f2f7;
 
   --color-background: var(--color-black);
-  --color-sidebar: var(--color-apple-gray-6);
-  --color-surface: var(--color-apple-gray-6);
-  --color-surface-raised: var(--color-apple-gray-5);
+  --color-glow-1: rgb(94 92 230 / 52%);
+  --color-glow-2: rgb(191 90 242 / 34%);
+  --color-glow-3: rgb(255 159 10 / 22%);
+  --color-panel: rgb(28 28 30 / 58%);
+  --color-panel-solid: var(--color-apple-gray-6);
+  --color-sidebar: var(--color-panel);
+  --color-surface: var(--color-panel);
+  --color-surface-raised: rgb(255 255 255 / 8%);
   --color-separator: rgb(84 84 88 / 60%);
   --color-label: var(--color-white);
   --color-label-secondary: rgb(235 235 245 / 70%);
@@ -57,11 +62,11 @@
   --color-segment-track: rgb(118 118 128 / 24%);
   --color-segment-thumb: var(--color-apple-gray-2);
   --color-segment-separator: rgb(142 142 147 / 35%);
-  --color-sheet: var(--color-apple-gray-6);
-  --color-sheet-backdrop: rgb(0 0 0 / 55%);
+  --color-sheet: rgb(28 28 30 / 74%);
+  --color-sheet-backdrop: rgb(0 0 0 / 45%);
   --color-sheet-grabber: rgb(235 235 245 / 45%);
   --color-progress-track: rgb(118 118 128 / 32%);
-  --color-log: var(--color-black);
+  --color-log: rgb(0 0 0 / 45%);
   --color-checker-light: var(--color-apple-gray-4);
   --color-checker-dark: var(--color-apple-gray-5);
   --color-mark-top: var(--color-apple-orange);
@@ -131,6 +136,7 @@
   --size-log: 18rem;
   --size-empty-text: 26rem;
   --size-checker: 8px;
+  --size-panel-gap: var(--space-3);
   --size-tile: 8.5rem;
   --size-stage: min(24rem, 55dvh);
   --size-view-thumb: 2.75rem;
@@ -150,6 +156,7 @@
   --radius-card: 14px;
   --radius-mark: 7px;
   --radius-sheet: 1.75rem;
+  --radius-panel: 1.375rem;
   --radius-pill: 999px;
 
   --shadow-glass:
@@ -159,9 +166,13 @@
   --shadow-segment-thumb: 0 3px 8px rgb(0 0 0 / 28%);
   --shadow-sheet: 0 30px 80px rgb(0 0 0 / 60%);
   --shadow-floating: 0 10px 30px rgb(0 0 0 / 45%), inset 0 0 0 0.5px rgb(255 255 255 / 14%);
+  --shadow-panel:
+    inset 0 0 0 1px var(--color-glass-edge), inset 0 1px 0 var(--color-glass-highlight),
+    0 12px 40px rgb(0 0 0 / 35%);
 
   --blur-glass: blur(24px) saturate(180%);
   --blur-sheet-backdrop: blur(12px);
+  --blur-panel: blur(40px) saturate(180%);
 
   --dim-pressed: 0.85;
   --dim-busy: 0.6;
@@ -191,10 +202,13 @@
 }
 
 :root[data-appearance='light'] {
-  --color-background: var(--color-white);
-  --color-sidebar: var(--color-apple-gray-6-light);
-  --color-surface: var(--color-apple-gray-6-light);
-  --color-surface-raised: var(--color-white);
+  --color-background: var(--color-apple-gray-6-light);
+  --color-glow-1: rgb(0 122 255 / 26%);
+  --color-glow-2: rgb(255 45 85 / 18%);
+  --color-glow-3: rgb(255 149 0 / 22%);
+  --color-panel: rgb(255 255 255 / 62%);
+  --color-panel-solid: var(--color-white);
+  --color-surface-raised: rgb(255 255 255 / 72%);
   --color-separator: rgb(60 60 67 / 29%);
   --color-label: var(--color-black);
   --color-label-secondary: rgb(60 60 67 / 80%);
@@ -219,11 +233,11 @@
   --color-segment-track: rgb(118 118 128 / 12%);
   --color-segment-thumb: var(--color-white);
   --color-segment-separator: rgb(60 60 67 / 22%);
-  --color-sheet: var(--color-white);
-  --color-sheet-backdrop: rgb(0 0 0 / 28%);
+  --color-sheet: rgb(255 255 255 / 76%);
+  --color-sheet-backdrop: rgb(0 0 0 / 22%);
   --color-sheet-grabber: rgb(60 60 67 / 30%);
   --color-progress-track: rgb(118 118 128 / 20%);
-  --color-log: var(--color-apple-gray-6-light);
+  --color-log: rgb(255 255 255 / 60%);
   --color-checker-light: var(--color-white);
   --color-checker-dark: var(--color-apple-gray-5-light);
 
@@ -233,4 +247,18 @@
   --shadow-segment-thumb: 0 3px 8px rgb(0 0 0 / 12%), 0 0 0 0.5px rgb(0 0 0 / 4%);
   --shadow-sheet: 0 24px 64px rgb(0 0 0 / 22%);
   --shadow-floating: 0 10px 30px rgb(0 0 0 / 18%), inset 0 0 0 0.5px rgb(0 0 0 / 8%);
+  --shadow-panel:
+    inset 0 0 0 1px var(--color-glass-edge), inset 0 1px 0 var(--color-glass-highlight),
+    0 12px 40px rgb(0 0 0 / 10%);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root,
+  :root[data-appearance='light'] {
+    --color-panel: var(--color-panel-solid);
+    --color-sheet: var(--color-panel-solid);
+    --color-material: var(--color-panel-solid);
+    --blur-panel: none;
+    --blur-glass: none;
+  }
 }

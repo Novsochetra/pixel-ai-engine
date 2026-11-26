@@ -6,7 +6,7 @@ function StopConfirm({ onKeep, onStop }: { onKeep: () => void; onStop: () => voi
     <div className="job-sheet__confirm" role="group" aria-label="Stop the job?">
       <p>Stop this job? Work since its last saved step is lost.</p>
       <div className="job-sheet__actions">
-        <button className="pill-button pill-button--plain" type="button" onClick={onKeep}>
+        <button className="pill-button pill-button--glass" type="button" onClick={onKeep}>
           Keep running
         </button>
         <button className="pill-button pill-button--destructive" type="button" onClick={onStop}>

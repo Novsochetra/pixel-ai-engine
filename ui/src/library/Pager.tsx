@@ -15,7 +15,7 @@ export function Pager({ page, pages, hasMore, onPage }: PagerProps) {
   return (
     <nav className="pager" aria-label="Pages">
       <button
-        className="pill-button pill-button--plain"
+        className="pill-button pill-button--glass"
         type="button"
         disabled={page === 1}
         onClick={() => onPage(page - 1)}
@@ -27,7 +27,7 @@ export function Pager({ page, pages, hasMore, onPage }: PagerProps) {
         {pages ? ` of ${countText(pages)}` : ''}
       </span>
       <button
-        className="pill-button pill-button--plain"
+        className="pill-button pill-button--glass"
         type="button"
         disabled={!hasMore}
         onClick={() => onPage(page + 1)}

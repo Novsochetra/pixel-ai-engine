@@ -1,12 +1,17 @@
+/* A floating glass panel, as the iPadOS sidebar: the backdrop glows through it. */
 .sidebar {
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  block-size: 100dvh;
+  block-size: calc(100dvh - 2 * var(--size-panel-gap));
   padding: var(--space-4) var(--space-3);
+  margin: var(--size-panel-gap) 0 var(--size-panel-gap) var(--size-panel-gap);
   overflow-y: auto;
   background: var(--color-sidebar);
-  border-inline-end: var(--border-width-hairline) solid var(--color-separator);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+  -webkit-backdrop-filter: var(--blur-panel);
+  backdrop-filter: var(--blur-panel);
 }
 
 .sidebar__brand {

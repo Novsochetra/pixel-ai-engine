@@ -58,6 +58,14 @@
   background: none;
 }
 
+/* Frosted, for a second action beside the primary one, as the arcade's Details. */
+.pill-button--glass {
+  background: var(--color-glass);
+  box-shadow: var(--shadow-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  backdrop-filter: var(--blur-glass);
+}
+
 .pill-button--destructive {
   color: var(--color-on-button-destructive);
   background: var(--color-button-destructive);
@@ -70,7 +78,8 @@
 }
 
 @media (hover: hover) {
-  .glass-button:not(:disabled):hover {
+  .glass-button:not(:disabled):hover,
+  .pill-button--glass:not(:disabled):hover {
     background: var(--color-glass-hover);
   }
 

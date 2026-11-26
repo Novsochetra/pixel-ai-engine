@@ -9,8 +9,11 @@
   grid-template-columns: repeat(var(--segments), minmax(0, 1fr));
   block-size: var(--size-segment-height);
   padding: var(--size-segment-inset);
-  background: var(--color-segment-track);
+  background: var(--color-glass);
   border-radius: var(--radius-segment);
+  box-shadow: var(--shadow-glass);
+  -webkit-backdrop-filter: var(--blur-glass);
+  backdrop-filter: var(--blur-glass);
 }
 
 .segmented__thumb {

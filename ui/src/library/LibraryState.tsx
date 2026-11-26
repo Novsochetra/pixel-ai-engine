@@ -12,7 +12,7 @@ export function LibraryLoading() {
 
 export function LibraryError({ error, onRetry }: { error: Error; onRetry: () => void }) {
   const retry = (
-    <button className="pill-button pill-button--tinted" type="button" onClick={onRetry}>
+    <button className="pill-button pill-button--glass" type="button" onClick={onRetry}>
       Try again
     </button>
   );

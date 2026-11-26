@@ -20,7 +20,9 @@
   border: 0;
   border-radius: var(--radius-sheet);
   outline: none;
-  box-shadow: var(--shadow-sheet);
+  box-shadow: var(--shadow-panel), var(--shadow-sheet);
+  -webkit-backdrop-filter: var(--blur-panel);
+  backdrop-filter: var(--blur-panel);
   overscroll-behavior: contain;
 }
 

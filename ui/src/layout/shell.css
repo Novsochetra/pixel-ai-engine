@@ -4,6 +4,20 @@
   block-size: 100dvh;
 }
 
+/* Soft color behind every panel: frosted glass over a flat color would look like plain gray. */
+.shell::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: '';
+  background:
+    radial-gradient(60% 50% at 15% 0%, var(--color-glow-1), var(--color-clear)),
+    radial-gradient(50% 45% at 100% 30%, var(--color-glow-2), var(--color-clear)),
+    radial-gradient(55% 50% at 50% 110%, var(--color-glow-3), var(--color-clear)),
+    var(--color-background);
+}
+
 .shell__main {
   min-inline-size: 0;
   block-size: 100dvh;
@@ -21,7 +35,9 @@
   }
 
   .shell__main {
-    block-size: calc(100dvh - var(--size-tab-bar) - env(safe-area-inset-bottom));
+    block-size: calc(
+      100dvh - var(--size-tab-bar) - env(safe-area-inset-bottom) - 2 * var(--space-2)
+    );
   }
 }
 

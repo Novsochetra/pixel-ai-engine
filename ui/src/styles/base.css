@@ -25,7 +25,6 @@ body {
   font-size: var(--font-size-body);
   line-height: var(--leading-body);
   color: var(--color-label);
-  background: var(--color-background);
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: var(--color-clear);
 }
