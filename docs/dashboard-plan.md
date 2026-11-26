@@ -51,16 +51,30 @@ A creative tool, like Pixelmator or Final Cut: the art in the middle, settings o
 
 Selecting an image opens it large in a sheet, with zoom and download.
 
-## API (first cut)
+## API
+
+Built (steps 1 and 2):
 
 ```
-GET  /api/characters?page=     GET  /api/characters/{id}     GET  /api/flagged
-GET  /api/images/{id}.png      GET  /api/exports             GET  /api/tryouts
+GET  /api/health                            GET  /api/jobs/current      POST /api/jobs/stop
+GET  /api/characters?page=&q=&source=&split=
+GET  /api/characters/{id}                   GET  /api/flagged?flag=&page=
+GET  /api/exports                           GET  /api/tryouts?run=
+GET  /api/images/{id}.png                   GET  /api/thumbs/{id}.png
+GET  /api/files/exports/{path}              GET  /api/files/tryouts/{path}
+```
+
+Character and image ids hold slashes (`pac/train/0/front`), so they are the rest of the path.
+`/api/thumbs/` shrinks a big picture to 256 px at most, nearest neighbour. `/api/files/` serves only
+`.png` files inside `data/exports/` and `data/tryouts/`.
+
+Still to build:
+
+```
 GET  /api/generated            GET  /api/animated            GET  /api/runs
-GET  /api/loras?task=          GET  /api/jobs/current
+GET  /api/loras?task=
 POST /api/generate             POST /api/animate             POST /api/uploads
 POST /api/training/start       POST /api/training/resume     POST /api/training/tryout
-POST /api/jobs/stop
 ```
 
 The job functions in `studio.py` and `animate_page.py` already return the command to run.
@@ -69,8 +83,8 @@ The API calls them as they are and sends JSON, not HTML.
 ## Order
 
 1. Make `server/` and `ui/`: tokens, the base components, the layout shell (sidebar, toolbar,
-   inspector) and the job status. One command runs both.
-2. Library (read only, so it is the safest first real screen).
+   inspector) and the job status. One command runs both. Done.
+2. Library (read only, so it is the safest first real screen). Done.
 3. Create.
 4. Animate.
 5. Training.

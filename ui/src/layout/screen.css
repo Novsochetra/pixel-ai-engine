@@ -62,6 +62,11 @@
   overflow-y: auto;
 }
 
+/* The body scrolls, so its parts keep their height instead of squeezing to fit. */
+.inspector__body > * {
+  flex: none;
+}
+
 .inspector-note {
   font-size: var(--font-size-subheadline);
   color: var(--color-label-secondary);

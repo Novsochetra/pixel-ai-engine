@@ -1,0 +1,79 @@
+.library-tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  inline-size: 100%;
+  padding: var(--space-2);
+  font: inherit;
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-card);
+  outline: none;
+  transition:
+    scale var(--duration-press) var(--easing-standard),
+    background-color var(--duration-normal) var(--easing-standard);
+}
+
+.library-tile[aria-pressed='true'] {
+  background: var(--color-selected);
+}
+
+.library-tile:focus-visible {
+  outline: var(--border-width-ring) solid var(--color-focus-ring);
+}
+
+.library-tile:active {
+  scale: var(--scale-pressed);
+  opacity: var(--dim-pressed);
+}
+
+@media (hover: hover) {
+  .library-tile:not([aria-pressed='true']):hover {
+    background: var(--color-row-hover);
+  }
+}
+
+/* Concentric: the art's corners sit inside the tile's, less its padding. */
+.library-tile__art {
+  display: flex;
+  aspect-ratio: 1;
+  margin-block-end: var(--space-1);
+  overflow: hidden;
+  border-radius: calc(var(--radius-card) - var(--space-2));
+}
+
+.pixel-image {
+  display: block;
+  flex: none;
+  margin: auto;
+}
+
+.library-tile__title,
+.library-tile__subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.library-tile__title {
+  font-size: var(--font-size-footnote);
+  font-weight: var(--font-weight-semibold);
+}
+
+.library-tile__subtitle {
+  font-size: var(--font-size-caption);
+  color: var(--color-label-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .library-tile {
+    transition: none;
+  }
+
+  .library-tile:active {
+    scale: none;
+  }
+}

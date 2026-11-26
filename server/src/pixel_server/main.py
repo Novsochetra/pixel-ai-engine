@@ -1,9 +1,13 @@
 import argparse
 import os
+import threading
 from pathlib import Path
 
 import uvicorn
+from pixel_data.dashboard.browse_server import warm_up
 from pixel_data.dashboard.jobs import Jobs
+from pixel_data.records import connect
+from pixel_data.sources import Layout
 
 from pixel_server.app import create_app
 
@@ -12,8 +16,20 @@ DEFAULT_DATA = ROOT / "dataset" / "data"
 UI_DIST = ROOT / "ui" / "dist"
 
 
+def prepare_records(layout: Layout) -> None:
+    if not layout.records.exists():
+        return
+
+    # The routes open the records read-only, so bring the file up to date once here.
+    connect(layout.records).close()
+
+    # Counting flags over millions of images takes seconds; do it now, not on the first page.
+    threading.Thread(target=warm_up, args=(layout,), daemon=True).start()
+
+
 def build_app():
     data = Path(os.environ.get("PIXEL_DATA", DEFAULT_DATA))
+    prepare_records(Layout(data))
 
     return create_app(Jobs(data / "jobs", data), UI_DIST)
 
@@ -21,7 +37,8 @@ def build_app():
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run the pixel engine dashboard API")
     parser.add_argument("--port", type=int, default=8780)
-    parser.add_argument("--data", type=Path, default=DEFAULT_DATA, help="the dataset/data folder")
+    data = os.environ.get("PIXEL_DATA", DEFAULT_DATA)
+    parser.add_argument("--data", type=Path, default=data, help="the dataset/data folder (or PIXEL_DATA)")
     parser.add_argument("--reload", action="store_true", help="restart when a server file changes")
     args = parser.parse_args()
 

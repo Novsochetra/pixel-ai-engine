@@ -63,13 +63,14 @@
   background: var(--color-button-destructive);
 }
 
-.pill-button:disabled {
+.pill-button:disabled,
+.glass-button:disabled {
   cursor: default;
-  opacity: 0.4;
+  opacity: var(--dim-disabled);
 }
 
 @media (hover: hover) {
-  .glass-button:hover {
+  .glass-button:not(:disabled):hover {
     background: var(--color-glass-hover);
   }
 
@@ -78,7 +79,7 @@
   }
 }
 
-.glass-button:active,
+.glass-button:not(:disabled):active,
 .pill-button:not(:disabled):active {
   scale: var(--scale-pressed);
   transition-duration: var(--duration-fast);

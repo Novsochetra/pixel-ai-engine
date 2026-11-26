@@ -6,9 +6,10 @@ interface EmptyStateProps {
   icon: IconName;
   title: string;
   children: ReactNode;
+  action?: ReactNode;
 }
 
-export function EmptyState({ icon, title, children }: EmptyStateProps) {
+export function EmptyState({ icon, title, children, action }: EmptyStateProps) {
   return (
     <div className="empty-state">
       <span className="empty-state__icon">
@@ -16,6 +17,7 @@ export function EmptyState({ icon, title, children }: EmptyStateProps) {
       </span>
       <h2 className="empty-state__title">{title}</h2>
       <p className="empty-state__text">{children}</p>
+      {action}
     </div>
   );
 }

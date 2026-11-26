@@ -1,0 +1,109 @@
+.library-bar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--layer-content);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-4);
+  align-items: center;
+  padding: var(--space-3) var(--space-6);
+  background: var(--color-material);
+  border-block-end: var(--border-width-hairline) solid var(--color-separator);
+  -webkit-backdrop-filter: var(--blur-glass);
+  backdrop-filter: var(--blur-glass);
+}
+
+.library-bar__filter {
+  inline-size: var(--size-filter);
+  max-inline-size: 100%;
+}
+
+.library-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-5) var(--space-6) var(--space-8);
+  transition: opacity var(--duration-normal) var(--easing-standard);
+}
+
+.library-body[aria-busy='true'] {
+  opacity: var(--dim-busy);
+}
+
+.library-loading {
+  display: grid;
+  place-items: center;
+  padding: var(--space-12);
+}
+
+.library-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.library-section__title {
+  font-size: var(--font-size-headline);
+  font-weight: var(--font-weight-semibold);
+  overflow-wrap: anywhere;
+}
+
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--size-tile), 1fr));
+  gap: var(--space-3);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.pager {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+  justify-content: center;
+  padding-block: var(--space-4);
+}
+
+.pager__place {
+  font-size: var(--font-size-subheadline);
+  color: var(--color-label-secondary);
+}
+
+.library-details__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.library-details__title {
+  font-size: var(--font-size-headline);
+  font-weight: var(--font-weight-semibold);
+  overflow-wrap: anywhere;
+}
+
+.library-details__subtitle,
+.library-note {
+  font-size: var(--font-size-subheadline);
+  color: var(--color-label-secondary);
+}
+
+@media (max-width: 47.99rem) {
+  .library-bar {
+    padding-inline: var(--space-4);
+  }
+
+  .library-bar__filter {
+    inline-size: 100%;
+  }
+
+  .library-body {
+    padding-inline: var(--space-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .library-body {
+    transition: none;
+  }
+}

@@ -12,6 +12,12 @@ const PATHS = {
   sun: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4',
   moon: 'M19.5 14.5A8 8 0 0 1 9.5 4.5a8 8 0 1 0 10 10z',
   inspector: 'M3.5 5h17v14h-17zM14.5 5v14M16.5 8.5h2M16.5 11.5h2',
+  search: 'M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM15.3 15.3L20 20',
+  plus: 'M12 5v14M5 12h14',
+  minus: 'M5 12h14',
+  download: 'M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14',
+  chevron: 'M8 10l4 4 4-4',
+  warning: 'M12 4L2.8 19.5h18.4zM12 10v4.5M12 17.5h.01',
 } as const;
 
 export type IconName = keyof typeof PATHS;

@@ -3,8 +3,9 @@ from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from pixel_data.dashboard.jobs import Jobs
+from pixel_data.sources import Layout
 
-from pixel_server.routes import health, jobs
+from pixel_server.routes import characters, collections, flagged, health, jobs, pictures
 from pixel_server.same_site import is_same_site
 from pixel_server.ui_files import UiFiles
 
@@ -12,6 +13,7 @@ from pixel_server.ui_files import UiFiles
 def create_app(job_runner: Jobs, ui_dist: Path | None = None) -> FastAPI:
     app = FastAPI(title="Pixel Engine", docs_url="/api/docs", openapi_url="/api/openapi.json")
     app.state.jobs = job_runner
+    app.state.layout = Layout(job_runner.data)
 
     @app.middleware("http")
     async def refuse_other_sites(request: Request, call_next):
@@ -20,8 +22,8 @@ def create_app(job_runner: Jobs, ui_dist: Path | None = None) -> FastAPI:
 
         return await call_next(request)
 
-    app.include_router(health.router)
-    app.include_router(jobs.router)
+    for routes in (health, jobs, characters, flagged, collections, pictures):
+        app.include_router(routes.router)
 
     if ui_dist and (ui_dist / "index.html").exists():
         app.mount("/", UiFiles(directory=ui_dist, html=True), name="ui")
