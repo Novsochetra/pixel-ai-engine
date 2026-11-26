@@ -21,7 +21,11 @@ export function useCreateScreen() {
   return {
     form,
     run,
-    button: { isReady: isFilled, isBusy, isStarting: generate.isPending },
+    button: {
+      notReady: isFilled ? null : 'Write what to draw first.',
+      isBusy,
+      isStarting: generate.isPending,
+    },
     error: generate.error?.message ?? null,
     closeError: generate.reset,
   };

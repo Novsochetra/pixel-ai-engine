@@ -1,0 +1,59 @@
+.sprite-player {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Pixel art keeps its own solid checkerboard; it never sits on glass. */
+.sprite-player__stage {
+  display: flex;
+  block-size: var(--size-stage);
+  overflow: auto;
+  border-radius: var(--radius-card);
+}
+
+.sheet-frame {
+  display: block;
+  flex: none;
+  margin: auto;
+  overflow: hidden;
+}
+
+.sheet-frame__sheet {
+  display: block;
+  max-inline-size: none;
+}
+
+.sheet-frame[data-loaded='false'] .sheet-frame__sheet {
+  opacity: 0;
+}
+
+.sprite-player__choices,
+.player-controls,
+.sprite-player__files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.player-controls__transport,
+.sprite-player__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.player-controls__frame {
+  min-inline-size: var(--size-frame-text);
+  padding-inline-start: var(--space-2);
+  font-size: var(--font-size-subheadline);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-label-secondary);
+}
+
+.player-controls__speed {
+  min-inline-size: var(--size-speed);
+}

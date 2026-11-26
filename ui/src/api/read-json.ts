@@ -16,11 +16,11 @@ async function refusal(reply: Response): Promise<Error> {
   return new Error(typeof detail === 'string' ? detail : `The server answered ${reply.status}.`);
 }
 
-export async function postJson<Reply>(url: string, body: object): Promise<Reply> {
+async function post<Reply>(url: string, body: BodyInit, contentType: string): Promise<Reply> {
   const reply = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    headers: { 'Content-Type': contentType },
+    body,
   });
 
   if (!reply.ok) {
@@ -29,3 +29,8 @@ export async function postJson<Reply>(url: string, body: object): Promise<Reply>
 
   return reply.json();
 }
+
+export const postJson = <Reply>(url: string, body: object) =>
+  post<Reply>(url, JSON.stringify(body), 'application/json');
+
+export const postFile = <Reply>(url: string, file: Blob) => post<Reply>(url, file, file.type);

@@ -8,8 +8,14 @@ from pixel_data.dashboard.thumbs import THUMB_LIMIT
 from pixel_data.images import load_image, png_bytes
 from pixel_data.sources import Layout
 
-FILE_FOLDERS = ("exports", "tryouts", "generated")
-FILE_SUFFIXES = (".png",)
+# The folders /api/files/ serves, and the kinds of file it serves from each.
+FILE_FOLDERS = {
+    "exports": (".png",),
+    "tryouts": (".png",),
+    "generated": (".png",),
+    "animated": (".png", ".gif"),
+    "uploads": (".png",),
+}
 
 
 # A grid asks for the same pictures again on every page turn, and each one is read out of a zip
@@ -33,7 +39,7 @@ def image_png(data: Path, image_id: str, thumb: bool) -> bytes | None:
     return png_bytes(image)
 
 
-# Only pictures inside data/exports, data/tryouts and data/generated: never records.sqlite, a .json or a path with ..
+# Only pictures inside those folders: never records.sqlite, a .json or a path with ..
 def file_under(data: Path, folder: str, relative: str) -> Path | None:
     if folder not in FILE_FOLDERS:
         return None
@@ -41,7 +47,7 @@ def file_under(data: Path, folder: str, relative: str) -> Path | None:
     root = (data / folder).resolve()
     target = (root / relative).resolve()
 
-    if not target.is_relative_to(root) or not target.is_file() or target.suffix not in FILE_SUFFIXES:
+    if not target.is_relative_to(root) or not target.is_file() or target.suffix not in FILE_FOLDERS[folder]:
         return None
 
     return target

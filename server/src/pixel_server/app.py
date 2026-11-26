@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from pixel_data.dashboard.jobs import Jobs
 from pixel_data.sources import Layout
 
-from pixel_server.routes import characters, collections, create, flagged, health, jobs, pictures
+from pixel_server.routes import animate, characters, collections, create, flagged, health, jobs, pictures
 from pixel_server.same_site import is_same_site
 from pixel_server.ui_files import UiFiles
 
@@ -22,7 +22,7 @@ def create_app(job_runner: Jobs, ui_dist: Path | None = None) -> FastAPI:
 
         return await call_next(request)
 
-    for routes in (health, jobs, characters, flagged, collections, create, pictures):
+    for routes in (health, jobs, characters, flagged, collections, create, animate, pictures):
         app.include_router(routes.router)
 
     if ui_dist and (ui_dist / "index.html").exists():

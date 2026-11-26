@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { JobButton } from '@/jobs/JobButton';
 import { ScreenFrame } from '@/layout/ScreenFrame';
 import { NARROW, useMediaQuery } from '@/layout/use-media-query';
 import { PictureSheet } from '@/library/PictureSheet';
@@ -6,7 +7,6 @@ import type { LibraryItem } from '@/library/library-view';
 import { CreateGallery } from './CreateGallery';
 import { CreateInspector } from './CreateInspector';
 import { FormError } from './FormError';
-import { GenerateButton } from './GenerateButton';
 import { useGenerated } from './use-create';
 import { useCreateScreen } from './use-create-screen';
 import './create.css';
@@ -24,7 +24,7 @@ export function CreateScreen() {
 
   // A phone's form is a sheet that is closed when Generate is pressed, so the error shows on top.
   const inspector = <CreateInspector form={screen.form} error={isNarrow ? null : error} />;
-  const generate = <GenerateButton {...screen.button} onGenerate={screen.run} />;
+  const generate = <JobButton label="Generate" {...screen.button} onRun={screen.run} />;
 
   return (
     <ScreenFrame title="Create" actions={generate} inspector={inspector}>

@@ -17,6 +17,11 @@ const PATHS = {
   minus: 'M5 12h14',
   download: 'M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14',
   chevron: 'M8 10l4 4 4-4',
+  play: 'M8 5.5v13l10.5-6.5z',
+  pause: 'M9 5.5v13M15 5.5v13',
+  previous: 'M14.5 6l-6 6 6 6',
+  next: 'M9.5 6l6 6-6 6',
+  upload: 'M12 15.5V4.5M7.5 9L12 4.5 16.5 9M5 19.5h14',
   warning: 'M12 4L2.8 19.5h18.4zM12 10v4.5M12 17.5h.01',
 } as const;
 

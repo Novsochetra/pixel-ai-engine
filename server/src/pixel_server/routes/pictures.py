@@ -7,6 +7,7 @@ router = APIRouter()
 
 # A record never changes its picture without a new import, so the browser may keep it a while.
 CACHE = {"Cache-Control": "private, max-age=3600"}
+MEDIA_TYPES = {".png": "image/png", ".gif": "image/gif"}
 
 
 def png(request: Request, image_id: str, thumb: bool) -> Response:
@@ -35,4 +36,4 @@ def file(request: Request, folder: str, path: str) -> FileResponse:
     if target is None:
         raise HTTPException(404, "Not found.")
 
-    return FileResponse(target, media_type="image/png")
+    return FileResponse(target, media_type=MEDIA_TYPES[target.suffix])

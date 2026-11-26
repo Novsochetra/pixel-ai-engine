@@ -53,7 +53,7 @@ Selecting an image opens it large in a sheet, with zoom and download.
 
 ## API
 
-Built (steps 1 to 3):
+Built (steps 1 to 4):
 
 ```
 GET  /api/health                            GET  /api/jobs/current      POST /api/jobs/stop
@@ -65,22 +65,38 @@ GET  /api/files/exports/{path}              GET  /api/files/tryouts/{path}
 GET  /api/files/generated/{path}            GET  /api/generated
 GET  /api/generate/options                  GET  /api/loras?task=create|rotate
 POST /api/generate
+GET  /api/files/animated/{path}             GET  /api/files/uploads/{path}
+GET  /api/animated                          GET  /api/animate/options
+GET  /api/animate/sources                   POST /api/animate
+POST /api/uploads?name=
 ```
 
 Character and image ids hold slashes (`pac/train/0/front`), so they are the rest of the path.
 `/api/thumbs/` shrinks a big picture to 256 px at most, nearest neighbour. `/api/files/` serves only
-`.png` files inside `data/exports/`, `data/tryouts/` and `data/generated/`.
+`.png` files inside `data/exports/`, `data/tryouts/`, `data/generated/` and `data/uploads/`, and
+`.png` and `.gif` files inside `data/animated/`.
 
 `POST /api/generate` takes JSON (`prompt`, `pose`, `facing`, `characters`, `sprite`, `drawWith`,
 `drawingModel`, `turnWith`, `turningModel`) and checks it with `studio.generate_job`. A bad form
 answers 400 and a second job while one runs answers 409, each with the reason in `detail`.
 `/api/generate/options` lists the models, sprite sizes and facings from the same constants.
 
+`POST /api/animate` takes JSON (`source`, `subject`, `views`, `actions` one a line, `size`,
+`frames`) and checks it with `animate_page.animate_job`, with the same 400 and 409. The source is
+`generated/<folder>/s<seed>` or `uploads/<file>`. `/api/animate/sources` lists both kinds, and
+`/api/animate/options` the views, sizes, lengths, minutes a clip and limits from the old page's
+constants. `/api/animated` lists the runs newest first; each clip names its view, action, kept
+frames and the URLs of its GIF, raw GIF and sheet.
+
+`POST /api/uploads` takes the PNG as the whole body (`Content-Type: image/png`, the file name in
+`name`), as FastAPI's multipart forms need a package the project does not have. It answers 415 for
+another type, 413 past 10 MB, and 400 for a file that is not a PNG or is too big a picture; it saves
+with `animate_page.save_upload`.
+
 Still to build:
 
 ```
-GET  /api/animated            GET  /api/runs
-POST /api/animate             POST /api/uploads
+GET  /api/runs
 POST /api/training/start      POST /api/training/resume     POST /api/training/tryout
 ```
 
@@ -93,7 +109,7 @@ The API calls them as they are and sends JSON, not HTML.
    inspector) and the job status. One command runs both. Done.
 2. Library (read only, so it is the safest first real screen). Done.
 3. Create. Done.
-4. Animate.
+4. Animate. Done.
 5. Training.
 6. Rotate and Landscape, when their models are ready.
 7. Remove the old HTML pages and `pixel browse`.
