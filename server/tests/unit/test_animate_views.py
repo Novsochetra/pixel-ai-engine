@@ -1,7 +1,7 @@
 import asyncio
 
 import pytest
-from pixel_data.dashboard import animate_page
+from pixel_data.dashboard import animate
 from pixel_data.dashboard.studio import Invalid
 
 from pixel_server.animate.animate_form import old_form
@@ -54,10 +54,10 @@ def test_a_character_lists_a_picture_for_each_view():
 def test_the_options_come_from_the_old_form():
     options = animate_options()
 
-    assert [size["value"] for size in options["sizes"]] == list(animate_page.SIZES)
-    assert [frames["value"] for frames in options["frames"]] == list(animate_page.FRAMES)
+    assert [size["value"] for size in options["sizes"]] == list(animate.SIZES)
+    assert [frames["value"] for frames in options["frames"]] == list(animate.FRAMES)
     assert {"size": "512", "frames": "17", "minutes": 8} in options["minutes"]
-    assert options["defaults"]["actions"] == animate_page.DEFAULT_ACTIONS
+    assert options["defaults"]["actions"] == animate.DEFAULT_ACTIONS
 
 
 def test_a_body_under_the_limit_is_read_whole():

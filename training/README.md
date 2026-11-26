@@ -48,8 +48,7 @@ uv run pixel-train tryout --seeds 1 --rotate 2         # a quick, smaller run
 ```
 
 The first run downloads each model, tens of GB, into the Hugging Face cache. Results go to
-`../dataset/data/tryouts/<name>/`; look at them with `uv run pixel browse` in `dataset/`, under
-Try-outs. Results are written after each model, so if the second model fails, the first one's
+`../dataset/data/tryouts/<name>/`; look at them in the dashboard's Library, under Try-outs. Results are written after each model, so if the second model fails, the first one's
 pictures are kept.
 
 The prompts are in `prompts.json`.

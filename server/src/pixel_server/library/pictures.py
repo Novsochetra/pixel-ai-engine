@@ -2,8 +2,8 @@ from functools import lru_cache
 from pathlib import Path
 
 from PIL import Image
-from pixel_data.dashboard import browse_queries as queries
-from pixel_data.dashboard.browse_server import open_db
+from pixel_data.dashboard import library as queries
+from pixel_data.dashboard.library import open_db
 from pixel_data.dashboard.thumbs import THUMB_LIMIT
 from pixel_data.images import load_image, png_bytes
 from pixel_data.sources import Layout

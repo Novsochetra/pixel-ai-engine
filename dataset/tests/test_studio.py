@@ -1,20 +1,12 @@
 import json
 import sys
-import threading
 import time
 from pathlib import Path
-from urllib.error import HTTPError
-from urllib.parse import urlencode
-from urllib.request import Request, urlopen
 
 import pytest
-from helpers import fake_pac
 
 from pixel_data.dashboard import studio
-from pixel_data.dashboard.browse_server import serve
 from pixel_data.dashboard.jobs import Jobs
-from pixel_data.gather.importer import import_source
-from pixel_data.sources import Layout
 
 FAKE_TRAIN = """
 import sys, time
@@ -122,7 +114,6 @@ def test_runs_are_read_with_the_later_log_line_winning(tmp_path):
     assert (run["name"], run["step"], run["steps"]) == ("rotate-v2", 20, 20)
     assert run["val"] == [(10, 0.15), (20, 0.12)]
     assert next(row for row in run["rows"] if row["step"] == 11)["loss"] == 0.5
-    assert "<svg" in studio.chart(run)
 
 
 def test_generate_form_becomes_arguments(tmp_path):
@@ -240,66 +231,3 @@ def test_a_tryout_loads_a_checkpoint_of_that_run_only(tmp_path):
     assert "--no-create" in args and args[-1] == "rotate-v2-step-000010-fast"
     with pytest.raises(studio.Invalid):
         studio.tryout_job(data, {"run": "rotate-v2", "lora": "runs/other/final", "model": "flux2-klein-4b"})
-
-
-@pytest.fixture
-def site(tmp_path):
-    layout = Layout(tmp_path / "data")
-    import_source(fake_pac(layout), layout)
-    fake_data(layout.data)
-    jobs = fake_jobs(tmp_path)
-
-    server = serve(layout, 0, jobs)
-    threading.Thread(target=server.serve_forever, daemon=True).start()
-    yield f"http://127.0.0.1:{server.server_address[1]}", jobs
-
-    server.shutdown()
-    server.server_close()
-
-
-def post(url: str, form: dict, origin: str | None = None) -> int:
-    request = Request(url, data=urlencode(form, doseq=True).encode(), method="POST")
-    if origin:
-        request.add_header("Origin", origin)
-    try:
-        with urlopen(request) as response:
-            return response.status
-    except HTTPError as error:
-        return error.code
-
-
-def test_the_pages_show_runs_and_what_was_made(site):
-    url, _ = site
-
-    with urlopen(f"{url}/training") as response:
-        training = response.read().decode()
-    with urlopen(f"{url}/generate") as response:
-        generate = response.read().decode()
-
-    assert "rotate-v2" in training and "step 20 of 20" in training and "<svg" in training
-    assert "a frog wizard" in generate and "/generated/frog/s0-sheet.png" in generate
-
-
-def test_a_form_starts_a_job_and_goes_back_to_the_page(site):
-    url, jobs = site
-
-    status = post(f"{url}/generate", {"prompt": "a frog", "seeds": "1", "sprite": "64", "turn_model": "flux2-klein-4b"}, url)
-
-    assert status == 200  # the 303 is followed to the page
-    assert wait_until_done(jobs)["title"] == "Generate: a frog"
-    with urlopen(f"{url}/jobs/current") as response:
-        assert "generate a frog" in json.loads(response.read())["log"]
-
-
-def test_a_bad_form_is_shown_back_with_the_reason(site):
-    url, jobs = site
-
-    assert post(f"{url}/generate", {"prompt": ""}, url) == 400
-    assert jobs.latest() is None
-
-
-def test_another_site_cannot_start_a_job(site):
-    url, jobs = site
-
-    assert post(f"{url}/generate", {"prompt": "a frog"}, "https://evil.example") == 403
-    assert jobs.latest() is None

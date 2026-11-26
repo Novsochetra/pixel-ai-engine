@@ -120,7 +120,8 @@ The repo has two parts: `dataset/` prepares the data, `training/` trains and run
 | `dataset/src/pixel_data/gather/` | Downloads sources and turns them into records. |
 | `dataset/src/pixel_data/analyze/` | Measures each image and flags bad ones (rules in `rules.py`). |
 | `dataset/src/pixel_data/export/` | Fixes, splits and writes the training files. |
-| `dataset/src/pixel_data/dashboard/` | The `pixel browse` web app. |
+| `dataset/src/pixel_data/dashboard/` | The downloads page, and the reads and job checks the dashboard uses. |
+| `server/`, `ui/` | The dashboard: its API (FastAPI) and its screens (React). |
 | `dataset/labelling/` | Tools to label images with an AI (Haiku 5.5). |
 | `training/prompts.json` | The prompt templates for create and rotate. |
 | `training/src/pixel_training/train.py` | The training loop. |
@@ -151,10 +152,11 @@ Run these on a 32 GB Mac. One big job at a time: each one fills most of the memo
    uv run pixel analyze
    uv run pixel export
    ```
-3. Look at everything in the browser (http://127.0.0.1:8777):
+3. Look at everything in the dashboard. Build it once, then start it and open http://127.0.0.1:8780:
 
    ```bash
-   uv run pixel browse
+   cd ../ui && npm install && npm run build
+   cd ../server && uv run pixel-server
    ```
 4. Train a LoRA (from `training/`):
 
@@ -173,13 +175,13 @@ Run these on a 32 GB Mac. One big job at a time: each one fills most of the memo
    uv run pixel-train animate knight --views right --actions walk
    ```
 
-You can also start steps 4–6 from the Training, Generate and Animate pages of `pixel browse`. Add `HF_HUB_OFFLINE=1` before a command to stay offline. Licence note: `pac` is non-commercial, so only a LoRA trained on `lpc-4view` alone can go into a game you sell.
+You can also start steps 4–6 from the Training, Create, Rotate and Animate screens of the dashboard. Add `HF_HUB_OFFLINE=1` before a command to stay offline. Licence note: `pac` is non-commercial, so only a LoRA trained on `lpc-4view` alone can go into a game you sell.
 
 ## What to learn next
 
 Learn by doing, in this order. Each step uses this project.
 
-- [ ] Open `pixel browse` and look at the records, the flagged images and the export. This shows what "good data" means.
+- [ ] Open the dashboard's Library and look at the records, the flagged images and the export. This shows what "good data" means.
 - [ ] Read `analyze/rules.py`. See why an image is ok, fix, check or drop.
 - [ ] Run a small try-out: `uv run pixel-train tryout --seeds 1 --rotate 2`. Compare the model before any training.
 - [ ] Run a short training: `uv run pixel-train train --name first --steps 20 --every 10`. Watch the loss go down.

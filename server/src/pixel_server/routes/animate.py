@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException, Request
-from pixel_data.dashboard import animate_page
-from pixel_data.dashboard.browse_server import UPLOAD_LIMIT
+from pixel_data.dashboard.animate import UPLOAD_LIMIT, animate_job
 from pixel_data.dashboard.studio import Invalid
 from starlette.concurrency import run_in_threadpool
 
@@ -32,7 +31,7 @@ def sources(request: Request) -> dict:
 @router.post("/api/animate")
 def animate(request: Request, body: dict) -> dict:
     try:
-        title, args = animate_page.animate_job(request.app.state.layout.data, old_form(body))
+        title, args = animate_job(request.app.state.layout.data, old_form(body))
         request.app.state.jobs.start("animate", title, args)
     except Invalid as error:
         raise HTTPException(400, str(error)) from error

@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-from pixel_data.dashboard import animate_page as animate
+from pixel_data.dashboard import animate
 
 from pixel_server.library.urls import file_url
 

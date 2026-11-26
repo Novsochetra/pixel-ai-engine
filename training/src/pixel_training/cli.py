@@ -72,7 +72,7 @@ def tryout_command(args) -> None:
                        "lora": str(lora) if lora else None, "size": size, "steps": args.steps})
         free_memory()
 
-    print(f"\nResults in {plan.folder}. Open them with `uv run pixel browse` in dataset/, under Try-outs.")
+    print(f"\nResults in {plan.folder}. Look at them in the dashboard's Library, under Try-outs.")
 
 
 def source_times(text: str) -> tuple[str, float]:

@@ -1,7 +1,6 @@
 from pathlib import Path
 
-from pixel_data.dashboard import animate_page as animate
-from pixel_data.dashboard.browse_server import UPLOAD_LIMIT
+from pixel_data.dashboard import animate
 
 from pixel_server.create.form_options import choices
 from pixel_server.library.urls import file_url
@@ -23,7 +22,7 @@ def animate_options() -> dict:
         "longestAction": animate.LONGEST_ACTION,
         "subjectLength": SUBJECT_LENGTH,
         "largestUpload": animate.LARGEST_UPLOAD,
-        "uploadLimit": UPLOAD_LIMIT,
+        "uploadLimit": animate.UPLOAD_LIMIT,
         "defaults": {"size": "384", "frames": "33", "actions": animate.DEFAULT_ACTIONS, "views": DEFAULT_VIEWS},
     }
 

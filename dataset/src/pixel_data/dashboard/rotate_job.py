@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pixel_data.dashboard.animate_page import GENERATED, characters, uploads
+from pixel_data.dashboard.animate import GENERATED, characters, uploads
 from pixel_data.dashboard.studio import MODELS, SPRITES, Invalid, lora_options, one_of
 
 # The views a rotate LoRA learnt to turn a front view to, in pixel-train's order.

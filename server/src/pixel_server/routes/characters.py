@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Query, Request
-from pixel_data.dashboard.browse_queries import Filters
+from pixel_data.dashboard.library import Filters
 from pydantic import BaseModel, Field
 
 from pixel_server.library.characters import EMPTY_LIST, character_detail, character_list

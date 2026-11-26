@@ -1,14 +1,12 @@
 import argparse
 import json
 import os
-import webbrowser
 from pathlib import Path
 
 from huggingface_hub import HfApi
 
 from pixel_data.analyze.rules import FLAGS
 from pixel_data.analyze.run import analyze
-from pixel_data.dashboard.browse_server import serve
 from pixel_data.dashboard.build import build_dashboard
 from pixel_data.export.run import export
 from pixel_data.dashboard.page import human_size
@@ -65,7 +63,7 @@ def import_command(sources: list[Source], layout: Layout, ids: list[str]) -> Non
         for reason, count in json.loads(entry["skipped"]).items():
             print(f"  skipped {count:,}: {reason}")
 
-    print(f"\nRecords are in {layout.records}. Run `pixel browse` to look at them.")
+    print(f"\nRecords are in {layout.records}. Open the Library of the dashboard to look at them.")
 
 
 def analyze_command(layout: Layout, ids: list[str]) -> None:
@@ -80,7 +78,7 @@ def analyze_command(layout: Layout, ids: list[str]) -> None:
             if counts[flag]:
                 print(f"  {flag:<16} {counts[flag]:>8,}  {meaning}")
 
-    print("\nRun `pixel browse` and open Flagged to look at them.")
+    print("\nOpen the Library of the dashboard, under Flagged, to look at them.")
 
 
 def export_command(sources: list[Source], layout: Layout, args) -> None:
@@ -103,25 +101,6 @@ def dashboard_command(sources: list[Source], layout: Layout) -> None:
     page = build_dashboard(sources, layout)
 
     print(f"\nOpen it: open {page}")
-
-
-def browse_command(layout: Layout, port: int, open_page: bool) -> None:
-    server = serve(layout, port)
-    url = f"http://127.0.0.1:{port}/"
-
-    print(f"Browsing {layout.records} at {url} (Ctrl+C to stop)")
-    if open_page:
-        webbrowser.open(url)
-
-    try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        print("\nStopped.")
-    finally:
-        # A job started from the page stops with it, so none keeps running unseen.
-        if server.jobs.current():
-            print("Stopping the running job...")
-            server.jobs.stop()
 
 
 def parser() -> argparse.ArgumentParser:
@@ -154,10 +133,6 @@ def parser() -> argparse.ArgumentParser:
 
     commands.add_parser("dashboard", help="build data/reports/dashboard.html")
 
-    browse = commands.add_parser("browse", help="open the records in your web browser")
-    browse.add_argument("--port", type=int, default=8777)
-    browse.add_argument("--no-open", action="store_true", help="do not open the web browser")
-
     return root
 
 
@@ -176,7 +151,5 @@ def main() -> None:
         analyze_command(layout, args.ids)
     elif args.command == "export":
         export_command(sources, layout, args)
-    elif args.command == "browse":
-        browse_command(layout, args.port, not args.no_open)
     else:
         dashboard_command(sources, layout)

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pixel_data.dashboard import animate_page as animate
+from pixel_data.dashboard import animate
 from pixel_data.dashboard.studio import Invalid
 
 from pixel_server.animate.animate_options import upload_source

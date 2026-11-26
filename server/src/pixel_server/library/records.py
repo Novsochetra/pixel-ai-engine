@@ -1,7 +1,7 @@
 import sqlite3
 from collections.abc import Callable
 
-from pixel_data.dashboard.browse_server import open_db
+from pixel_data.dashboard.library import open_db
 from pixel_data.sources import Layout
 
 

@@ -2,12 +2,6 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "pixel-browse",
-      "runtimeExecutable": "uv",
-      "runtimeArgs": ["--directory", "dataset", "run", "pixel", "browse", "--no-open", "--port", "8778"],
-      "port": 8778
-    },
-    {
       "name": "pixel-dashboard",
       "runtimeExecutable": "/opt/homebrew/bin/node",
       "runtimeArgs": ["ui/scripts/dev.js"],

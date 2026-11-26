@@ -4,8 +4,8 @@ import threading
 from pathlib import Path
 
 import uvicorn
-from pixel_data.dashboard.browse_server import warm_up
 from pixel_data.dashboard.jobs import Jobs
+from pixel_data.dashboard.library import warm_up
 from pixel_data.records import connect
 from pixel_data.sources import Layout
 

@@ -1,9 +1,12 @@
 import json
 import sqlite3
+from contextlib import closing
 from dataclasses import dataclass
 
+from pixel_data.dashboard import flagged
 from pixel_data.dashboard.cache import until_changed
 from pixel_data.records import view_order
+from pixel_data.sources import Layout
 
 PAGE_SIZE = 30
 
@@ -14,6 +17,32 @@ class Filters:
     split: str = ""
     search: str = ""
     page: int = 1
+
+
+def open_db(layout: Layout) -> closing:
+    db = sqlite3.connect(f"file:{layout.records}?mode=ro", uri=True)
+    db.row_factory = sqlite3.Row
+
+    return closing(db)
+
+
+def warm_up(layout: Layout) -> None:
+    # Count the slow summaries now, so the first page someone opens does not wait for them.
+    with open_db(layout) as db:
+        imports(db)
+        splits(db)
+
+        if flagged.analyzed(db):
+            flagged.status_counts(db)
+            first_flag = next(iter(flagged.flag_counts(db, "")), "")
+            if first_flag:
+                flagged.flagged_images(db, first_flag, "", 1)
+
+
+def view_label(view: dict) -> str:
+    # lpc-action records are strips of frames: name the action before the direction.
+    # Icons and scenes have no view; landscapes-20k has one scene at three sizes.
+    return " · ".join(part for part in (view.get("action"), view["view"]) if part) or f"{view['width']}px"
 
 
 def where_clause(filters: Filters) -> tuple[str, list]:

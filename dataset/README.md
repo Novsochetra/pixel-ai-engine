@@ -8,7 +8,7 @@ reads: which character it is, which view, its size, source and licence. Steps so
 3. **annotate**: captions. Later, for the create task: rotation does not need them.
 4. **export** ✅ fix, split by character and write the training files (`pixel export`).
 
-`pixel browse` shows the records in your web browser and grows a view with each step.
+The dashboard (`server/` and `ui/`) shows the records and grows a view with each step; see below.
 
 ## Setup on a Mac (once)
 
@@ -41,34 +41,24 @@ open data/reports/dashboard.html              # look at it
 uv run pixel import pac lpc-4view             # turn downloads into records (all but lpc-generator, opengameart-2d, itch-8dir-cc0)
 uv run pixel analyze                          # measure every imported image and flag bad ones
 uv run pixel export                           # write data/exports/rotation-v1 for training
-uv run pixel browse                           # open the records in your browser
 ```
 
-`pixel browse` runs a small web app at http://127.0.0.1:8777 that only your own computer can open.
-It lists every imported character with its views side by side, filters by source, split and
-caption text, and shows each image's record. Flagged shows the images the analyzer flagged, by
-reason, so you can check its decisions. Exports shows each export's split counts, its leak check
-and sample characters. Try-outs shows what existing models made in `training/`, next to the
-real views. Stop it with Ctrl+C.
+The dashboard (`server/` and `ui/` in the repo root) shows what these steps made. Open it with:
 
-Training, Generate and Animate run `pixel-train` (in `training/`, which needs `uv sync --extra models` once)
-from the browser, offline:
+```bash
+cd ../ui && npm install && npm run build   # once, and again after the UI changes
+cd ../server && uv run pixel-server        # then open http://127.0.0.1:8780
+```
 
-- **Training** lists every run with its progress and a chart of its check score. It starts a new
-  run (task rotate or create), resumes one to more steps, and tries a rotate checkpoint on the test
-  characters (the result shows under Try-outs). A create run is tried on the Generate page.
-- **Generate** draws a character from your words, with a create LoRA or the plain model, and
-  turns it with a rotate LoRA. Everything it made is listed below the form.
-- **Animate** makes idle, walk or attack clips with Wan 2.2 (see Step 4 of `training/README.md`
-  for the downloads). Pick a generated character (or click Animate next to one on the Generate
-  page), or upload a PNG of your own and say which way it faces. Uploads are saved again as a clean
-  PNG in `data/uploads/`, at most 2048 pixels a side. The GIFs and sheets of every run show below
-  the form.
+While working on the dashboard itself, run `npm run dev` in `ui/` instead: it starts the server on
+http://127.0.0.1:8780 and the UI on http://localhost:5180, and both reload on a change.
 
-One job runs at a time, since each fills most of a 32 GB Mac; its output shows at the top of each
-page, with a Stop button. Each job keeps its settings and output in `data/jobs/`. Stopping the
-dashboard stops its job too, so keep it open while training. Only pages of the dashboard itself
-can start a job.
+Its Library lists every imported character with its views side by side, filters by source, split
+and caption text, and shows each image's record. Under Flagged it shows the images the analyzer
+flagged, by reason; under Exports each export's split counts, leak check and sample characters;
+under Try-outs what the models made in `training/`. Its Create, Rotate, Animate and Training
+screens run `pixel-train` (in `training/`, which needs `uv sync --extra models` once), one job at a
+time. The dashboard only answers on this computer.
 
 A download that stops halfway picks up where it left off when you run it again.
 
@@ -119,7 +109,7 @@ src/pixel_data/
   gather/                    step 1: download the sources, and importers/ that turn each into records
   analyze/                   step 2: measure each image (measure.py), flag it (rules.py), find copies
   export/                    step 4: pick characters (select.py), fix (fix.py), split (split.py), write
-  dashboard/                 the downloads page and the `pixel browse` app
+  dashboard/                 the downloads page, and the reads and job checks the dashboard's server uses
   records.py                 the record store: one row per image in data/records.sqlite
   images.py                  loads a record's picture from the original download
 tests/                       tests for all of the above

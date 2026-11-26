@@ -1,5 +1,5 @@
 import pytest
-from test_animate_page import knight, sprite_png
+from test_animate import knight, sprite_png
 from test_studio import fake_data
 
 from pixel_data.dashboard.rotate_job import rotate_job

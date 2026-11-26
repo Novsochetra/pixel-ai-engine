@@ -1,6 +1,7 @@
 # Dashboard plan: React UI + FastAPI
 
-The dashboard moves out of `dataset/src/pixel_data/dashboard/` (Python that writes HTML) into two parts:
+The dashboard moved out of `dataset/src/pixel_data/dashboard/` (Python that wrote HTML, served by
+`pixel browse`) into two parts:
 
 | Folder | What | Stack |
 |---|---|---|
@@ -40,7 +41,7 @@ A creative tool, like Pixelmator or Final Cut: the art in the middle, settings o
 
 ## Screens
 
-| Screen | Replaces | Content | Inspector |
+| Screen | Old page it replaced | Content | Inspector |
 |---|---|---|---|
 | Create | `/generate` | gallery of made characters | prompt, pose, facing, characters, sprite size, LoRAs and models |
 | Rotate | part of `/training` try-outs | turned characters, each with its views side by side; segmented Turned, Try-outs | source, rotate LoRA, model, sprite size, views |
@@ -86,23 +87,23 @@ answers 400 and a second job while one runs answers 409, each with the reason in
 `/api/generate/options` lists the models, sprite sizes and facings from the same constants.
 
 `POST /api/animate` takes JSON (`source`, `subject`, `views`, `actions` one a line, `size`,
-`frames`) and checks it with `animate_page.animate_job`, with the same 400 and 409. The source is
+`frames`) and checks it with `animate.animate_job`, with the same 400 and 409. The source is
 `generated/<folder>/s<seed>` or `uploads/<file>`. `/api/animate/sources` lists both kinds, and
-`/api/animate/options` the views, sizes, lengths, minutes a clip and limits from the old page's
-constants. `/api/animated` lists the runs newest first; each clip names its view, action, kept
+`/api/animate/options` the views, sizes, lengths, minutes a clip and limits from the constants in
+`animate.py`. `/api/animated` lists the runs newest first; each clip names its view, action, kept
 frames and the URLs of its GIF, raw GIF and sheet.
 
 `POST /api/uploads` takes the PNG as the whole body (`Content-Type: image/png`, the file name in
 `name`), as FastAPI's multipart forms need a package the project does not have. It answers 415 for
 another type, 413 past 10 MB, and 400 for a file that is not a PNG or is too big a picture; it saves
-with `animate_page.save_upload`.
+with `animate.save_upload`.
 
 `GET /api/runs` lists the runs newest first with `studio.read_runs`: each run's settings, the steps
 done and planned, seconds a step, the latest `passes` (how many times over the data it has gone;
 `null` in logs from before it was counted), checkpoints, final, the `loss` and `val` points as
 `[step, value]`, the checkpoints a try-out may load, and `isTraining` for the run the running job
 trains. `/api/training/options` lists the tasks, models, sizes and exports, each export with its
-sources, licences and use, from the old page's constants.
+sources, licences and use, from the constants in `studio.py`.
 
 `POST /api/training/start` takes JSON (`name`, `task`, `export`, `model`, `size`, `steps`, `sources`
 as a list) and checks it with `studio.train_job`; `/api/training/resume` (`run`, `steps`, the step to
@@ -121,8 +122,9 @@ each with its views in turning order; `/api/rotate/options` the models, sprite s
 upload limits from the same constants. The Rotate screen shows the rotate try-outs with the
 Library's own try-out view, `/api/tryouts`, without their text-to-character pictures.
 
-The job functions in `studio.py` and `animate_page.py` already return the command to run.
-The API calls them as they are and sends JSON, not HTML.
+The job functions in `studio.py`, `animate.py` and `rotate_job.py` return the command to run. The
+API calls them as they are and sends JSON. The records are read with `library.py`, `flagged.py`,
+`exports.py` and `tryouts.py`.
 
 ## Order
 
@@ -134,6 +136,4 @@ The API calls them as they are and sends JSON, not HTML.
 5. Training. Done.
 6. Rotate and Landscape, when their models are ready. Rotate done; Landscape waits for a landscape
    model and shows a placeholder that says so.
-7. Remove the old HTML pages and `pixel browse`.
-
-The old dashboard keeps working until step 7.
+7. Remove the old HTML pages and `pixel browse`. Done: the server and the UI are the only dashboard.

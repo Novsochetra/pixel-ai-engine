@@ -1,8 +1,8 @@
 import sqlite3
 
-from pixel_data.dashboard import browse_queries as queries
 from pixel_data.dashboard import flagged
-from pixel_data.dashboard.browse_pages import view_label
+from pixel_data.dashboard import library as queries
+from pixel_data.dashboard.library import view_label
 
 from pixel_server.library.urls import picture
 

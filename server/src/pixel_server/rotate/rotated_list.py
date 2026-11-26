@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pixel_data.dashboard import animate_page, studio
+from pixel_data.dashboard import animate, studio
 
 from pixel_server.create.generated_list import FIRST_SPRITE, lora_label
 from pixel_server.library.urls import file_url
@@ -11,7 +11,7 @@ def rotated_list(data: Path) -> dict:
     turned = {item["folder"]: item for item in studio.read_generated(data) if item.get("lora")}
     found = [
         character_entry(turned[made["folder"]], seed, views)
-        for made in animate_page.characters(data)
+        for made in animate.characters(data)
         if made["folder"] in turned
         for seed, views in made["sprites"].items()
         if len(views) > 1
