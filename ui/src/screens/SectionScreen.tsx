@@ -9,8 +9,15 @@ export function SectionScreen({ section }: { section: Section }) {
   return (
     <ScreenFrame title={section.title} inspector={inspector}>
       <EmptyState icon={section.icon} title={`${section.title} is on its way`}>
-        {section.summary} Until then, run <code>uv run pixel browse</code> in <code>dataset/</code>{' '}
-        for the old dashboard.
+        {section.summary}{' '}
+        {section.needs ? (
+          <>It needs {section.needs} first, and there is none yet.</>
+        ) : (
+          <>
+            Until then, run <code>uv run pixel browse</code> in <code>dataset/</code> for the old
+            dashboard.
+          </>
+        )}
       </EmptyState>
     </ScreenFrame>
   );

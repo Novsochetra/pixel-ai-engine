@@ -14,7 +14,7 @@ import {
 const SOURCES = ['animate', 'sources'];
 
 // Each finished job may have made something: a clip here, or a character to animate.
-function useFinishedJob() {
+export function useFinishedJob() {
   const job = useCurrentJob().data?.job;
 
   return job && job.status !== 'running' ? job.id : null;

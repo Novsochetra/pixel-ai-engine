@@ -123,6 +123,28 @@ faces on the side views, where turning it at 256 did not. The results go to
 `../dataset/data/generated/<date>-<prompt>/`: `s0-front.png`, `s0-left.png` and so on, the raw
 pictures, and `s0-sheet.png` with the 4 views side by side.
 
+### Turn front views you already have
+
+`pixel-train rotate` turns front views that are already made, with a rotate LoRA, and leaves the
+drawing out:
+
+```bash
+uv run pixel-train rotate knight --lora rotate-v2                       # every character in data/generated/knight
+uv run pixel-train rotate knight --lora pixie-turn-v1 --seeds 1         # one character
+uv run pixel-train rotate my-hero.png --lora rotate-v2 --views back     # a PNG of your own, only its back
+```
+
+The source is a folder from `generate` (or its name under `data/generated`) or a PNG. `--lora` is
+required and must be a rotate LoRA. `--turn-model`, `--sprite`, `--turn-size` and `--steps` work as
+in `generate`; `--views` picks some of left, back and right (all three by default).
+
+The results go to a new folder, `../dataset/data/generated/<date>-turned-<source>/` (or `--name`),
+in the layout `generate` writes: each front view keeps its seed (`s1-front.png` stays `s1`), then
+`s1-left.png` and so on, the raw pictures, `s1-sheet.png` and `generated.json`, whose
+`rotated_from` names the source. So the dashboard's Create, Rotate, Animate and Library screens
+show it as they show a generated character. A PNG is put in the middle of a clear square; one
+bigger than `--sprite` is snapped to it, a smaller one is kept as it was drawn.
+
 ### A create LoRA: draw the front view in your own style
 
 The plain model draws the front view as it is. A create LoRA teaches it to draw like the training

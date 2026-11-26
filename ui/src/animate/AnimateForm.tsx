@@ -36,6 +36,24 @@ function ActionFields({ form, options, values }: Omit<FieldsProps, 'sources'>) {
   );
 }
 
+function SubjectField({ form, options, values }: Omit<FieldsProps, 'sources'>) {
+  return (
+    <>
+      <TextField
+        label="What it shows"
+        value={values.subject}
+        maxLength={options.subjectLength}
+        placeholder="a knight in grey armour with a blue cape, empty hands"
+        isMultiline
+        onChange={(subject) => form.change({ subject })}
+      />
+      <p className="form-note">
+        Name only what the picture shows: a sword in the words gives the character a sword.
+      </p>
+    </>
+  );
+}
+
 function VideoFields({ form, options, values }: Omit<FieldsProps, 'sources'>) {
   return (
     <>
@@ -69,18 +87,14 @@ export function AnimateForm(props: FieldsProps & { problem: string | null }) {
       aria-label="New animation"
       onSubmit={(event) => event.preventDefault()}
     >
-      <SourceField form={form} options={options} sources={sources} values={values} />
-      <TextField
-        label="What it shows"
-        value={values.subject}
-        maxLength={options.subjectLength}
-        placeholder="a knight in grey armour with a blue cape, empty hands"
-        isMultiline
-        onChange={(subject) => form.change({ subject })}
+      <SourceField
+        picker={form}
+        limits={options}
+        sources={sources}
+        source={values.source}
+        view={values.views[0]}
       />
-      <p className="form-note">
-        Name only what the picture shows: a sword in the words gives the character a sword.
-      </p>
+      <SubjectField form={form} options={options} values={values} />
       {made ? (
         <ViewChecks
           views={options.views}

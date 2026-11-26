@@ -43,7 +43,7 @@ A creative tool, like Pixelmator or Final Cut: the art in the middle, settings o
 | Screen | Replaces | Content | Inspector |
 |---|---|---|---|
 | Create | `/generate` | gallery of made characters | prompt, pose, facing, characters, sprite size, LoRAs and models |
-| Rotate | part of `/training` try-outs | one character, its 4 or 8 views side by side | source, directions |
+| Rotate | part of `/training` try-outs | turned characters, each with its views side by side; segmented Turned, Try-outs | source, rotate LoRA, model, sprite size, views |
 | Animate | `/animate` | sprite player: play, pause, fps, zoom, direction | character, actions |
 | Landscape | (new) | gallery of backgrounds | prompt, size |
 | Library | `/characters`, `/character`, `/flagged`, `/exports`, `/tryouts` | dataset grid; segmented filter All, Flagged, Exports, Try-outs; search | record details, labels |
@@ -53,7 +53,7 @@ Selecting an image opens it large in a sheet, with zoom and download.
 
 ## API
 
-Built (steps 1 to 5):
+Built (steps 1 to 6):
 
 ```
 GET  /api/health                            GET  /api/jobs/current      POST /api/jobs/stop
@@ -71,6 +71,8 @@ GET  /api/animate/sources                   POST /api/animate
 POST /api/uploads?name=
 GET  /api/runs                              GET  /api/training/options
 POST /api/training/start      POST /api/training/resume     POST /api/training/tryout
+GET  /api/rotated                           GET  /api/rotate/options
+POST /api/rotate
 ```
 
 Character and image ids hold slashes (`pac/train/0/front`), so they are the rest of the path.
@@ -108,6 +110,17 @@ train to) with `studio.resume_job`; `/api/training/tryout` (`run`, `checkpoint`,
 `characters`) with `studio.tryout_job`. Each answers 400 and 409 as Generate does. A resume keeps
 the run's own settings, its `--more-exports`, `--more-repeat` and `--repeat` among them.
 
+`POST /api/rotate` takes JSON (`source`, `lora`, `turningModel`, `sprite`, `views` as a list of
+left, back and right) and checks it with `rotate_job.rotate_job`, with the same 400 and 409. The
+source is a character with a front view, `generated/<folder>/s<seed>`, or `uploads/<file>`, from
+`/api/animate/sources`; the LoRA must be a rotate one from `/api/loras?task=rotate`. It runs
+`pixel-train rotate`, which writes a new folder under `data/generated/` in the layout `generate`
+writes, with `rotated_from` in its `generated.json`, so Create, Animate and the Library list it too.
+`/api/rotated` lists every character a rotate LoRA turned (by Rotate or by Generate) newest first,
+each with its views in turning order; `/api/rotate/options` the models, sprite sizes, views and
+upload limits from the same constants. The Rotate screen shows the rotate try-outs with the
+Library's own try-out view, `/api/tryouts`, without their text-to-character pictures.
+
 The job functions in `studio.py` and `animate_page.py` already return the command to run.
 The API calls them as they are and sends JSON, not HTML.
 
@@ -119,7 +132,8 @@ The API calls them as they are and sends JSON, not HTML.
 3. Create. Done.
 4. Animate. Done.
 5. Training. Done.
-6. Rotate and Landscape, when their models are ready.
+6. Rotate and Landscape, when their models are ready. Rotate done; Landscape waits for a landscape
+   model and shows a placeholder that says so.
 7. Remove the old HTML pages and `pixel browse`.
 
 The old dashboard keeps working until step 7.

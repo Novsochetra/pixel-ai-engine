@@ -1,15 +1,19 @@
 import { useRef } from 'react';
 import { Icon } from '@/components/icons';
 import { FormError } from '@/create/FormError';
-import type { AnimateOptions } from './animate-client';
-import type { AnimateForm } from './use-animate-form';
+import type { UploadLimits } from './animate-client';
+import type { SourcePicker } from './use-source-picker';
 
 const megabytes = (bytes: number) => Math.round(bytes / 1_000_000);
 
+interface UploadButtonProps {
+  upload: SourcePicker['upload'];
+  limits: UploadLimits;
+}
+
 // The file picker hides behind a real button, so it looks and focuses like the others.
-export function UploadButton({ form, options }: { form: AnimateForm; options: AnimateOptions }) {
+export function UploadButton({ upload, limits }: UploadButtonProps) {
   const input = useRef<HTMLInputElement>(null);
-  const { upload } = form;
 
   function send(files: FileList | null) {
     const file = files?.[0];
@@ -42,7 +46,7 @@ export function UploadButton({ form, options }: { form: AnimateForm; options: An
         {upload.isPending ? 'Uploading…' : 'Upload a PNG'}
       </button>
       <p className="form-note">
-        At most {options.largestUpload} pixels a side and {megabytes(options.uploadLimit)} MB.
+        At most {limits.largestUpload} pixels a side and {megabytes(limits.uploadLimit)} MB.
       </p>
       {upload.error ? <FormError message={upload.error.message} onClose={upload.reset} /> : null}
     </div>

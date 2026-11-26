@@ -2,7 +2,12 @@ import { getJson, postFile, postJson } from '@/api/read-json';
 import type { Choice } from '@/create/create-client';
 import type { JobView } from '@/jobs/jobs-client';
 
-export interface AnimateOptions {
+export interface UploadLimits {
+  largestUpload: number;
+  uploadLimit: number;
+}
+
+export interface AnimateOptions extends UploadLimits {
   views: string[];
   sizes: Choice[];
   frames: Choice[];
@@ -10,8 +15,6 @@ export interface AnimateOptions {
   mostActions: number;
   longestAction: number;
   subjectLength: number;
-  largestUpload: number;
-  uploadLimit: number;
   defaults: { size: string; frames: string; actions: string; views: string[] };
 }
 

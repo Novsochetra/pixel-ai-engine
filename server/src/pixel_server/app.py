@@ -14,6 +14,7 @@ from pixel_server.routes import (
     health,
     jobs,
     pictures,
+    rotate,
     training,
 )
 from pixel_server.same_site import is_same_site
@@ -32,7 +33,7 @@ def create_app(job_runner: Jobs, ui_dist: Path | None = None) -> FastAPI:
 
         return await call_next(request)
 
-    for routes in (health, jobs, characters, flagged, collections, create, animate, training, pictures):
+    for routes in (health, jobs, characters, flagged, collections, create, rotate, animate, training, pictures):
         app.include_router(routes.router)
 
     if ui_dist and (ui_dist / "index.html").exists():

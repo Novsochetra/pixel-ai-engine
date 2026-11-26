@@ -27,6 +27,12 @@ describe('the layout shell', () => {
     ]);
   });
 
+  it('says Landscape waits for a landscape model', async () => {
+    renderApp('/landscape', fakeServer(NO_JOB));
+
+    expect(await screen.findByText(/It needs a landscape model first/)).toBeTruthy();
+  });
+
   it('moves to a section from the sidebar and marks it current', async () => {
     renderApp('/create', fakeServer(NO_JOB));
 

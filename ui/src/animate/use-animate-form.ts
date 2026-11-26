@@ -1,14 +1,8 @@
 import { useState } from 'react';
 import type { AnimateOptions, AnimateSources } from './animate-client';
-import {
-  defaultValues,
-  firstSource,
-  sourceDefaults,
-  sourceKind,
-  type AnimateValues,
-  type SourceKind,
-} from './animate-form';
-import { useAnimateOptions, useAnimateSources, useUpload } from './use-animate';
+import { defaultValues, sourceDefaults, type AnimateValues } from './animate-form';
+import { useAnimateOptions, useAnimateSources } from './use-animate';
+import { useSourcePicker } from './use-source-picker';
 
 type Changes = Partial<AnimateValues>;
 
@@ -29,30 +23,21 @@ export function useAnimateForm() {
   const options = useAnimateOptions();
   const sources = useAnimateSources();
   const [changes, setChanges] = useState<Changes>({});
-  const [pickedKind, setPickedKind] = useState<SourceKind>('made');
-
-  const chooseSource = (source: string) => setChanges((current) => withSource(current, source));
-  const upload = useUpload((uploaded) => chooseSource(uploaded.value));
 
   const queries = [options, sources];
   const isLoaded = options.data && sources.data;
   const values = isLoaded ? formValues(options.data!, sources.data!, changes) : null;
+  const picker = useSourcePicker(values?.source, sources.data, (source) =>
+    setChanges((current) => withSource(current, source)),
+  );
 
   return {
+    ...picker,
     options: options.data,
     sources: sources.data,
     values,
-    kind: values?.source ? sourceKind(values.source) : pickedKind,
-    upload,
     error: queries.find((query) => query.isError)?.error ?? null,
     change: (next: Changes) => setChanges((current) => ({ ...current, ...next })),
-    chooseSource,
-
-    chooseKind: (kind: SourceKind) => {
-      setPickedKind(kind);
-      chooseSource(sources.data ? firstSource(kind, sources.data) : '');
-    },
-
     retry: () => queries.forEach((query) => query.isError && query.refetch()),
   };
 }

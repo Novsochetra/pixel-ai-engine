@@ -10,6 +10,8 @@ export interface Section {
   icon: IconName;
   summary: string;
   inTabBar: boolean;
+  // What a section still waits for before its screen can be built.
+  needs?: string;
 }
 
 export const GROUPS: readonly { id: SectionGroup; title: string }[] = [
@@ -34,7 +36,7 @@ export const SECTIONS: readonly Section[] = [
     path: '/rotate',
     group: 'make',
     icon: 'rotate',
-    summary: 'Turn a character to 4 or 8 directions.',
+    summary: 'Turn a front view to the left, back and right.',
     inTabBar: false,
   },
   {
@@ -54,6 +56,7 @@ export const SECTIONS: readonly Section[] = [
     icon: 'landscape',
     summary: 'Make a background from a few words.',
     inTabBar: false,
+    needs: 'a landscape model',
   },
   {
     id: 'library',

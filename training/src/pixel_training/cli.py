@@ -5,6 +5,7 @@ from datetime import datetime
 from pathlib import Path
 
 from pixel_training.models import PRESETS
+from pixel_training.rotate import add_rotate_parser, rotate_command
 from pixel_training.train import FRONT, POSE, SIDE, lora_folder, run_settings
 from pixel_training.tryout import GENERATE_SIZE, Plan, create_jobs, rotate_jobs, run_model, write_results
 
@@ -353,6 +354,8 @@ def parser() -> argparse.ArgumentParser:
     generate.add_argument("--prompts", type=Path, default=Path("prompts.json"))
     generate.add_argument("--name", help="folder name under data/generated (default: <date>-<prompt>)")
 
+    add_rotate_parser(commands, flux2)
+
     animate = commands.add_parser("animate", help="animate a generated character with Wan 2.2 and the pixel-animate LoRA")
     animate.add_argument("source", type=Path, help="a folder from `generate`, its name under data/generated, "
                                                    "or a PNG of your own (then give --subject and one --views)")
@@ -392,6 +395,8 @@ def main() -> None:
         train_command(args)
     elif args.command == "generate":
         generate_command(args)
+    elif args.command == "rotate":
+        rotate_command(args, *trained_lora(args.lora, "rotate", "--lora", args.data))
     elif args.command == "animate":
         if args.size % 16 or (args.frames - 1) % 4:
             raise SystemExit("--size must be a multiple of 16, and --frames 4n+1 (17, 33, 45...).")

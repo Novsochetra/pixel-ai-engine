@@ -1,10 +1,10 @@
 import { Picker } from '@/components/picker/Picker';
 import { Segmented } from '@/components/segmented/Segmented';
 import { PixelImage } from '@/library/PixelImage';
-import type { AnimateOptions, AnimateSources } from './animate-client';
-import { findMade, type AnimateValues, type SourceKind } from './animate-form';
+import type { AnimateSources, UploadLimits } from './animate-client';
+import { findMade, type SourceKind } from './animate-form';
 import { UploadButton } from './UploadButton';
-import type { AnimateForm } from './use-animate-form';
+import type { SourcePicker } from './use-source-picker';
 
 const KINDS: { value: SourceKind; label: string }[] = [
   { value: 'made', label: 'Generated' },
@@ -16,55 +16,61 @@ const EMPTY = {
   upload: 'No PNG uploaded yet.',
 };
 
-function previewOf(values: AnimateValues, sources: AnimateSources) {
-  const made = findMade(sources, values.source);
+function previewOf(sources: AnimateSources, source: string, view: string | undefined) {
+  const made = findMade(sources, source);
 
   if (made) {
-    const view = values.views[0] ?? made.views[0]!;
+    const shown = view ?? made.views[0]!;
 
-    return { src: made.pictures[view]!, alt: `${made.subject}, ${view}` };
+    return { src: made.pictures[shown]!, alt: `${made.subject}, ${shown}` };
   }
 
-  const upload = sources.uploads.find((entry) => entry.value === values.source);
+  const upload = sources.uploads.find((entry) => entry.value === source);
 
   return upload ? { src: upload.src, alt: upload.label } : null;
 }
 
 interface SourceFieldProps {
-  form: AnimateForm;
-  options: AnimateOptions;
+  picker: SourcePicker;
+  limits: UploadLimits;
   sources: AnimateSources;
-  values: AnimateValues;
+  source: string;
+  view: string | undefined;
 }
 
-// What to animate: a character made in Create, with its views, or a PNG of your own.
-export function SourceField({ form, options, sources, values }: SourceFieldProps) {
-  const list = form.kind === 'made' ? sources.characters : sources.uploads;
-  const preview = previewOf(values, sources);
+// What to work on: a character made in Create, shown in one of its views, or a PNG of your own.
+export function SourceField({ picker, limits, sources, source, view }: SourceFieldProps) {
+  const list = picker.kind === 'made' ? sources.characters : sources.uploads;
+  const preview = previewOf(sources, source, view);
 
   return (
     <div className="form-field">
       <span className="form-field__label" aria-hidden="true">
         Character
       </span>
-      <Segmented label="Character" options={KINDS} value={form.kind} onChange={form.chooseKind} />
+      <Segmented
+        label="Character"
+        options={KINDS}
+        value={picker.kind}
+        onChange={picker.chooseKind}
+      />
       {list.length ? (
         <Picker
-          label={form.kind === 'made' ? 'Generated character' : 'Uploaded picture'}
-          value={values.source}
+          label={picker.kind === 'made' ? 'Generated character' : 'Uploaded picture'}
+          value={source}
           options={list}
           isStacked
-          onChange={form.chooseSource}
+          onChange={picker.chooseSource}
         />
       ) : (
-        <p className="form-note">{EMPTY[form.kind]}</p>
+        <p className="form-note">{EMPTY[picker.kind]}</p>
       )}
       {preview ? (
         <span className="source-preview pixel-art">
           <PixelImage key={preview.src} src={preview.src} alt={preview.alt} />
         </span>
       ) : null}
-      {form.kind === 'upload' ? <UploadButton form={form} options={options} /> : null}
+      {picker.kind === 'upload' ? <UploadButton upload={picker.upload} limits={limits} /> : null}
     </div>
   );
 }
