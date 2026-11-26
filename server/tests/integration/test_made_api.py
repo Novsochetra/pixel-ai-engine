@@ -19,10 +19,18 @@ def write_generated(data, folder: str) -> None:
     (data / "generated" / folder / "generated.json").write_text(json.dumps(info))
 
 
+def write_animated(data, folder: str) -> None:
+    save_png(data / "animated" / folder / "s0-walk-sheet.png")
+    (data / "animated" / folder / "s0-walk.gif").write_bytes(b"GIF89a")
+    info = {"source": "generated/frog", "created_at": "2026-11-24T08:30:08+00:00", "clips": [{"id": "s0-walk"}]}
+    (data / "animated" / folder / "animated.json").write_text(json.dumps(info))
+
+
 @pytest.fixture
 def jobs(tmp_path):
     write_generated(tmp_path, "frog")
     write_generated(tmp_path, "dragon")
+    write_animated(tmp_path, "frog-walk")
     runner = Jobs(tmp_path / "jobs", tmp_path, command=[sys.executable, "-c", FAKE_JOB], cwd=tmp_path)
     yield runner
     runner.stop()
@@ -77,3 +85,23 @@ def test_another_site_cannot_delete(client):
 
     assert reply.status_code == 403
     assert sorted(folders(client)) == ["dragon", "frog"]
+
+
+def runs(client) -> list[str]:
+    return [run["folder"] for run in client.get("/api/animated").json()["runs"]]
+
+
+def test_an_animation_is_deleted_and_brought_back_the_same_way(client):
+    moved = client.post("/api/animated/trash", json={"folder": "frog-walk"}, headers=SAME_SITE).json()
+
+    assert moved == {"folder": "frog-walk", "trashed": "frog-walk"}
+    assert runs(client) == []
+
+    client.post("/api/animated/restore", json=moved, headers=SAME_SITE)
+    assert runs(client) == ["frog-walk"]
+
+
+def test_only_made_things_can_be_deleted(client):
+    reply = client.post("/api/exports/trash", json={"folder": "characters-v2"}, headers=SAME_SITE)
+
+    assert reply.status_code == 400

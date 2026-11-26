@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Icon } from '@/components/icons';
+import { DeleteConfirm } from './DeleteConfirm';
 
 interface DeleteMadeProps {
   question: string;
@@ -8,7 +9,8 @@ interface DeleteMadeProps {
   onDelete: () => void;
 }
 
-// Deleting asks first and says what goes with it, as the HIG asks of a destructive action.
+// Delete at the bottom of a picture sheet: it asks in place first, as the HIG asks of a
+// destructive action.
 export function DeleteMade({ question, isPending, error, onDelete }: DeleteMadeProps) {
   const [isAsking, setAsking] = useState(false);
 
@@ -19,21 +21,12 @@ export function DeleteMade({ question, isPending, error, onDelete }: DeleteMadeP
     };
 
     return (
-      <div className="delete-made" role="group" aria-label="Delete?">
-        <p className="delete-made__question">{question}</p>
-        <div className="delete-made__actions">
-          <button
-            className="pill-button pill-button--glass"
-            type="button"
-            onClick={() => setAsking(false)}
-          >
-            Keep
-          </button>
-          <button className="pill-button pill-button--destructive" type="button" onClick={confirm}>
-            Delete
-          </button>
-        </div>
-      </div>
+      <DeleteConfirm
+        question={question}
+        isPending={isPending}
+        onKeep={() => setAsking(false)}
+        onDelete={confirm}
+      />
     );
   }
 

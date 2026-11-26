@@ -3,16 +3,24 @@ import { EmptyState } from '@/components/empty-state/EmptyState';
 import { Progress } from '@/components/progress/Progress';
 import { PixelImage } from '@/library/PixelImage';
 import type { LibraryItem } from '@/library/library-view';
+import { CornerDelete } from '@/made/CornerDelete';
+import type { MadeTarget } from '@/made/made-client';
 import type { TurnedCharacter } from './rotate-client';
 import { fromText, turnedItem } from './turned-view';
 
 type TurnedQuery = UseQueryResult<{ characters: TurnedCharacter[] }>;
 
-function TurnedCard({ character, onOpen }: { character: TurnedCharacter; onOpen: () => void }) {
+interface CardProps {
+  character: TurnedCharacter;
+  onOpen: () => void;
+  onDelete: (target: MadeTarget) => void;
+}
+
+function TurnedCard({ character, onOpen, onDelete }: CardProps) {
   const item = turnedItem(character);
 
   return (
-    <li>
+    <li className="made-item">
       <button className="made-card" type="button" onClick={onOpen}>
         <span className="made-card__title">{item.title}</span>
         <span className="made-card__subtitle">
@@ -29,6 +37,7 @@ function TurnedCard({ character, onOpen }: { character: TurnedCharacter; onOpen:
           ))}
         </span>
       </button>
+      <CornerDelete target={item.made!} onDelete={onDelete} />
     </li>
   );
 }
@@ -52,13 +61,13 @@ function GalleryError({ query }: { query: TurnedQuery }) {
 }
 
 // Every character a rotate LoRA turned, newest first, its views side by side in turning order.
-export function TurnedGallery({
-  query,
-  onOpen,
-}: {
+interface GalleryProps {
   query: TurnedQuery;
   onOpen: (item: LibraryItem) => void;
-}) {
+  onDelete: (target: MadeTarget) => void;
+}
+
+export function TurnedGallery({ query, onOpen, onDelete }: GalleryProps) {
   if (query.isError) {
     return <GalleryError query={query} />;
   }
@@ -86,6 +95,7 @@ export function TurnedGallery({
           key={character.key}
           character={character}
           onOpen={() => onOpen(turnedItem(character))}
+          onDelete={onDelete}
         />
       ))}
     </ul>

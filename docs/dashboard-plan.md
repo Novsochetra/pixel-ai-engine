@@ -65,8 +65,8 @@ GET  /api/images/{id}.png                   GET  /api/thumbs/{id}.png
 GET  /api/files/exports/{path}              GET  /api/files/tryouts/{path}
 GET  /api/files/generated/{path}            GET  /api/generated
 GET  /api/generate/options                  GET  /api/loras?task=create|rotate
-POST /api/generate                          POST /api/generated/trash
-POST /api/generated/restore
+POST /api/generate
+POST /api/{generated|animated}/trash        POST /api/{generated|animated}/restore
 GET  /api/files/animated/{path}             GET  /api/files/uploads/{path}
 GET  /api/animated                          GET  /api/animate/options
 GET  /api/animate/sources                   POST /api/animate
@@ -87,9 +87,11 @@ Character and image ids hold slashes (`pac/train/0/front`), so they are the rest
 answers 400 and a second job while one runs answers 409, each with the reason in `detail`.
 `/api/generate/options` lists the models, sprite sizes and facings from the same constants.
 
-Delete on Create and Rotate calls `POST /api/generated/trash` (`folder`): it moves
-`data/generated/<folder>/` to `data/trash/generated/`, so `POST /api/generated/restore` (`folder`,
-`trashed`) can bring it back while the Undo toast shows. A name that is not one folder answers 400,
+Delete on Create and Rotate calls `POST /api/generated/trash` (`folder`), and on Animate
+`POST /api/animated/trash`: it moves `data/<kind>/<folder>/` to `data/trash/<kind>/`, so
+`POST /api/<kind>/restore` (`folder`, `trashed`) can bring it back while the Undo toast shows. Each
+card has a trash button in its corner, and the picture sheet a Delete at its bottom; both ask first.
+Any other kind answers 400. A name that is not one folder answers 400,
 a folder that is not there 404, and one a running job uses 409. Empty `data/trash/` by hand.
 
 `POST /api/animate` takes JSON (`source`, `subject`, `views`, `actions` one a line, `size`,

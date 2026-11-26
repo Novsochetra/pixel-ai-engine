@@ -3,15 +3,23 @@ import { EmptyState } from '@/components/empty-state/EmptyState';
 import { Progress } from '@/components/progress/Progress';
 import { PixelImage } from '@/library/PixelImage';
 import type { LibraryItem } from '@/library/library-view';
+import { CornerDelete } from '@/made/CornerDelete';
+import type { MadeTarget } from '@/made/made-client';
 import type { GeneratedEntry } from './create-client';
 import { galleryItem } from './create-view';
 import './made-card.css';
 
 type GeneratedQuery = UseQueryResult<{ items: GeneratedEntry[] }>;
 
-function MadeCard({ item, onOpen }: { item: LibraryItem; onOpen: () => void }) {
+interface CardProps {
+  item: LibraryItem;
+  onOpen: () => void;
+  onDelete: (target: MadeTarget) => void;
+}
+
+function MadeCard({ item, onOpen, onDelete }: CardProps) {
   return (
-    <li>
+    <li className="made-item">
       <button className="made-card" type="button" onClick={onOpen}>
         <span className="made-card__title">{item.title}</span>
         <span className="made-card__subtitle">{item.subtitle}</span>
@@ -23,6 +31,7 @@ function MadeCard({ item, onOpen }: { item: LibraryItem; onOpen: () => void }) {
           ))}
         </span>
       </button>
+      <CornerDelete target={item.made!} onDelete={onDelete} />
     </li>
   );
 }
@@ -45,14 +54,14 @@ function GalleryError({ query }: { query: GeneratedQuery }) {
   );
 }
 
-// What was made so far, newest first; a click opens its sheets large.
-export function CreateGallery({
-  query,
-  onOpen,
-}: {
+interface GalleryProps {
   query: GeneratedQuery;
   onOpen: (item: LibraryItem) => void;
-}) {
+  onDelete: (target: MadeTarget) => void;
+}
+
+// What was made so far, newest first; a click opens its sheets large, the corner deletes it.
+export function CreateGallery({ query, onOpen, onDelete }: GalleryProps) {
   if (query.isError) {
     return <GalleryError query={query} />;
   }
@@ -78,7 +87,7 @@ export function CreateGallery({
   return (
     <ul className="made-list" aria-label="Made so far">
       {items.map((item) => (
-        <MadeCard key={item.key} item={item} onOpen={() => onOpen(item)} />
+        <MadeCard key={item.key} item={item} onOpen={() => onOpen(item)} onDelete={onDelete} />
       ))}
     </ul>
   );

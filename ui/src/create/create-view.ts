@@ -37,6 +37,11 @@ export function galleryItem(entry: GeneratedEntry): LibraryItem {
     pictures: entry.sheets,
     character: null,
     facts: facts(entry),
-    made: { folder: entry.folder, characters: entry.sheets.length },
+    made: {
+      kind: 'generated',
+      folder: entry.folder,
+      title: entry.prompt,
+      count: entry.sheets.length,
+    },
   };
 }

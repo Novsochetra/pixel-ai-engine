@@ -27,7 +27,7 @@ describe('the create screen', () => {
     renderApp('/create', createServer(startState()));
 
     const list = await screen.findByRole('list', { name: 'Made so far' });
-    const cards = within(list).getAllByRole('button');
+    const cards = [...list.querySelectorAll<HTMLElement>('.made-card')];
 
     expect(cards.map((card) => card.querySelector('.made-card__title')!.textContent)).toEqual([
       'a lava dragon',
@@ -40,7 +40,7 @@ describe('the create screen', () => {
   it('opens a made character large, with zoom and its details', async () => {
     renderApp('/create', createServer(startState()));
 
-    await userEvent.click(await screen.findByRole('button', { name: /a lava dragon/ }));
+    await userEvent.click(await screen.findByRole('button', { name: /^a lava dragon/ }));
     const sheet = openSheet();
 
     expect(within(sheet).getByRole('img', { name: 'a lava dragon, Character 1' })).toBeTruthy();

@@ -1,4 +1,5 @@
 import { dateText } from '@/library/library-view';
+import type { MadeTarget } from '@/made/made-client';
 import type { AnimatedRun, Clip } from './animate-client';
 
 export const actionText = (action: string) => action.replaceAll('-', ' ');
@@ -45,3 +46,11 @@ export function chosenClip(runs: readonly AnimatedRun[], choice: ClipChoice | nu
 
   return run && clip ? { run, clip } : null;
 }
+
+// A run is deleted whole: its folder under data/animated/ with every clip in it.
+export const runTarget = (run: AnimatedRun): MadeTarget => ({
+  kind: 'animated',
+  folder: run.folder,
+  title: run.source,
+  count: run.clips.length,
+});

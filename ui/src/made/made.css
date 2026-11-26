@@ -23,6 +23,27 @@
   color: var(--color-error);
 }
 
+/* A card with a trash button in its top-right corner, over the card and beside its main button. */
+.made-item {
+  position: relative;
+}
+
+.made-delete {
+  position: absolute;
+  inset-block-start: var(--space-2);
+  inset-inline-end: var(--space-2);
+  z-index: var(--layer-content);
+}
+
+.made-delete:not(:disabled):hover {
+  color: var(--color-error);
+}
+
+/* The title keeps clear of the trash button instead of running under it. */
+.made-item :is(.made-card__title, .made-card__subtitle, .run-card__title, .run-card__subtitle) {
+  padding-inline-end: calc(var(--size-glass-button) + var(--space-2));
+}
+
 /* A floating glass capsule at the bottom, above the phone's tab bar, as an iOS toast. */
 .undo-toast {
   position: fixed;

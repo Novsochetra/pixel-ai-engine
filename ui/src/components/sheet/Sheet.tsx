@@ -6,6 +6,8 @@ import './sheet-phone.css';
 
 interface SheetProps {
   title: string;
+  // A compact sheet holds one short question and its answers, as the HIG's alert-sized sheet.
+  size?: 'regular' | 'compact';
   isOpen: boolean;
   onClosed: () => void;
   children: ReactNode;
@@ -13,7 +15,7 @@ interface SheetProps {
 
 // iPadOS's form sheet: centered on wide screens, rising from the bottom on narrow ones, where a
 // finger can pull it down (sheet-gesture.js).
-export function Sheet({ title, isOpen, onClosed, children }: SheetProps) {
+export function Sheet({ title, size = 'regular', isOpen, onClosed, children }: SheetProps) {
   const dialog = useRef<HTMLDialogElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
   const titleId = useId();
@@ -21,7 +23,7 @@ export function Sheet({ title, isOpen, onClosed, children }: SheetProps) {
   useSheet({ dialog, closeButton }, isOpen, onClosed);
 
   return (
-    <dialog className="sheet" ref={dialog} aria-labelledby={titleId} tabIndex={-1}>
+    <dialog className={`sheet sheet--${size}`} ref={dialog} aria-labelledby={titleId} tabIndex={-1}>
       <header className="sheet__header">
         <h2 className="sheet__title" id={titleId}>
           {title}

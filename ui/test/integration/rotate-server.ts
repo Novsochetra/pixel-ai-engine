@@ -87,7 +87,15 @@ const GETS: Record<string, (state: RotateState) => object> = {
   '/api/tryouts': () => TRYOUTS,
 };
 
-function post(state: RotateState, path: string) {
+function post(state: RotateState, path: string, body: BodyInit | null | undefined) {
+  if (path === '/api/generated/trash') {
+    const { folder } = JSON.parse(String(body));
+
+    state.turned = state.turned.filter((character) => character.folder !== folder);
+
+    return json({ folder, trashed: folder });
+  }
+
   if (path === '/api/uploads') {
     state.uploads = [NEW_UPLOAD, ...state.uploads];
 
@@ -105,7 +113,7 @@ export function rotateServer(state: RotateState) {
     const path = url.split('?')[0]!;
 
     if (init?.method === 'POST') {
-      return post(state, path);
+      return post(state, path, init.body);
     }
 
     const answer = GETS[path];

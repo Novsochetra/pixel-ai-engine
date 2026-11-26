@@ -118,7 +118,15 @@ const GETS: Record<string, (state: AnimateState) => object> = {
   '/api/animated': (state) => ({ runs: state.runs }),
 };
 
-function post(state: AnimateState, path: string) {
+function post(state: AnimateState, path: string, body: BodyInit | null | undefined) {
+  if (path === '/api/animated/trash') {
+    const { folder } = JSON.parse(String(body));
+
+    state.runs = state.runs.filter((run) => run.folder !== folder);
+
+    return json({ folder, trashed: folder });
+  }
+
   if (path === '/api/uploads') {
     if (state.uploadRefusal) {
       return json({ detail: state.uploadRefusal }, 400);
@@ -140,7 +148,7 @@ export function animateServer(state: AnimateState) {
     const path = url.split('?')[0]!;
 
     if (init?.method === 'POST') {
-      return post(state, path);
+      return post(state, path, init.body);
     }
 
     const answer = GETS[path];

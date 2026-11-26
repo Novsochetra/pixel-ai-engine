@@ -1,12 +1,19 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
-import { restoreMade, trashMade, type Trashed } from './made-client';
+import {
+  restoreMade,
+  trashMade,
+  type MadeKind,
+  type MadeTarget,
+  type Trashed,
+} from './made-client';
 
 export interface Deleted extends Trashed {
+  kind: MadeKind;
   title: string;
 }
 
-// Every list that shows made characters: Create's gallery, Rotate's, and Animate's sources.
+// Every list that shows made things: Create's gallery, Rotate's, and Animate's runs and sources.
 const MADE_LISTS = [['create', 'generated'], ['rotate', 'turned'], ['animate']];
 
 export function useDeleteMade() {
@@ -17,16 +24,16 @@ export function useDeleteMade() {
     Promise.all(MADE_LISTS.map((queryKey) => client.invalidateQueries({ queryKey })));
 
   const remove = useMutation({
-    mutationFn: ({ folder }: { folder: string; title: string }) => trashMade(folder),
+    mutationFn: trashMade,
 
-    onSuccess: (moved, { title }) => {
-      setDeleted({ ...moved, title });
+    onSuccess: (moved, { kind, title }: MadeTarget) => {
+      setDeleted({ ...moved, kind, title });
       refresh();
     },
   });
 
   const restore = useMutation({
-    mutationFn: restoreMade,
+    mutationFn: (gone: Deleted) => restoreMade(gone.kind, gone),
 
     onSuccess: () => {
       setDeleted(null);
@@ -39,3 +46,5 @@ export function useDeleteMade() {
 
   return { remove, restore, deleted, dismiss };
 }
+
+export type DeleteMade = ReturnType<typeof useDeleteMade>;

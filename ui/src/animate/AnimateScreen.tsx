@@ -2,6 +2,8 @@ import { FormError } from '@/create/FormError';
 import { JobButton } from '@/jobs/JobButton';
 import { ScreenFrame } from '@/layout/ScreenFrame';
 import { NARROW, useMediaQuery } from '@/layout/use-media-query';
+import { MadeLayer } from '@/made/MadeLayer';
+import { useMadeView } from '@/made/use-made-view';
 import { AnimatedGallery } from './AnimatedGallery';
 import { AnimateInspector } from './AnimateInspector';
 import { SpritePlayer } from './SpritePlayer';
@@ -17,6 +19,7 @@ export function AnimateScreen() {
   const runs = useAnimated();
   const isNarrow = useMediaQuery(NARROW);
   const { chosen, shown, player, choose, play } = useClipChoice(runs.data?.runs);
+  const made = useMadeView();
 
   const error = screen.error ? (
     <FormError message={screen.error} onClose={screen.closeError} />
@@ -42,8 +45,9 @@ export function AnimateScreen() {
             />
           ) : null}
         </div>
-        <AnimatedGallery query={runs} chosen={shown} onChoose={play} />
+        <AnimatedGallery query={runs} chosen={shown} onChoose={play} onDelete={made.ask} />
       </div>
+      <MadeLayer view={made} />
     </ScreenFrame>
   );
 }

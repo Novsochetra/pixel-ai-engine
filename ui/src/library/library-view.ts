@@ -1,4 +1,5 @@
 import type { Picture } from './library-client';
+import type { MadeTarget } from '@/made/made-client';
 
 export type LibraryFilter = 'all' | 'flagged' | 'exports' | 'tryouts';
 
@@ -14,8 +15,8 @@ export interface LibraryItem {
   pictures: Picture[];
   character: string | null;
   facts: Fact[];
-  // Set for what Create and Rotate made: the folder under data/generated/ it can be deleted as.
-  made?: { folder: string; characters: number | null };
+  // Set for what Create and Rotate made: the set it is deleted with.
+  made?: MadeTarget;
 }
 
 export interface LibrarySection {

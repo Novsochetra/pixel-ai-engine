@@ -107,7 +107,7 @@ describe('the rotate content', () => {
     renderApp('/rotate', rotateServer(startState()));
 
     const list = await screen.findByRole('list', { name: 'Turned characters' });
-    const cards = within(list).getAllByRole('button');
+    const cards = [...list.querySelectorAll<HTMLElement>('.made-card')];
     expect(cards.map((card) => card.textContent)).toEqual([
       expect.stringContaining('Turned from dragon'),
       expect.stringContaining('Made and turned in Create'),

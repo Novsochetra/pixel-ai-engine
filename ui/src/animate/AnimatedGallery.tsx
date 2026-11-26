@@ -1,6 +1,7 @@
 import type { UseQueryResult } from '@tanstack/react-query';
 import { EmptyState } from '@/components/empty-state/EmptyState';
 import { Progress } from '@/components/progress/Progress';
+import type { MadeTarget } from '@/made/made-client';
 import type { AnimatedRun, Clip } from './animate-client';
 import { type ClipChoice } from './clip-view';
 import { RunCard } from './RunCard';
@@ -12,6 +13,7 @@ interface GalleryProps {
   query: RunsQuery;
   chosen: ClipChoice | null;
   onChoose: (run: AnimatedRun, clip: Clip) => void;
+  onDelete: (target: MadeTarget) => void;
 }
 
 function GalleryError({ query }: { query: RunsQuery }) {
@@ -32,8 +34,8 @@ function GalleryError({ query }: { query: RunsQuery }) {
   );
 }
 
-// Every animated run, newest first; a click on a clip plays it.
-export function AnimatedGallery({ query, chosen, onChoose }: GalleryProps) {
+// Every animated run, newest first; a click on a clip plays it, the corner deletes the run.
+export function AnimatedGallery({ query, chosen, onChoose, onDelete }: GalleryProps) {
   if (query.isError) {
     return <GalleryError query={query} />;
   }
@@ -61,7 +63,13 @@ export function AnimatedGallery({ query, chosen, onChoose }: GalleryProps) {
       </h2>
       <ul className="run-list" aria-label="Animated so far">
         {query.data.runs.map((run) => (
-          <RunCard key={run.folder} run={run} chosen={chosen} onChoose={onChoose} />
+          <RunCard
+            key={run.folder}
+            run={run}
+            chosen={chosen}
+            onChoose={onChoose}
+            onDelete={onDelete}
+          />
         ))}
       </ul>
     </section>

@@ -1,11 +1,14 @@
+import { CornerDelete } from '@/made/CornerDelete';
+import type { MadeTarget } from '@/made/made-client';
 import type { AnimatedRun, Clip } from './animate-client';
-import { clipText, runSubtitle, type ClipChoice } from './clip-view';
+import { clipText, runSubtitle, runTarget, type ClipChoice } from './clip-view';
 import { SheetFrame } from './SheetFrame';
 
 interface RunCardProps {
   run: AnimatedRun;
   chosen: ClipChoice | null;
   onChoose: (run: AnimatedRun, clip: Clip) => void;
+  onDelete: (target: MadeTarget) => void;
 }
 
 // A clip shows its first frame still: only the player moves, so the gallery stays quiet.
@@ -14,7 +17,7 @@ function ClipTile({
   clip,
   isChosen,
   onChoose,
-}: Omit<RunCardProps, 'chosen'> & { clip: Clip; isChosen: boolean }) {
+}: Omit<RunCardProps, 'chosen' | 'onDelete'> & { clip: Clip; isChosen: boolean }) {
   return (
     <li>
       <button
@@ -33,11 +36,12 @@ function ClipTile({
   );
 }
 
-export function RunCard({ run, chosen, onChoose }: RunCardProps) {
+export function RunCard({ run, chosen, onChoose, onDelete }: RunCardProps) {
   const isThisRun = chosen?.folder === run.folder;
 
   return (
-    <li className="run-card">
+    <li className="run-card made-item">
+      <CornerDelete target={runTarget(run)} onDelete={onDelete} />
       <h3 className="run-card__title">{run.source}</h3>
       <p className="run-card__subtitle">{runSubtitle(run)}</p>
       {run.subject ? <p className="run-card__subject">{run.subject}</p> : null}

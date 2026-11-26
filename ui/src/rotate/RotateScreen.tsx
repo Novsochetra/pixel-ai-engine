@@ -4,8 +4,8 @@ import { FormError } from '@/create/FormError';
 import { JobButton } from '@/jobs/JobButton';
 import { ScreenFrame } from '@/layout/ScreenFrame';
 import { NARROW, useMediaQuery } from '@/layout/use-media-query';
-import { MadeSheet } from '@/made/MadeSheet';
-import type { LibraryItem } from '@/library/library-view';
+import { MadeLayer } from '@/made/MadeLayer';
+import { useMadeView } from '@/made/use-made-view';
 import { RotateInspector } from './RotateInspector';
 import { RotateTryouts } from './RotateTryouts';
 import { TurnedGallery } from './TurnedGallery';
@@ -30,7 +30,7 @@ export function RotateScreen() {
   const turned = useRotated();
   const isNarrow = useMediaQuery(NARROW);
   const [shown, setShown] = useState<Shown>('turned');
-  const [viewing, setViewing] = useState<LibraryItem | null>(null);
+  const made = useMadeView();
 
   const error = screen.error ? (
     <FormError message={screen.error} onClose={screen.closeError} />
@@ -52,12 +52,12 @@ export function RotateScreen() {
       {shown === 'turned' ? (
         <div className="create-body">
           {isNarrow ? error : null}
-          <TurnedGallery query={turned} onOpen={setViewing} />
+          <TurnedGallery query={turned} onOpen={made.open} onDelete={made.ask} />
         </div>
       ) : (
-        <RotateTryouts onOpen={setViewing} />
+        <RotateTryouts onOpen={made.open} />
       )}
-      <MadeSheet item={viewing} onClosed={() => setViewing(null)} />
+      <MadeLayer view={made} />
     </ScreenFrame>
   );
 }

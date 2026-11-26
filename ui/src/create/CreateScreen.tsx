@@ -1,9 +1,8 @@
-import { useState } from 'react';
 import { JobButton } from '@/jobs/JobButton';
 import { ScreenFrame } from '@/layout/ScreenFrame';
-import { MadeSheet } from '@/made/MadeSheet';
+import { MadeLayer } from '@/made/MadeLayer';
+import { useMadeView } from '@/made/use-made-view';
 import { NARROW, useMediaQuery } from '@/layout/use-media-query';
-import type { LibraryItem } from '@/library/library-view';
 import { CreateGallery } from './CreateGallery';
 import { CreateInspector } from './CreateInspector';
 import { FormError } from './FormError';
@@ -16,7 +15,7 @@ export function CreateScreen() {
   const screen = useCreateScreen();
   const generated = useGenerated();
   const isNarrow = useMediaQuery(NARROW);
-  const [viewing, setViewing] = useState<LibraryItem | null>(null);
+  const made = useMadeView();
 
   const error = screen.error ? (
     <FormError message={screen.error} onClose={screen.closeError} />
@@ -30,9 +29,9 @@ export function CreateScreen() {
     <ScreenFrame title="Create" actions={generate} inspector={inspector}>
       <div className="create-body">
         {isNarrow ? error : null}
-        <CreateGallery query={generated} onOpen={setViewing} />
+        <CreateGallery query={generated} onOpen={made.open} onDelete={made.ask} />
       </div>
-      <MadeSheet item={viewing} onClosed={() => setViewing(null)} />
+      <MadeLayer view={made} />
     </ScreenFrame>
   );
 }

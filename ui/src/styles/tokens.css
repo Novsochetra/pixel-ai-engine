@@ -137,6 +137,7 @@
   --size-segment-inset: 2px;
   --size-separator-height: 1rem;
   --size-sheet: 36rem;
+  --size-sheet-compact: 26rem;
   --size-sheet-grabber-width: 36px;
   --size-sheet-grabber-height: 5px;
   --size-sheet-gap-top: calc(env(safe-area-inset-top) + var(--space-6));

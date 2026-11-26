@@ -26,6 +26,10 @@
   overscroll-behavior: contain;
 }
 
+.sheet--compact {
+  inline-size: min(var(--size-sheet-compact), calc(100% - 2 * var(--space-6)));
+}
+
 .sheet[open] {
   animation: sheet-in var(--duration-sheet) var(--easing-spring);
 }
