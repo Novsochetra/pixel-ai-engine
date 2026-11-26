@@ -196,3 +196,35 @@ def fake_landscapes(layout: Layout) -> Source:
     mark_gathered(layout.source_dir(source))
 
     return source
+
+
+def write_pixellab_character(folder: Path, plan: str, description: str, directions: list[str]) -> None:
+    (folder / plan / "rotations").mkdir(parents=True)
+    files = {}
+
+    for number, direction in enumerate(directions):
+        name = f"rotations/{direction}.png"
+        (folder / plan / name).write_bytes(png_bytes(64, (number * 40, 60, 90, 255)))
+        files[direction] = name
+
+    card = {"id": plan, "group": plan.split("-")[0], "body": "humanoid", "description": description,
+            "character_id": f"id-{plan}", "size": {"width": 64, "height": 64}, "files": files}
+    (folder / plan / "character.json").write_text(json.dumps(card))
+
+
+def fake_pixellab(layout: Layout) -> Source:
+    source = Source("pixellab", "pixellab", "PixelLab output", "hold", ["create", "rotate"],
+                    links=["https://www.pixellab.ai/termsofservice"])
+    folder = layout.source_dir(source)
+    folder.mkdir(parents=True)
+
+    write_pixellab_character(folder, "fantasy-001", "a knight in silver armour with a red cape",
+                             ["south", "west", "east", "north"])
+    write_pixellab_character(folder, "scifi-001", "a pilot in an orange suit", ["south", "south-east", "north-west"])
+    (folder / "scifi-002" / "rotations").mkdir(parents=True)
+    (folder / "scifi-002" / "job.json").write_text("{}")
+    (folder / "failed.jsonl").write_text("")
+
+    mark_gathered(folder)
+
+    return source

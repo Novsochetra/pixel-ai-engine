@@ -26,7 +26,12 @@ def chosen_sources(db, sources: list[Source], experimental: bool) -> list[Source
     if not analyzed:
         raise SystemExit("Nothing analyzed yet. Run `pixel analyze` first.")
 
-    return [source for source in sources if source.id in analyzed and (experimental or not source.is_experimental)]
+    # A held source never goes into training files, not even with --experimental.
+    return [
+        source
+        for source in sources
+        if source.id in analyzed and not source.is_held and (experimental or not source.is_experimental)
+    ]
 
 
 def fresh_folder(layout: Layout, name: str) -> Path:

@@ -15,7 +15,7 @@ def test_every_source_is_complete():
     assert len(ids) == len(set(ids))
 
     for source in sources:
-        assert source.use in {"train", "eval", "experimental"}
+        assert source.use in {"train", "eval", "experimental", "hold"}
         assert source.license and source.tasks
 
         if source.kind in {"huggingface", "git"}:

@@ -23,6 +23,16 @@ class Source:
     def is_experimental(self) -> bool:
         return self.use == "experimental"
 
+    @property
+    def is_held(self) -> bool:
+        # Gathered and looked at, never trained on, until its owner says yes in writing.
+        return self.use == "hold"
+
+    @property
+    def costs_money(self) -> bool:
+        # Each picture is a paid call, so it runs only when named, never with --all.
+        return self.kind == "pixellab"
+
 
 @dataclass
 class Layout:

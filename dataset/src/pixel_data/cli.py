@@ -14,6 +14,7 @@ from pixel_data.export.run import export
 from pixel_data.dashboard.page import human_size
 from pixel_data.gather.download import gather_source, remote_size
 from pixel_data.gather.importer import import_source
+from pixel_data.gather.pixellab import gather_pixellab
 from pixel_data.sources import Layout, Source, is_gathered, load_sources, pick_sources
 
 
@@ -36,12 +37,21 @@ def chosen_sources(sources: list[Source], args) -> list[Source]:
     if not args.all:
         raise SystemExit("Name the sources to download (see `pixel list`), or pass --all.")
 
-    return [source for source in sources if args.experimental or not source.is_experimental]
+    return [
+        source
+        for source in sources
+        if not source.costs_money and (args.experimental or not source.is_experimental)
+    ]
 
 
 def gather_command(sources: list[Source], layout: Layout, args) -> None:
     for source in chosen_sources(sources, args):
-        gather_source(source, layout)
+        if source.costs_money:
+            print(f"\n== {source.id} (paid calls) -> {layout.source_dir(source)}")
+            folder = args.sources.parent
+            gather_pixellab(source, layout, folder / "pixellab" / "plan.json", folder / ".env", args.count, args.parallel, skip=args.skip)
+        else:
+            gather_source(source, layout)
 
     print("\nDone. Run `pixel dashboard` to look at what you have.")
 
@@ -125,8 +135,11 @@ def parser() -> argparse.ArgumentParser:
 
     gather = commands.add_parser("gather", help="download sources into data/raw")
     gather.add_argument("ids", nargs="*", help="source ids from `pixel list`")
-    gather.add_argument("--all", action="store_true", help="every source except experimental ones")
+    gather.add_argument("--all", action="store_true", help="every free source except experimental ones")
     gather.add_argument("--experimental", action="store_true", help="with --all, include experimental sources too")
+    gather.add_argument("--count", type=int, default=5, help="pixellab: how many new characters to make (each is a paid call)")
+    gather.add_argument("--parallel", type=int, default=2, help="pixellab: characters made at the same time")
+    gather.add_argument("--skip", type=int, default=0, help="pixellab: leave the first N plan entries to another run")
 
     importing = commands.add_parser("import", help="turn downloaded sources into records, one per image")
     importing.add_argument("ids", nargs="+", help="source ids from `pixel list`")

@@ -123,6 +123,18 @@ def test_experimental_sources_stay_out_unless_asked(tmp_path):
     assert summary["characters"] == {}
 
 
+def test_held_sources_stay_out_even_with_experimental(tmp_path):
+    layout = Layout(tmp_path)
+    pac = fake_pac(layout)
+    import_source(pac, layout)
+    analyze(layout, [])
+    held = Source(**{**pac.__dict__, "use": "hold"})
+
+    summary = export(layout, [held], "clean", include_check=True, experimental=True)
+
+    assert summary["characters"] == {}
+
+
 def test_an_export_name_cannot_leave_the_exports_folder(tmp_path):
     with pytest.raises(SystemExit, match="lowercase letters"):
         export(Layout(tmp_path), [], "../escape", include_check=False, experimental=False)

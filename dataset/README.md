@@ -76,6 +76,32 @@ Two sources are downloaded by hand: `itch-8dir-cc0` and `spritedatabase`. Run
 `uv run pixel gather itch-8dir-cc0` to get the links and its folder, put the files there, then run
 `uv run pixel dashboard`.
 
+## PixelLab (paid, on hold)
+
+`pixellab` makes characters with your PixelLab account, from the 400 descriptions in
+`pixellab/plan.json` (8 views each, 64x64). Each character costs about 2 generations.
+
+Its `use` is `hold`. PixelLab's terms (section 1.2) do not allow training your own model on its
+pictures without their written permission. So `pixel export` always leaves it out, even with
+`--experimental`. You can still gather, import, analyze and browse it. When PixelLab says yes in
+writing, change its `use` in `sources.json` to `train`.
+
+Put your token (from https://pixellab.ai/account) in `dataset/.env`, which git ignores:
+
+```
+PIXELLAB_SECRET=your-token
+```
+
+```bash
+uv run pixel gather pixellab --count 5            # make 5 new characters (default), 2 at a time
+uv run pixel gather pixellab --count 50 --parallel 3
+uv run pixel import pixellab && uv run pixel analyze pixellab
+```
+
+`--all` never runs it. A run that stops picks up where it left off: a character that was paid for
+but not saved yet is finished first, never asked for again. Refused ones go to
+`data/raw/pixellab/failed.jsonl`. It stops at once if the token is wrong or the credits run out.
+
 ## Tests
 
 ```bash

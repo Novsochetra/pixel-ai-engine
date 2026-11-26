@@ -1,7 +1,7 @@
 import json
 
 import pytest
-from helpers import QUADRANT_COLORS, fake_icons, fake_landscapes, fake_lpc_4view, fake_lpc_action, fake_moss_64, fake_pac
+from helpers import QUADRANT_COLORS, fake_icons, fake_landscapes, fake_lpc_4view, fake_lpc_action, fake_moss_64, fake_pac, fake_pixellab
 
 from pixel_data.gather.importer import import_source
 from pixel_data.images import load_image
@@ -176,3 +176,37 @@ def test_records_from_before_the_characters_table_get_one_row_per_character(tmp_
         db.close()
 
     assert names == ["pac/test/0", "pac/train/0", "pac/train/1"]
+
+
+def test_pixellab_directions_become_views_and_captions_come_from_descriptions(tmp_path):
+    layout = Layout(tmp_path)
+    entry = import_source(fake_pixellab(layout), layout)
+
+    assert (entry["images"], entry["characters"]) == (7, 2)
+
+    found = {row["id"]: row for row in rows(layout, "pixellab")}
+    assert found["pixellab/fantasy-001/front"]["view"] == "front"
+    assert found["pixellab/fantasy-001/left"]["view"] == "left"
+    assert found["pixellab/fantasy-001/right"]["view"] == "right"
+    assert found["pixellab/fantasy-001/back"]["view"] == "back"
+    assert found["pixellab/scifi-001/front-right"]["view"] == "front-right"
+    assert found["pixellab/scifi-001/back-left"]["view"] == "back-left"
+    assert found["pixellab/fantasy-001/left"]["character"] == "pixellab/fantasy-001"
+    assert found["pixellab/fantasy-001/left"]["caption"] == "a knight in silver armour with a red cape"
+    assert found["pixellab/scifi-001/front"]["caption"] == "a pilot in an orange suit"
+    assert load_image(layout.raw, found["pixellab/fantasy-001/left"]).getpixel((0, 0)) == (40, 60, 90, 255)
+
+
+def test_pixellab_skips_and_counts_a_folder_that_is_not_finished(tmp_path):
+    layout = Layout(tmp_path)
+    entry = import_source(fake_pixellab(layout), layout)
+
+    assert json.loads(entry["skipped"]) == {"not finished": 1}
+    assert not any(row["character"] == "pixellab/scifi-002" for row in rows(layout, "pixellab"))
+
+
+def test_pixellab_records_keep_the_hold_use(tmp_path):
+    layout = Layout(tmp_path)
+    import_source(fake_pixellab(layout), layout)
+
+    assert {row["use"] for row in rows(layout, "pixellab")} == {"hold"}

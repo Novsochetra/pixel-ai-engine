@@ -1,0 +1,5833 @@
+{
+ "version": 1,
+ "defaults": {
+  "size": 64,
+  "directions": 8,
+  "view": "low top-down",
+  "outline": "single color black outline",
+  "shading": "basic shading",
+  "detail": "medium detail"
+ },
+ "characters": [
+  {
+   "id": "fantasy-001",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a knight in silver armour with a crimson cape and a longsword"
+  },
+  {
+   "id": "fantasy-002",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "an old wizard with a long white beard, a teal robe and a pointed hat"
+  },
+  {
+   "id": "fantasy-003",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a young elf archer with green leathers, pointed ears and a longbow"
+  },
+  {
+   "id": "fantasy-004",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a stocky dwarf blacksmith with an orange beard and a leather apron"
+  },
+  {
+   "id": "fantasy-005",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a dark-skinned paladin in golden plate armour with a white tabard"
+  },
+  {
+   "id": "fantasy-006",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a female rogue in a purple hooded cloak with two daggers at her belt"
+  },
+  {
+   "id": "fantasy-007",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a plump halfling cook with curly brown hair and a yellow waistcoat"
+  },
+  {
+   "id": "fantasy-008",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a tall priestess in white and gold robes with a staff topped by a sun"
+  },
+  {
+   "id": "fantasy-009",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a barbarian warrior with braided blonde hair, fur boots and a big axe"
+  },
+  {
+   "id": "fantasy-010",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a bard with a feathered cap, a mustard coat and a lute on his back"
+  },
+  {
+   "id": "fantasy-011",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "an elderly sorceress with silver hair, a deep blue gown and a crystal staff"
+  },
+  {
+   "id": "fantasy-012",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a ranger in a mossy green cloak with a brown quiver and a short bow"
+  },
+  {
+   "id": "fantasy-013",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a pale necromancer in black robes with a bone staff and glowing eyes"
+  },
+  {
+   "id": "fantasy-014",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a burly orc warrior with grey-green skin, iron pauldrons and a spiked club"
+  },
+  {
+   "id": "fantasy-015",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a young squire in a plain grey tunic with a wooden shield and a helmet"
+  },
+  {
+   "id": "fantasy-016",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a dark elf assassin with lavender skin, white hair and a black bodysuit"
+  },
+  {
+   "id": "fantasy-017",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a monk with a shaved head, orange robes and wooden prayer beads"
+  },
+  {
+   "id": "fantasy-018",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a royal queen with a tall gold crown, a burgundy dress and a long train"
+  },
+  {
+   "id": "fantasy-019",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a bearded king with a fur-trimmed blue mantle and a jewelled crown"
+  },
+  {
+   "id": "fantasy-020",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a female berserker with war paint, a bear pelt and two hand axes"
+  },
+  {
+   "id": "fantasy-021",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a druid with antlers on his head, a brown robe and a gnarled staff"
+  },
+  {
+   "id": "fantasy-022",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a tiny elderly alchemist with round glasses, a lab coat of teal and a satchel"
+  },
+  {
+   "id": "fantasy-023",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a town guard in a chainmail shirt, a steel helmet and a red tabard"
+  },
+  {
+   "id": "fantasy-024",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a female cleric with dark curly hair, a mace and a pink and white habit"
+  },
+  {
+   "id": "fantasy-025",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a goblin merchant with big ears, green skin and a huge backpack of wares"
+  },
+  {
+   "id": "fantasy-026",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a samurai-style warrior with a lacquered red helmet and a navy armour set"
+  },
+  {
+   "id": "fantasy-027",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a gladiator with a bronze helmet, a round shield and a short sword"
+  },
+  {
+   "id": "fantasy-028",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a young prince with a white shirt, a golden circlet and a thin rapier"
+  },
+  {
+   "id": "fantasy-029",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a swamp witch with a tattered green dress, warty nose and a broom"
+  },
+  {
+   "id": "fantasy-030",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a snow hunter wrapped in white furs with a spear and a wolf-tooth necklace"
+  },
+  {
+   "id": "fantasy-031",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a desert nomad with a sand-coloured turban, a long scarf and a curved sword"
+  },
+  {
+   "id": "fantasy-032",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a tall female elf queen with a silver gown and a leaf crown"
+  },
+  {
+   "id": "fantasy-033",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a mage apprentice with messy red hair, an oversized grey robe and a book"
+  },
+  {
+   "id": "fantasy-034",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a female knight with short black hair, blue plate armour and a lance"
+  },
+  {
+   "id": "fantasy-035",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a hooded thief in a dark brown cloak with a lockpick belt and a green scarf"
+  },
+  {
+   "id": "fantasy-036",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a bald strongman in a leopard print loincloth with iron wrist cuffs"
+  },
+  {
+   "id": "fantasy-037",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a pirate captain with a tricorn hat, a teal coat and an eyepatch"
+  },
+  {
+   "id": "fantasy-038",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a witch hunter in a wide brimmed black hat and a long brown leather coat"
+  },
+  {
+   "id": "fantasy-039",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a young girl adventurer with twin braids, a pink tunic and a small sword"
+  },
+  {
+   "id": "fantasy-040",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "an old shepherd with a straw hat, a woolly vest and a crook"
+  },
+  {
+   "id": "fantasy-041",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a tan-skinned sun warrior with gold bracers, a red sash and a spear"
+  },
+  {
+   "id": "fantasy-042",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a female ice mage with pale blue skin, white hair and a frosted silver dress"
+  },
+  {
+   "id": "fantasy-043",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a fire mage with orange robes, flame-coloured hair and a glowing amulet"
+  },
+  {
+   "id": "fantasy-044",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a plague doctor style healer with a beaked mask, a grey coat and a lantern"
+  },
+  {
+   "id": "fantasy-045",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a cheerful innkeeper with a round belly, a white apron and a big moustache"
+  },
+  {
+   "id": "fantasy-046",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a dark knight in black spiked armour with a purple plume"
+  },
+  {
+   "id": "fantasy-047",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a tribal shaman with feathers on his head, face paint and a bone rattle"
+  },
+  {
+   "id": "fantasy-048",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a female crossbow hunter with a leather vest, a brown braid and a crossbow"
+  },
+  {
+   "id": "fantasy-049",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a battle monk in a blue sash, bare arms and iron knuckle guards"
+  },
+  {
+   "id": "fantasy-050",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a court jester with a two-coloured yellow and purple suit and a bell hat"
+  },
+  {
+   "id": "fantasy-051",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a tall slim sage with a grey ponytail, a long mauve coat and a scroll"
+  },
+  {
+   "id": "fantasy-052",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a farmer boy with a straw hat, blue overalls and a pitchfork"
+  },
+  {
+   "id": "fantasy-053",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a female dwarf miner with a lantern helmet, a pickaxe and red braids"
+  },
+  {
+   "id": "fantasy-054",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a golden skinned oracle with a white veil, a pale gown and a silver circlet"
+  },
+  {
+   "id": "fantasy-055",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a half-orc mercenary with tusks, a scarred face and mismatched leather armour"
+  },
+  {
+   "id": "fantasy-056",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a young hero with spiky brown hair, a green tunic and a round wooden shield"
+  },
+  {
+   "id": "fantasy-057",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a royal guard in a gold helmet with a tall plume and a halberd"
+  },
+  {
+   "id": "fantasy-058",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a noblewoman with a tall hair bun, a yellow ball gown and a fan"
+  },
+  {
+   "id": "fantasy-059",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a templar with a white surcoat, a blue cross and a great helm"
+  },
+  {
+   "id": "fantasy-060",
+   "group": "fantasy",
+   "body": "small-creature",
+   "description": "a tiny garden gnome with a red pointed hat, a grey beard and a mushroom"
+  },
+  {
+   "id": "fantasy-061",
+   "group": "fantasy",
+   "body": "small-creature",
+   "description": "a small pixie with transparent wings, a leaf dress and glowing pink hair"
+  },
+  {
+   "id": "fantasy-062",
+   "group": "fantasy",
+   "body": "small-creature",
+   "description": "a fairy with long blue hair, dragonfly wings and a flower skirt"
+  },
+  {
+   "id": "fantasy-063",
+   "group": "fantasy",
+   "body": "small-creature",
+   "description": "a kobold with orange scales, a tiny helmet and a rusty dagger"
+  },
+  {
+   "id": "fantasy-064",
+   "group": "fantasy",
+   "body": "quadruped",
+   "description": "a centaur with a chestnut horse body, a bare chested archer torso and a bow"
+  },
+  {
+   "id": "fantasy-065",
+   "group": "fantasy",
+   "body": "quadruped",
+   "description": "a faun with goat legs, small horns and a green vest"
+  },
+  {
+   "id": "fantasy-066",
+   "group": "fantasy",
+   "body": "quadruped",
+   "description": "a knight riding a white horse with a golden saddle"
+  },
+  {
+   "id": "fantasy-067",
+   "group": "fantasy",
+   "body": "floating",
+   "description": "a floating hooded spirit mage with glowing violet eyes and no legs"
+  },
+  {
+   "id": "fantasy-068",
+   "group": "fantasy",
+   "body": "floating",
+   "description": "a ghostly lantern wisp in a tattered blue cloak"
+  },
+  {
+   "id": "fantasy-069",
+   "group": "fantasy",
+   "body": "quadruped",
+   "description": "a winged unicorn with a pink mane and a silver horn"
+  },
+  {
+   "id": "fantasy-070",
+   "group": "fantasy",
+   "body": "serpent",
+   "description": "a green sea serpent wearing a gold crown and holding a trident"
+  },
+  {
+   "id": "scifi-001",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a space marine in bulky green power armour with a rifle"
+  },
+  {
+   "id": "scifi-002",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a female pilot in an orange flight suit with a white helmet"
+  },
+  {
+   "id": "scifi-003",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a bald cyborg with a glowing red eye and a metal left arm"
+  },
+  {
+   "id": "scifi-004",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a space captain in a navy jacket with gold epaulettes"
+  },
+  {
+   "id": "scifi-005",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a hacker with neon pink hair, a black hoodie and goggles"
+  },
+  {
+   "id": "scifi-006",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a dark-skinned engineer in a yellow vest with a tool belt and a visor"
+  },
+  {
+   "id": "scifi-007",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "an alien diplomat with blue skin, three eyes and a silver robe"
+  },
+  {
+   "id": "scifi-008",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a bounty hunter in a rusty brown armour with a full face helmet"
+  },
+  {
+   "id": "scifi-009",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a young scientist with a white lab coat, round glasses and a tablet"
+  },
+  {
+   "id": "scifi-010",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a wasteland scavenger with a gas mask, patched grey coat and a pack"
+  },
+  {
+   "id": "scifi-011",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a tall grey alien with a large head, black eyes and a plain jumpsuit"
+  },
+  {
+   "id": "scifi-012",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a female soldier in a teal combat suit with a heavy visor"
+  },
+  {
+   "id": "scifi-013",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "an old astronaut with a white spacesuit, a gold visor and a beard"
+  },
+  {
+   "id": "scifi-014",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a street samurai in a black coat with neon green stripes and a sword"
+  },
+  {
+   "id": "scifi-015",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a medic in a white and red armour with a first aid backpack"
+  },
+  {
+   "id": "scifi-016",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a smuggler with a leather jacket, a blaster at the hip and a scarf"
+  },
+  {
+   "id": "scifi-017",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a female android with silver hair, white skin and a sleek black suit"
+  },
+  {
+   "id": "scifi-018",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a heavy gunner in grey armour with a big shoulder cannon"
+  },
+  {
+   "id": "scifi-019",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a tribal alien hunter with purple skin, bone tusks and a spear"
+  },
+  {
+   "id": "scifi-020",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a colony farmer in a brown jumpsuit with a wide brim hat"
+  },
+  {
+   "id": "scifi-021",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a dark skinned rebel leader with a red bandana and a worn olive jacket"
+  },
+  {
+   "id": "scifi-022",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a stealth operative in a skintight dark blue suit with a hood"
+  },
+  {
+   "id": "scifi-023",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a young mechanic with oil stained overalls, goggles on the forehead and a wrench"
+  },
+  {
+   "id": "scifi-024",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "an elderly crime boss in a cream suit with a glowing cybernetic cheek"
+  },
+  {
+   "id": "scifi-025",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a female bartender with an orange mohawk, tattoos and a vest"
+  },
+  {
+   "id": "scifi-026",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a fish-faced alien in a coral coloured jacket"
+  },
+  {
+   "id": "scifi-027",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a drone pilot with a headset, a grey flight suit and a control pad"
+  },
+  {
+   "id": "scifi-028",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a plasma knight in white armour with a glowing blue sword"
+  },
+  {
+   "id": "scifi-029",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a rogue trader in a flowing maroon cape and a gold-trimmed jacket"
+  },
+  {
+   "id": "scifi-030",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a lizard-skinned alien warrior with green scales and a red armour plate"
+  },
+  {
+   "id": "scifi-031",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a monk of a cyber order in a hooded silver robe and a glowing halo"
+  },
+  {
+   "id": "scifi-032",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a security officer in a black uniform with a riot shield"
+  },
+  {
+   "id": "scifi-033",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a punk courier with a yellow jacket, rollerblades and a bright cyan wig"
+  },
+  {
+   "id": "scifi-034",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "an ice planet explorer in a white parka with fur trim and goggles"
+  },
+  {
+   "id": "scifi-035",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "an energy swordswoman in a light purple armour with a laser blade"
+  },
+  {
+   "id": "scifi-036",
+   "group": "scifi",
+   "body": "mech",
+   "description": "a four armed alien with orange skin wearing a small vest"
+  },
+  {
+   "id": "scifi-037",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a sleek bounty droid in grey armour with an orange visor"
+  },
+  {
+   "id": "scifi-038",
+   "group": "scifi",
+   "body": "insect",
+   "description": "a tall insect-like alien in a navy suit with large compound eyes"
+  },
+  {
+   "id": "scifi-039",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a space pirate with a robotic hook hand, a red bandana and a long coat"
+  },
+  {
+   "id": "scifi-040",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a cargo worker in a heavy orange exo frame"
+  },
+  {
+   "id": "scifi-041",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a priestess of a star cult in a white robe with a glowing circular headpiece"
+  },
+  {
+   "id": "scifi-042",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a young boy in a baggy green spacesuit with a toy helmet"
+  },
+  {
+   "id": "scifi-043",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a chubby alien merchant with yellow skin, small horns and a big satchel"
+  },
+  {
+   "id": "scifi-044",
+   "group": "scifi",
+   "body": "floating",
+   "description": "a floating round drone with a camera eye and two small arms"
+  },
+  {
+   "id": "scifi-045",
+   "group": "scifi",
+   "body": "floating",
+   "description": "a hovering medical bot with a white shell and a red cross"
+  },
+  {
+   "id": "scifi-046",
+   "group": "scifi",
+   "body": "insect",
+   "description": "a small six legged scout rover with a dish antenna"
+  },
+  {
+   "id": "scifi-047",
+   "group": "scifi",
+   "body": "quadruped",
+   "description": "a bio-engineered hound with metal plates and glowing green veins"
+  },
+  {
+   "id": "scifi-048",
+   "group": "scifi",
+   "body": "serpent",
+   "description": "a tentacled alien with a purple body and many small eyes"
+  },
+  {
+   "id": "scifi-049",
+   "group": "scifi",
+   "body": "serpent",
+   "description": "a slim squid-like alien in a dark gown with a helmet bubble"
+  },
+  {
+   "id": "scifi-050",
+   "group": "scifi",
+   "body": "quadruped",
+   "description": "a space cat in a clear helmet with a tiny jetpack"
+  },
+  {
+   "id": "modern-001",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a young woman in a yellow raincoat with a red umbrella"
+  },
+  {
+   "id": "modern-002",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a businessman in a grey suit with a briefcase and a blue tie"
+  },
+  {
+   "id": "modern-003",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a teenage boy in a green hoodie with a backpack and headphones"
+  },
+  {
+   "id": "modern-004",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "an elderly man in a cardigan with a flat cap and a walking cane"
+  },
+  {
+   "id": "modern-005",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a female doctor in a white coat with a stethoscope"
+  },
+  {
+   "id": "modern-006",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a police officer in a dark blue uniform with a cap and a badge"
+  },
+  {
+   "id": "modern-007",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a firefighter in a yellow jacket, a red helmet and heavy boots"
+  },
+  {
+   "id": "modern-008",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a chef in a white hat and jacket with a striped apron"
+  },
+  {
+   "id": "modern-009",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a dark-skinned basketball player in a purple jersey and white shorts"
+  },
+  {
+   "id": "modern-010",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a skateboarder with a backwards cap, baggy orange pants and a board"
+  },
+  {
+   "id": "modern-011",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a delivery rider in a teal jacket with a big square bag"
+  },
+  {
+   "id": "modern-012",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a woman in a floral summer dress with a straw hat"
+  },
+  {
+   "id": "modern-013",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a construction worker in an orange vest and a white hard hat"
+  },
+  {
+   "id": "modern-014",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a college student with a mustard sweater, glasses and a stack of books"
+  },
+  {
+   "id": "modern-015",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a punk with a tall blue mohawk, a leather jacket and ripped jeans"
+  },
+  {
+   "id": "modern-016",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a mail carrier in a grey uniform with a satchel and shorts"
+  },
+  {
+   "id": "modern-017",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a young girl in a school uniform with a red bow and a bag"
+  },
+  {
+   "id": "modern-018",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a taxi driver with a flat cap, a checked shirt and a moustache"
+  },
+  {
+   "id": "modern-019",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a nurse in light blue scrubs with a pink cap"
+  },
+  {
+   "id": "modern-020",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a farmer in a plaid shirt, dungarees and a wide hat"
+  },
+  {
+   "id": "modern-021",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a rock guitarist with long dark hair, a black shirt and a red guitar"
+  },
+  {
+   "id": "modern-022",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a heavyset man in a hawaiian shirt and sunglasses"
+  },
+  {
+   "id": "modern-023",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a female jogger in a pink tracksuit with a ponytail"
+  },
+  {
+   "id": "modern-024",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a barista in a brown apron with a green cap and a tray"
+  },
+  {
+   "id": "modern-025",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a scientist in a white coat with green goggles and a clipboard"
+  },
+  {
+   "id": "modern-026",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a street vendor with a white apron, a tall hat and a food cart"
+  },
+  {
+   "id": "modern-027",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a small child in a yellow raincoat and red boots"
+  },
+  {
+   "id": "modern-028",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a lawyer woman in a navy blazer and skirt with a folder"
+  },
+  {
+   "id": "modern-029",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a pilot in a white shirt with gold stripes and a captain hat"
+  },
+  {
+   "id": "modern-030",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a mechanic in blue coveralls with a rag in the pocket"
+  },
+  {
+   "id": "modern-031",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a hiker with a big orange backpack, a green jacket and a stick"
+  },
+  {
+   "id": "modern-032",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a tourist with a camera, a bright shirt and shorts"
+  },
+  {
+   "id": "modern-033",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a grandmother in a purple dress with a shawl and round glasses"
+  },
+  {
+   "id": "modern-034",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a surfer with bleached hair, board shorts and a surfboard"
+  },
+  {
+   "id": "modern-035",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a DJ with big headphones, a silver jacket and sunglasses"
+  },
+  {
+   "id": "modern-036",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a soldier in a camouflage uniform with a helmet and a backpack"
+  },
+  {
+   "id": "modern-037",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a painter in a smock covered with colourful stains and a beret"
+  },
+  {
+   "id": "modern-038",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a bus driver in a grey vest with a tie and a cap"
+  },
+  {
+   "id": "modern-039",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a boy in a soccer kit of white and green with a ball"
+  },
+  {
+   "id": "modern-040",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a fashion model in a long red coat and tall black boots"
+  },
+  {
+   "id": "historical-001",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a roman legionary in a red tunic with a plumed helmet and a big shield"
+  },
+  {
+   "id": "historical-002",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a viking raider with an iron helmet, a round shield and a braided beard"
+  },
+  {
+   "id": "historical-003",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "an ancient egyptian pharaoh with a striped headdress and a gold collar"
+  },
+  {
+   "id": "historical-004",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a samurai in a red and black lamellar armour with a katana"
+  },
+  {
+   "id": "historical-005",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a medieval peasant woman with a white headscarf and a brown dress"
+  },
+  {
+   "id": "historical-006",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a spartan hoplite with a bronze helmet, a red cape and a spear"
+  },
+  {
+   "id": "historical-007",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a feudal japanese ninja in a dark indigo outfit with a hood"
+  },
+  {
+   "id": "historical-008",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a renaissance nobleman in a puffy velvet doublet and a feathered hat"
+  },
+  {
+   "id": "historical-009",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a victorian lady in a long green dress with a parasol"
+  },
+  {
+   "id": "historical-010",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a native hunter with a feathered headband, fringed leathers and a bow"
+  },
+  {
+   "id": "historical-011",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "an aztec warrior with a jaguar headdress, a feathered shield and a club"
+  },
+  {
+   "id": "historical-012",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a mongol horse archer with a fur hat, a blue coat and a short bow"
+  },
+  {
+   "id": "historical-013",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a chinese emperor in a gold dragon robe with a flat crown"
+  },
+  {
+   "id": "historical-014",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a pirate with a bandana, a striped shirt and a cutlass"
+  },
+  {
+   "id": "historical-015",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a medieval monk in a brown hooded habit with a rope belt"
+  },
+  {
+   "id": "historical-016",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "an ancient greek philosopher in a white toga with a long beard"
+  },
+  {
+   "id": "historical-017",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a knight crusader in a white surcoat with a red cross and a helm"
+  },
+  {
+   "id": "historical-018",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "an egyptian priestess with a black wig, a white linen dress and a gold collar"
+  },
+  {
+   "id": "historical-019",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a wild west sheriff in a brown hat, a star badge and a long coat"
+  },
+  {
+   "id": "historical-020",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a cowgirl with a red bandana, a denim vest and a lasso"
+  },
+  {
+   "id": "historical-021",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a napoleonic soldier in a blue coat, a tall black hat and a musket"
+  },
+  {
+   "id": "historical-022",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a medieval blacksmith with a leather apron and rolled sleeves"
+  },
+  {
+   "id": "historical-023",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a victorian chimney sweep with a soot-covered face and a top hat"
+  },
+  {
+   "id": "historical-024",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a cossack in a tall fur hat, a red shirt and a sabre"
+  },
+  {
+   "id": "historical-025",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "an indian maharaja in a turquoise silk coat with a jewelled turban"
+  },
+  {
+   "id": "historical-026",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a minstrel from the middle ages in a striped yellow and red outfit with a flute"
+  },
+  {
+   "id": "historical-027",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "an inuit hunter in a thick fur parka with a harpoon"
+  },
+  {
+   "id": "historical-028",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a medieval baker with a floury white apron and a round loaf"
+  },
+  {
+   "id": "historical-029",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a gladiator woman with bronze arm guards and a trident"
+  },
+  {
+   "id": "historical-030",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a 1920s gangster in a pinstripe suit and a fedora with a violin case"
+  },
+  {
+   "id": "horror-001",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a pale ghost girl in a torn white nightgown with long black hair"
+  },
+  {
+   "id": "horror-002",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a hunched zombie with grey green skin, tattered clothes and an exposed rib"
+  },
+  {
+   "id": "horror-003",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a skeleton warrior with a rusty helmet and a cracked shield"
+  },
+  {
+   "id": "horror-004",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a vampire count in a black cape with a high red collar and slicked hair"
+  },
+  {
+   "id": "horror-005",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a masked slasher in a blue overall and a white hockey mask"
+  },
+  {
+   "id": "horror-006",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a scarecrow with a burlap sack face, straw sticking out and a ragged coat"
+  },
+  {
+   "id": "horror-007",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a hooded grim reaper figure in a black robe with a scythe"
+  },
+  {
+   "id": "horror-008",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a possessed doll with a cracked porcelain face and a faded blue dress"
+  },
+  {
+   "id": "horror-009",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a werewolf in torn trousers with grey fur and yellow eyes"
+  },
+  {
+   "id": "horror-010",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a headless horseman in a dark coat holding a glowing orange pumpkin"
+  },
+  {
+   "id": "horror-011",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a mummy wrapped in dirty bandages with glowing green eyes"
+  },
+  {
+   "id": "horror-012",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a witch with a crooked black hat, a green face and a patched purple dress"
+  },
+  {
+   "id": "horror-013",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a butcher in a bloody apron with a large cleaver and a sack mask"
+  },
+  {
+   "id": "horror-014",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a gaunt cultist in a deep red robe with a hood and a ritual knife"
+  },
+  {
+   "id": "horror-015",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a drowned sailor with seaweed, blue skin and a waterlogged coat"
+  },
+  {
+   "id": "horror-016",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a tall thin faceless man in a black suit"
+  },
+  {
+   "id": "horror-017",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a clown with a pale face, a wild red wig and a baggy striped costume"
+  },
+  {
+   "id": "horror-018",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a ghoul with sickly green skin, long claws and a ragged brown shirt"
+  },
+  {
+   "id": "horror-019",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a corpse bride with a torn white veil and grey blue skin"
+  },
+  {
+   "id": "horror-020",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a lich in tattered purple robes with a skull face and a crown"
+  },
+  {
+   "id": "horror-021",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a mad doctor in a stained coat with a surgical mask and a bone saw"
+  },
+  {
+   "id": "horror-022",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a pale child ghost in a muddy yellow raincoat"
+  },
+  {
+   "id": "horror-023",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a mourning widow ghost in a black veil and a long dress"
+  },
+  {
+   "id": "horror-024",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a skeleton pirate with a torn coat, a tricorn hat and a golden tooth"
+  },
+  {
+   "id": "horror-025",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a fanged vampire woman in a deep green gown with pale skin"
+  },
+  {
+   "id": "horror-026",
+   "group": "horror",
+   "body": "floating",
+   "description": "a floating translucent ghost with glowing orbs for eyes and a trailing white sheet"
+  },
+  {
+   "id": "horror-027",
+   "group": "horror",
+   "body": "floating",
+   "description": "a floating skull wreathed in blue flame"
+  },
+  {
+   "id": "horror-028",
+   "group": "horror",
+   "body": "insect",
+   "description": "a giant black spider with a red hourglass and fangs"
+  },
+  {
+   "id": "horror-029",
+   "group": "horror",
+   "body": "small-creature",
+   "description": "a crow with sunken eyes, ragged feathers and a skull mask"
+  },
+  {
+   "id": "horror-030",
+   "group": "horror",
+   "body": "serpent",
+   "description": "a bloated corpse worm with pale skin and a toothed circular mouth"
+  },
+  {
+   "id": "animals-001",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a brown bear with a thick fur coat and a pale snout"
+  },
+  {
+   "id": "animals-002",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a grey wolf with a white chest and yellow eyes"
+  },
+  {
+   "id": "animals-003",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a red fox with a white tipped bushy tail and black socks"
+  },
+  {
+   "id": "animals-004",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "an orange tiger with black stripes and a white belly"
+  },
+  {
+   "id": "animals-005",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a golden lion with a thick dark mane"
+  },
+  {
+   "id": "animals-006",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a chestnut horse with a white blaze and a black mane"
+  },
+  {
+   "id": "animals-007",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a white horse with a long silver mane"
+  },
+  {
+   "id": "animals-008",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a black and white cow with pink udder and short horns"
+  },
+  {
+   "id": "animals-009",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a pink pig with floppy ears and a curly tail"
+  },
+  {
+   "id": "animals-010",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a fluffy white sheep with a black face"
+  },
+  {
+   "id": "animals-011",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a spotted giraffe with a long neck and tan patches"
+  },
+  {
+   "id": "animals-012",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a grey elephant with big ears, ivory tusks and a long trunk"
+  },
+  {
+   "id": "animals-013",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a brown deer with branching antlers and a white spotted rump"
+  },
+  {
+   "id": "animals-014",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a black and white panda with round ears"
+  },
+  {
+   "id": "animals-015",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a tan camel with two humps and a red blanket"
+  },
+  {
+   "id": "animals-016",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a grey rhino with a big horn and thick folds of skin"
+  },
+  {
+   "id": "animals-017",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a brown dog with floppy ears, a white muzzle and a red collar"
+  },
+  {
+   "id": "animals-018",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "an orange cat with stripes and a green collar"
+  },
+  {
+   "id": "animals-019",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a zebra with bold black and white stripes"
+  },
+  {
+   "id": "animals-020",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a hippo with a wide mouth and a blue grey hide"
+  },
+  {
+   "id": "animals-021",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a white mountain goat with curved horns and a short beard"
+  },
+  {
+   "id": "animals-022",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a spotted leopard with a golden coat"
+  },
+  {
+   "id": "animals-023",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a black panther with green eyes and a sleek coat"
+  },
+  {
+   "id": "animals-024",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a grey donkey with long ears and a pale belly"
+  },
+  {
+   "id": "animals-025",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a wild boar with tusks and a bristly dark brown back"
+  },
+  {
+   "id": "animals-026",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a brown moose with huge flat antlers"
+  },
+  {
+   "id": "animals-027",
+   "group": "animals",
+   "body": "small-creature",
+   "description": "a green frog with big eyes and a pale yellow belly"
+  },
+  {
+   "id": "animals-028",
+   "group": "animals",
+   "body": "small-creature",
+   "description": "a small brown rabbit with tall ears and a white tail"
+  },
+  {
+   "id": "animals-029",
+   "group": "animals",
+   "body": "small-creature",
+   "description": "a grey squirrel with a big fluffy tail"
+  },
+  {
+   "id": "animals-030",
+   "group": "animals",
+   "body": "small-creature",
+   "description": "a tiny grey mouse with a pink tail and round ears"
+  },
+  {
+   "id": "animals-031",
+   "group": "animals",
+   "body": "small-creature",
+   "description": "a spiky brown hedgehog with a cream face"
+  },
+  {
+   "id": "animals-032",
+   "group": "animals",
+   "body": "small-creature",
+   "description": "a ginger monkey with a long curling tail"
+  },
+  {
+   "id": "animals-033",
+   "group": "animals",
+   "body": "small-creature",
+   "description": "a green turtle with a patterned shell"
+  },
+  {
+   "id": "animals-034",
+   "group": "animals",
+   "body": "small-creature",
+   "description": "a black and white raccoon with a ringed tail"
+  },
+  {
+   "id": "animals-035",
+   "group": "animals",
+   "body": "small-creature",
+   "description": "a green gecko with orange toes and a long tail"
+  },
+  {
+   "id": "animals-036",
+   "group": "animals",
+   "body": "small-creature",
+   "description": "a pink axolotl with feathery gills"
+  },
+  {
+   "id": "animals-037",
+   "group": "animals",
+   "body": "bird",
+   "description": "a bright red parrot with blue wing tips and a curved beak"
+  },
+  {
+   "id": "animals-038",
+   "group": "animals",
+   "body": "bird",
+   "description": "a white owl with large yellow eyes and brown speckles"
+  },
+  {
+   "id": "animals-039",
+   "group": "animals",
+   "body": "bird",
+   "description": "a black and white penguin with an orange beak"
+  },
+  {
+   "id": "animals-040",
+   "group": "animals",
+   "body": "bird",
+   "description": "a blue and white seagull with orange legs"
+  },
+  {
+   "id": "animals-041",
+   "group": "animals",
+   "body": "bird",
+   "description": "a brown eagle with a white head and sharp yellow talons"
+  },
+  {
+   "id": "animals-042",
+   "group": "animals",
+   "body": "bird",
+   "description": "a pink flamingo standing on one thin leg"
+  },
+  {
+   "id": "animals-043",
+   "group": "animals",
+   "body": "bird",
+   "description": "a yellow chick with orange feet and a tiny beak"
+  },
+  {
+   "id": "animals-044",
+   "group": "animals",
+   "body": "bird",
+   "description": "a black crow with a glossy purple sheen"
+  },
+  {
+   "id": "animals-045",
+   "group": "animals",
+   "body": "serpent",
+   "description": "a green python with a yellow diamond pattern"
+  },
+  {
+   "id": "animals-046",
+   "group": "animals",
+   "body": "serpent",
+   "description": "a red and black coral snake with a small head"
+  },
+  {
+   "id": "animals-047",
+   "group": "animals",
+   "body": "insect",
+   "description": "a red ladybug with black spots and tiny legs"
+  },
+  {
+   "id": "animals-048",
+   "group": "animals",
+   "body": "insect",
+   "description": "a blue morpho butterfly with large wings"
+  },
+  {
+   "id": "animals-049",
+   "group": "animals",
+   "body": "insect",
+   "description": "a yellow and black bee with fuzzy stripes"
+  },
+  {
+   "id": "animals-050",
+   "group": "animals",
+   "body": "insect",
+   "description": "a large brown beetle with a spiked horn"
+  },
+  {
+   "id": "monsters-001",
+   "group": "monsters",
+   "body": "serpent",
+   "description": "a green fire-breathing dragon with a spiked tail and small wings"
+  },
+  {
+   "id": "monsters-002",
+   "group": "monsters",
+   "body": "quadruped",
+   "description": "a red dragon on four legs with large bat wings and a horned head"
+  },
+  {
+   "id": "monsters-003",
+   "group": "monsters",
+   "body": "blob",
+   "description": "a purple blob slime with a happy face and a small crown"
+  },
+  {
+   "id": "monsters-004",
+   "group": "monsters",
+   "body": "blob",
+   "description": "a green slime with bubbles inside and two round eyes"
+  },
+  {
+   "id": "monsters-005",
+   "group": "monsters",
+   "body": "blob",
+   "description": "a blue jelly slime with a single eye and drip marks"
+  },
+  {
+   "id": "monsters-006",
+   "group": "monsters",
+   "body": "blob",
+   "description": "an orange lava blob with cracked black crust"
+  },
+  {
+   "id": "monsters-007",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a one-eyed cyclops giant with tan skin, a loincloth and a huge club"
+  },
+  {
+   "id": "monsters-008",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a stone golem with a mossy body, glowing yellow eyes and huge fists"
+  },
+  {
+   "id": "monsters-009",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "an ogre with a pot belly, green skin and a rope belt"
+  },
+  {
+   "id": "monsters-010",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a troll with grey skin, long arms and warty shoulders"
+  },
+  {
+   "id": "monsters-011",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a minotaur with a brown bull head, a muscled torso and a big axe"
+  },
+  {
+   "id": "monsters-012",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a lizardman warrior with green scales, a spear and a bone necklace"
+  },
+  {
+   "id": "monsters-013",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a gargoyle with grey stone wings, horns and a crouching look"
+  },
+  {
+   "id": "monsters-014",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a red devil with horns, a pointed tail and a tiny pitchfork"
+  },
+  {
+   "id": "monsters-015",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a blue imp with bat wings and a mischievous grin"
+  },
+  {
+   "id": "monsters-016",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a three-headed hydra warrior with scaly teal skin"
+  },
+  {
+   "id": "monsters-017",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a harpy with a female torso, brown feather wings and bird talons"
+  },
+  {
+   "id": "monsters-018",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a mermaid like sea creature with a teal fish tail and shell top"
+  },
+  {
+   "id": "monsters-019",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a tall treant with a bark body, leaf hair and root legs"
+  },
+  {
+   "id": "monsters-020",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a skeletal demon lord with huge curved horns and a ragged purple cape"
+  },
+  {
+   "id": "monsters-021",
+   "group": "monsters",
+   "body": "quadruped",
+   "description": "a three-headed hound with black fur and glowing red eyes"
+  },
+  {
+   "id": "monsters-022",
+   "group": "monsters",
+   "body": "quadruped",
+   "description": "a griffin with a brown lion body, golden eagle head and wings"
+  },
+  {
+   "id": "monsters-023",
+   "group": "monsters",
+   "body": "quadruped",
+   "description": "a manticore with a tan lion body, bat wings and a scorpion tail"
+  },
+  {
+   "id": "monsters-024",
+   "group": "monsters",
+   "body": "quadruped",
+   "description": "a giant armored rhino beast with spikes on its back"
+  },
+  {
+   "id": "monsters-025",
+   "group": "monsters",
+   "body": "quadruped",
+   "description": "a cave bear monster with bone armor and glowing orange eyes"
+  },
+  {
+   "id": "monsters-026",
+   "group": "monsters",
+   "body": "quadruped",
+   "description": "a chimera with a goat head, a lion body and a snake tail"
+  },
+  {
+   "id": "monsters-027",
+   "group": "monsters",
+   "body": "quadruped",
+   "description": "a blue ice drake with crystal spikes and a frosty breath"
+  },
+  {
+   "id": "monsters-028",
+   "group": "monsters",
+   "body": "small-creature",
+   "description": "a small goblin with green skin, huge ears and a tiny rusty knife"
+  },
+  {
+   "id": "monsters-029",
+   "group": "monsters",
+   "body": "small-creature",
+   "description": "a tiny mushroom creature with a red spotted cap and short legs"
+  },
+  {
+   "id": "monsters-030",
+   "group": "monsters",
+   "body": "small-creature",
+   "description": "a scruffy gremlin with grey fur, bat ears and a mean grin"
+  },
+  {
+   "id": "monsters-031",
+   "group": "monsters",
+   "body": "small-creature",
+   "description": "a baby dragon with orange scales and small wings"
+  },
+  {
+   "id": "monsters-032",
+   "group": "monsters",
+   "body": "floating",
+   "description": "a floating eyeball with bat wings and a red iris"
+  },
+  {
+   "id": "monsters-033",
+   "group": "monsters",
+   "body": "floating",
+   "description": "a floating beholder with a purple body, many eye stalks and a large mouth"
+  },
+  {
+   "id": "monsters-034",
+   "group": "monsters",
+   "body": "floating",
+   "description": "a pale jellyfish monster with long glowing tentacles"
+  },
+  {
+   "id": "monsters-035",
+   "group": "monsters",
+   "body": "insect",
+   "description": "a giant scorpion with a dark red shell and a curved stinger"
+  },
+  {
+   "id": "monsters-036",
+   "group": "monsters",
+   "body": "insect",
+   "description": "a huge purple spider with six eyes and long hairy legs"
+  },
+  {
+   "id": "monsters-037",
+   "group": "monsters",
+   "body": "insect",
+   "description": "a giant praying mantis with green armor and scythe arms"
+  },
+  {
+   "id": "monsters-038",
+   "group": "monsters",
+   "body": "insect",
+   "description": "a wasp demon with black and yellow armor and a long stinger"
+  },
+  {
+   "id": "monsters-039",
+   "group": "monsters",
+   "body": "insect",
+   "description": "a giant centipede with an orange body and many legs"
+  },
+  {
+   "id": "monsters-040",
+   "group": "monsters",
+   "body": "insect",
+   "description": "a bone-white crab monster with large pincers"
+  },
+  {
+   "id": "monsters-041",
+   "group": "monsters",
+   "body": "serpent",
+   "description": "a giant black snake with a hooded head and glowing eyes"
+  },
+  {
+   "id": "monsters-042",
+   "group": "monsters",
+   "body": "serpent",
+   "description": "a purple sea serpent with fins and a spiked crest"
+  },
+  {
+   "id": "monsters-043",
+   "group": "monsters",
+   "body": "serpent",
+   "description": "a medusa with green snake hair and a long scaled tail"
+  },
+  {
+   "id": "monsters-044",
+   "group": "monsters",
+   "body": "serpent",
+   "description": "a giant sand worm with a ringed brown body and a wide toothed mouth"
+  },
+  {
+   "id": "monsters-045",
+   "group": "monsters",
+   "body": "serpent",
+   "description": "a two headed cobra with gold scales and red eyes"
+  },
+  {
+   "id": "monsters-046",
+   "group": "monsters",
+   "body": "quadruped",
+   "description": "a hairless sphinx cat-lion with grey skin and folded wings"
+  },
+  {
+   "id": "monsters-047",
+   "group": "monsters",
+   "body": "serpent",
+   "description": "a fire salamander with a black body and glowing orange cracks"
+  },
+  {
+   "id": "monsters-048",
+   "group": "monsters",
+   "body": "blob",
+   "description": "a brown mud monster with long dripping arms"
+  },
+  {
+   "id": "monsters-049",
+   "group": "monsters",
+   "body": "blob",
+   "description": "a pale ghost slime wearing a miner helmet"
+  },
+  {
+   "id": "monsters-050",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a one-horned oni with red skin, tiger pelt shorts and a spiked club"
+  },
+  {
+   "id": "robots-001",
+   "group": "robots",
+   "body": "mech",
+   "description": "a heavy battle mech with grey armour, two shoulder cannons and a glowing blue cockpit"
+  },
+  {
+   "id": "robots-002",
+   "group": "robots",
+   "body": "mech",
+   "description": "a small yellow walker mech with a round cockpit and two legs"
+  },
+  {
+   "id": "robots-003",
+   "group": "robots",
+   "body": "mech",
+   "description": "a six-legged spider mech with a red body and a mounted turret"
+  },
+  {
+   "id": "robots-004",
+   "group": "robots",
+   "body": "mech",
+   "description": "a tall white mech with a pointed head, a thin waist and a red visor"
+  },
+  {
+   "id": "robots-005",
+   "group": "robots",
+   "body": "mech",
+   "description": "a rusty brown mining mech with a drill arm and a claw"
+  },
+  {
+   "id": "robots-006",
+   "group": "robots",
+   "body": "mech",
+   "description": "a teal bipedal mech with twin arm blades and a round head"
+  },
+  {
+   "id": "robots-007",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a boxy grey robot with a square head, a single red eye and two thin arms"
+  },
+  {
+   "id": "robots-008",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a friendly white and orange robot with a round head, a screen face and wheels for feet"
+  },
+  {
+   "id": "robots-009",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a retro tin robot with a silver body, antennas and red dials on the chest"
+  },
+  {
+   "id": "robots-010",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a gold plated butler robot with a bow tie and glowing white eyes"
+  },
+  {
+   "id": "robots-011",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a black military robot with a skull-shaped faceplate and a blaster arm"
+  },
+  {
+   "id": "robots-012",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a green farming robot with a straw hat and a watering can hand"
+  },
+  {
+   "id": "robots-013",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a pink cleaning robot with a broom arm and a bucket on its back"
+  },
+  {
+   "id": "robots-014",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a rusty blue scrap robot with mismatched arms and a cracked screen"
+  },
+  {
+   "id": "robots-015",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a chrome humanoid android with a smooth blank face and thin limbs"
+  },
+  {
+   "id": "robots-016",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a purple ninja robot with a glowing yellow visor and a metal scarf"
+  },
+  {
+   "id": "robots-017",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a stout steam powered robot with copper plating, rivets and a chimney on its back"
+  },
+  {
+   "id": "robots-018",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a stone coloured guardian robot with huge shoulders and cyan glowing runes"
+  },
+  {
+   "id": "robots-019",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a small round robot with stubby legs, a lamp head and a tiny hat"
+  },
+  {
+   "id": "robots-020",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a hulking orange construction robot with a hard hat and hydraulic arms"
+  },
+  {
+   "id": "robots-021",
+   "group": "robots",
+   "body": "floating",
+   "description": "a floating white orb robot with a single blue lens and small side fins"
+  },
+  {
+   "id": "robots-022",
+   "group": "robots",
+   "body": "floating",
+   "description": "a hovering black security drone with a red scanner light and two guns"
+  },
+  {
+   "id": "robots-023",
+   "group": "robots",
+   "body": "floating",
+   "description": "a flying yellow delivery drone with four rotors and a small box"
+  },
+  {
+   "id": "robots-024",
+   "group": "robots",
+   "body": "quadruped",
+   "description": "a four-legged grey robot dog with a camera head and a metal tail"
+  },
+  {
+   "id": "robots-025",
+   "group": "robots",
+   "body": "insect",
+   "description": "a green insectoid scout robot with six legs and thin wings"
+  },
+  {
+   "id": "cute-chibi-001",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi knight with a big head, a tiny silver helmet and a small sword"
+  },
+  {
+   "id": "cute-chibi-002",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi witch girl with a huge purple hat, pink cheeks and a star wand"
+  },
+  {
+   "id": "cute-chibi-003",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi ninja with a big round head, a navy hood and a red scarf"
+  },
+  {
+   "id": "cute-chibi-004",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi princess with big eyes, pink dress and a little gold crown"
+  },
+  {
+   "id": "cute-chibi-005",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi pirate with an oversized tricorn hat, a blue coat and a toy sword"
+  },
+  {
+   "id": "cute-chibi-006",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi chef with a tall white hat, rosy cheeks and a wooden spoon"
+  },
+  {
+   "id": "cute-chibi-007",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi astronaut with a bubble helmet, an orange suit and tiny boots"
+  },
+  {
+   "id": "cute-chibi-008",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi wizard boy with round glasses, a teal cloak and a wand"
+  },
+  {
+   "id": "cute-chibi-009",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi samurai with a topknot, a red kimono and a small katana"
+  },
+  {
+   "id": "cute-chibi-010",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi cowboy with a big hat, a vest and tiny spurs"
+  },
+  {
+   "id": "cute-chibi-011",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi fairy girl with butterfly wings, green hair and a flower crown"
+  },
+  {
+   "id": "cute-chibi-012",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi vampire with small fangs, a purple cape and big eyes"
+  },
+  {
+   "id": "cute-chibi-013",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi schoolgirl with twin tails, a sailor uniform and a satchel"
+  },
+  {
+   "id": "cute-chibi-014",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi viking with a bushy orange beard, a round shield and a small helmet"
+  },
+  {
+   "id": "cute-chibi-015",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi doctor with a white coat, a heart badge and a bandage on the cheek"
+  },
+  {
+   "id": "cute-chibi-016",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi mage with a huge pointy red hat and a book"
+  },
+  {
+   "id": "cute-chibi-017",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi pharaoh with a striped headdress and a tiny gold staff"
+  },
+  {
+   "id": "cute-chibi-018",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi ghost in a white sheet with big black eyes and pink cheeks"
+  },
+  {
+   "id": "cute-chibi-019",
+   "group": "cute-chibi",
+   "body": "small-creature",
+   "description": "a chibi cat with a big round head, orange stripes and a bell collar"
+  },
+  {
+   "id": "cute-chibi-020",
+   "group": "cute-chibi",
+   "body": "small-creature",
+   "description": "a chibi dog with a large head, floppy brown ears and a bone"
+  },
+  {
+   "id": "cute-chibi-021",
+   "group": "cute-chibi",
+   "body": "small-creature",
+   "description": "a chibi bunny with long pink ears and a carrot"
+  },
+  {
+   "id": "cute-chibi-022",
+   "group": "cute-chibi",
+   "body": "small-creature",
+   "description": "a chibi bear in a green scarf with round ears"
+  },
+  {
+   "id": "cute-chibi-023",
+   "group": "cute-chibi",
+   "body": "small-creature",
+   "description": "a chibi penguin with a yellow bow and a rosy beak"
+  },
+  {
+   "id": "cute-chibi-024",
+   "group": "cute-chibi",
+   "body": "small-creature",
+   "description": "a chibi dragon with a big head, small green wings and a round belly"
+  },
+  {
+   "id": "cute-chibi-025",
+   "group": "cute-chibi",
+   "body": "small-creature",
+   "description": "a chibi panda with a bamboo shoot and big black eye patches"
+  },
+  {
+   "id": "cute-chibi-026",
+   "group": "cute-chibi",
+   "body": "small-creature",
+   "description": "a chibi frog with a lily pad hat and a wide smile"
+  },
+  {
+   "id": "cute-chibi-027",
+   "group": "cute-chibi",
+   "body": "blob",
+   "description": "a chibi mushroom person with a blue spotted cap and a round body"
+  },
+  {
+   "id": "cute-chibi-028",
+   "group": "cute-chibi",
+   "body": "blob",
+   "description": "a smiling round cloud with tiny arms and rosy cheeks"
+  },
+  {
+   "id": "cute-chibi-029",
+   "group": "cute-chibi",
+   "body": "bird",
+   "description": "a chibi chick in a eggshell hat with an orange beak"
+  },
+  {
+   "id": "cute-chibi-030",
+   "group": "cute-chibi",
+   "body": "blob",
+   "description": "a chibi slime in a pink bow with sparkling eyes"
+  },
+  {
+   "id": "nature-elementals-001",
+   "group": "nature-elementals",
+   "body": "floating",
+   "description": "a fire spirit with a flame head, an orange glow and ember hands"
+  },
+  {
+   "id": "nature-elementals-002",
+   "group": "nature-elementals",
+   "body": "floating",
+   "description": "a floating water spirit with a teal body and a swirling droplet crown"
+  },
+  {
+   "id": "nature-elementals-003",
+   "group": "nature-elementals",
+   "body": "blob",
+   "description": "a rock golem elemental with a mossy back and crystal shards on its shoulders"
+  },
+  {
+   "id": "nature-elementals-004",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a tree spirit with a bark body, green leaf hair and flower buds"
+  },
+  {
+   "id": "nature-elementals-005",
+   "group": "nature-elementals",
+   "body": "floating",
+   "description": "a small wind spirit with a swirl of pale grey cloud and a tiny face"
+  },
+  {
+   "id": "nature-elementals-006",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a lightning elemental with a yellow body, sparks and jagged white hair"
+  },
+  {
+   "id": "nature-elementals-007",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "an ice elemental with a pale blue crystal body and sharp icicle hands"
+  },
+  {
+   "id": "nature-elementals-008",
+   "group": "nature-elementals",
+   "body": "blob",
+   "description": "a mud elemental with a brown body, dripping arms and green moss"
+  },
+  {
+   "id": "nature-elementals-009",
+   "group": "nature-elementals",
+   "body": "floating",
+   "description": "a glowing sun spirit with a golden body and long white rays"
+  },
+  {
+   "id": "nature-elementals-010",
+   "group": "nature-elementals",
+   "body": "floating",
+   "description": "a pale moon spirit with a silvery blue gown and a crescent crown"
+  },
+  {
+   "id": "nature-elementals-011",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a lava elemental with a black cracked body and glowing orange veins"
+  },
+  {
+   "id": "nature-elementals-012",
+   "group": "nature-elementals",
+   "body": "quadruped",
+   "description": "a stag spirit made of green leaves with glowing branch antlers"
+  },
+  {
+   "id": "nature-elementals-013",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a flower dryad with pink skin, a petal dress and vines in her hair"
+  },
+  {
+   "id": "nature-elementals-014",
+   "group": "nature-elementals",
+   "body": "floating",
+   "description": "a storm cloud spirit with dark grey wisps and flashing yellow eyes"
+  },
+  {
+   "id": "nature-elementals-015",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a sand elemental with a tan grainy body and a swirling dust cloak"
+  },
+  {
+   "id": "nature-elementals-016",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a crystal elemental with a purple faceted body and glowing white eyes"
+  },
+  {
+   "id": "nature-elementals-017",
+   "group": "nature-elementals",
+   "body": "blob",
+   "description": "a moss covered boulder creature with two eyes and tiny stone arms"
+  },
+  {
+   "id": "nature-elementals-018",
+   "group": "nature-elementals",
+   "body": "floating",
+   "description": "a will-o-the-wisp with a pale green flame and a tiny face"
+  },
+  {
+   "id": "nature-elementals-019",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a coral elemental with a pink and orange branching body and starfish hands"
+  },
+  {
+   "id": "nature-elementals-020",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a swamp elemental with murky green skin, reeds and glowing amber eyes"
+  },
+  {
+   "id": "nature-elementals-021",
+   "group": "nature-elementals",
+   "body": "floating",
+   "description": "a rainbow spirit with a pastel striped gown and a sparkling star"
+  },
+  {
+   "id": "nature-elementals-022",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a vine elemental with a tangled green body, thorns and red berries"
+  },
+  {
+   "id": "nature-elementals-023",
+   "group": "nature-elementals",
+   "body": "floating",
+   "description": "a shadow elemental with a dark purple body and white glowing eyes"
+  },
+  {
+   "id": "nature-elementals-024",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "an autumn spirit with orange and red leaf robes and a crown of acorns"
+  },
+  {
+   "id": "nature-elementals-025",
+   "group": "nature-elementals",
+   "body": "quadruped",
+   "description": "a living snowman with a coal face, a carrot nose and a red scarf"
+  },
+  {
+   "id": "fantasy-071",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a dwarf blacksmith with an orange braided beard, a leather apron and a heavy hammer"
+  },
+  {
+   "id": "fantasy-072",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a young elf archer in a moss green tunic with a long bow and a quiver"
+  },
+  {
+   "id": "fantasy-073",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a plump halfling cook with curly brown hair, a white apron and a ladle"
+  },
+  {
+   "id": "fantasy-074",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a tall dark skinned paladin in gleaming gold plate with a winged helm"
+  },
+  {
+   "id": "fantasy-075",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "an elderly witch with a crooked nose, a purple shawl and a gnarled staff"
+  },
+  {
+   "id": "fantasy-076",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a bald monk with tan skin, an orange robe and wooden prayer beads"
+  },
+  {
+   "id": "fantasy-077",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a mermaid queen walking on legs in a teal gown with a pearl tiara"
+  },
+  {
+   "id": "fantasy-078",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a stocky orc warrior with grey green skin, tusks and a spiked iron pauldron"
+  },
+  {
+   "id": "fantasy-079",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a gnome inventor with a huge brass hat, round goggles and a copper backpack"
+  },
+  {
+   "id": "fantasy-080",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a young apprentice mage girl with twin braids, a blue cloak and a tiny wand"
+  },
+  {
+   "id": "fantasy-081",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a wandering troubadour with a plumed blue hat, a patched cape and a mandolin"
+  },
+  {
+   "id": "fantasy-082",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a heavyset ranger woman with a hooded forest cloak and a short spear"
+  },
+  {
+   "id": "fantasy-083",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a pale vampire noble with slicked hair, a black high collar cape and a ruby brooch"
+  },
+  {
+   "id": "fantasy-084",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a tiefling rogue with red skin, small horns and a dark leather vest"
+  },
+  {
+   "id": "fantasy-085",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a beastkin fox girl with orange ears, a fluffy tail and a green scarf"
+  },
+  {
+   "id": "fantasy-086",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a snow elder druid with a white fur mantle and an antler crown"
+  },
+  {
+   "id": "fantasy-087",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a templar in a white tabard with a golden sun on the chest and a mace"
+  },
+  {
+   "id": "fantasy-088",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a goblin merchant with a huge sack, big yellow eyes and a patched vest"
+  },
+  {
+   "id": "fantasy-089",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a desert sorceress with a sheer magenta veil, gold bangles and a curved dagger"
+  },
+  {
+   "id": "fantasy-090",
+   "group": "fantasy",
+   "body": "humanoid",
+   "description": "a burly viking berserker with a horned helm, red braids and a round wooden shield"
+  },
+  {
+   "id": "fantasy-091",
+   "group": "fantasy",
+   "body": "floating",
+   "description": "a floating crystal wisp mage in a silver hood with pale cyan glow"
+  },
+  {
+   "id": "fantasy-092",
+   "group": "fantasy",
+   "body": "small-creature",
+   "description": "a tiny pixie with dragonfly wings, a yellow dress and pink hair"
+  },
+  {
+   "id": "fantasy-093",
+   "group": "fantasy",
+   "body": "quadruped",
+   "description": "a white unicorn with a rainbow mane and a golden spiral horn"
+  },
+  {
+   "id": "fantasy-094",
+   "group": "fantasy",
+   "body": "small-creature",
+   "description": "a baby dragon with scarlet scales, small wings and a curled tail"
+  },
+  {
+   "id": "fantasy-095",
+   "group": "fantasy",
+   "body": "bird",
+   "description": "a majestic phoenix with orange and gold flame feathers and a long tail"
+  },
+  {
+   "id": "scifi-051",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a heavy gunner in bulky desert tan exo armour with a shoulder missile pod"
+  },
+  {
+   "id": "scifi-052",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a bald cyborg with a glowing red eye implant and a grey trench coat"
+  },
+  {
+   "id": "scifi-053",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "an astronaut in a white suit with an orange stripe and a round helmet"
+  },
+  {
+   "id": "scifi-054",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a dark skinned starship pilot with a teal jacket and a silver visor"
+  },
+  {
+   "id": "scifi-055",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a grey alien scientist with a huge head, a white lab coat and a data pad"
+  },
+  {
+   "id": "scifi-056",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a bounty hunter in a dented yellow helmet with a long brown cloak"
+  },
+  {
+   "id": "scifi-057",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a young hacker girl with neon pink hair, a hoodie and a glowing wrist console"
+  },
+  {
+   "id": "scifi-058",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "an elderly engineer with white hair, thick glasses and a utility belt of tools"
+  },
+  {
+   "id": "scifi-059",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a lizard folk trader with green scales, a blue vest and a pouch of credits"
+  },
+  {
+   "id": "scifi-060",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a space pirate captain with an eyepatch, a red coat and a plasma pistol"
+  },
+  {
+   "id": "scifi-061",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a medic in a clean white suit with a green cross and a med scanner"
+  },
+  {
+   "id": "scifi-062",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a tall insectoid diplomat with a long violet robe and thin antennae"
+  },
+  {
+   "id": "scifi-063",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a stocky miner in orange overalls with a drill and a bright helmet lamp"
+  },
+  {
+   "id": "scifi-064",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a rebel soldier with a patched brown vest, a bandana and a short laser carbine"
+  },
+  {
+   "id": "scifi-065",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a cloaked psychic monk with a hood, pale skin and a glowing blue orb"
+  },
+  {
+   "id": "scifi-066",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a chubby kid explorer with a yellow raincoat, a jetpack and big boots"
+  },
+  {
+   "id": "scifi-067",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a sleek android woman with silver skin, white hair and a black bodysuit"
+  },
+  {
+   "id": "scifi-068",
+   "group": "scifi",
+   "body": "small-creature",
+   "description": "a six legged alien pet with turquoise fur and three eyes"
+  },
+  {
+   "id": "scifi-069",
+   "group": "scifi",
+   "body": "floating",
+   "description": "a floating spherical drone with a single red lens and small thrusters"
+  },
+  {
+   "id": "scifi-070",
+   "group": "scifi",
+   "body": "quadruped",
+   "description": "a four legged space hound with grey metal plates and a glowing collar"
+  },
+  {
+   "id": "scifi-071",
+   "group": "scifi",
+   "body": "blob",
+   "description": "a translucent green slime alien with floating nuclei inside its body"
+  },
+  {
+   "id": "scifi-072",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a heavily armoured trooper with a white and orange suit and a riot shield"
+  },
+  {
+   "id": "scifi-073",
+   "group": "scifi",
+   "body": "floating",
+   "description": "a hovering jellyfish like space creature with pink tentacles and glowing spots"
+  },
+  {
+   "id": "scifi-074",
+   "group": "scifi",
+   "body": "humanoid",
+   "description": "a female captain in a crisp navy uniform with gold epaulettes and a cap"
+  },
+  {
+   "id": "scifi-075",
+   "group": "scifi",
+   "body": "small-creature",
+   "description": "a small round courier robot pet with yellow wheels and a stubby antenna"
+  },
+  {
+   "id": "modern-041",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a delivery cyclist in a green jacket with a square backpack and a helmet"
+  },
+  {
+   "id": "modern-042",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a barista with a nose ring, a brown apron and a purple beanie"
+  },
+  {
+   "id": "modern-043",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a elderly man with a flat cap, a grey cardigan and a walking cane"
+  },
+  {
+   "id": "modern-044",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a teenage skater with a red hoodie, ripped jeans and a skateboard"
+  },
+  {
+   "id": "modern-045",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a businesswoman in a charcoal skirt suit with a leather briefcase"
+  },
+  {
+   "id": "modern-046",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a street musician with dreadlocks, a yellow shirt and an acoustic guitar"
+  },
+  {
+   "id": "modern-047",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a nurse in light blue scrubs with a stethoscope and a clipboard"
+  },
+  {
+   "id": "modern-048",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a plump mother with a baby sling, a floral dress and a shopping bag"
+  },
+  {
+   "id": "modern-049",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a tourist in a loud hawaiian shirt with a camera and a sun hat"
+  },
+  {
+   "id": "modern-050",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a firefighter in a yellow coat and helmet with a coiled hose"
+  },
+  {
+   "id": "modern-051",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a police officer with a navy uniform, a cap and a black belt"
+  },
+  {
+   "id": "modern-052",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a construction worker in an orange vest, a hard hat and heavy boots"
+  },
+  {
+   "id": "modern-053",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a hip hop dancer with a backwards cap, baggy white pants and sneakers"
+  },
+  {
+   "id": "modern-054",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a jogger in a neon green tracksuit with a headband and earbuds"
+  },
+  {
+   "id": "modern-055",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a young punk with a blue mohawk, a studded jacket and plaid trousers"
+  },
+  {
+   "id": "modern-056",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a schoolgirl in a navy uniform with a red ribbon and a satchel"
+  },
+  {
+   "id": "modern-057",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a tall chef in a white hat and a double breasted jacket"
+  },
+  {
+   "id": "modern-058",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a bearded hipster in a mustard beanie, a flannel shirt and round glasses"
+  },
+  {
+   "id": "modern-059",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a taxi driver with a yellow cap, a striped shirt and sunglasses"
+  },
+  {
+   "id": "modern-060",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a woman in a purple hijab and a long denim coat carrying a tote bag"
+  },
+  {
+   "id": "modern-061",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a doctor with a long white coat, grey hair and a clipboard"
+  },
+  {
+   "id": "modern-062",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a painter with a beret, a smock stained in many colours and a palette"
+  },
+  {
+   "id": "modern-063",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a mail carrier in a blue shirt and shorts with a heavy leather bag"
+  },
+  {
+   "id": "modern-064",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a rock guitarist with long black hair, a leather jacket and a red electric guitar"
+  },
+  {
+   "id": "modern-065",
+   "group": "modern",
+   "body": "humanoid",
+   "description": "a boy in a yellow raincoat and red boots holding a small umbrella"
+  },
+  {
+   "id": "historical-031",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a roman legionary with a red crest helmet, a rectangular shield and a short sword"
+  },
+  {
+   "id": "historical-032",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a medieval peasant woman in a brown dress with a white head cloth and a basket"
+  },
+  {
+   "id": "historical-033",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "an ancient egyptian priest with a shaved head, white linen kilt and a gold collar"
+  },
+  {
+   "id": "historical-034",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a samurai in indigo lacquered armour with a horned helmet and a long sword"
+  },
+  {
+   "id": "historical-035",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a pirate with a tricorn hat, a blue coat and a curved cutlass"
+  },
+  {
+   "id": "historical-036",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a viking shieldmaiden with blonde braids, a chainmail shirt and a round shield"
+  },
+  {
+   "id": "historical-037",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a renaissance painter in a red cap and a velvet tunic with a brush"
+  },
+  {
+   "id": "historical-038",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a medieval knight in blue and white tunic with a great helm and kite shield"
+  },
+  {
+   "id": "historical-039",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a stone age hunter in a fur loincloth with a flint spear and a bone necklace"
+  },
+  {
+   "id": "historical-040",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a cowboy with a tan hat, a leather vest, a bandana and a lasso"
+  },
+  {
+   "id": "historical-041",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a greek hoplite with a bronze plumed helmet, a round shield and a spear"
+  },
+  {
+   "id": "historical-042",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a mongol horse archer in a fur hat and a blue deel with a short bow"
+  },
+  {
+   "id": "historical-043",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a victorian chimney sweep boy with a soot smudged face and a tall brush"
+  },
+  {
+   "id": "historical-044",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a french musketeer in a wide feathered hat with a blue cape and a rapier"
+  },
+  {
+   "id": "historical-045",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "an aztec warrior in a jaguar skin with a feathered headdress and a wooden club"
+  },
+  {
+   "id": "historical-046",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a medieval monk in a brown habit with a rope belt and a bald head"
+  },
+  {
+   "id": "historical-047",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a chinese imperial guard in a red and gold lamellar armour with a halberd"
+  },
+  {
+   "id": "historical-048",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a colonial settler woman in a grey dress, white apron and a bonnet"
+  },
+  {
+   "id": "historical-049",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "an ancient sumerian king with a curly black beard and a layered tasselled skirt"
+  },
+  {
+   "id": "historical-050",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a spartan warrior with a red cloak, a crested helm and a spear"
+  },
+  {
+   "id": "historical-051",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a medieval jester in a diamond patterned red and yellow outfit and bells"
+  },
+  {
+   "id": "historical-052",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a world war soldier with an olive uniform, a steel helmet and a rifle"
+  },
+  {
+   "id": "historical-053",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "an ottoman janissary in a tall white hat, a blue coat and a curved sabre"
+  },
+  {
+   "id": "historical-054",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a inca messenger in a woven poncho with a feathered band and a rope bundle"
+  },
+  {
+   "id": "historical-055",
+   "group": "historical",
+   "body": "humanoid",
+   "description": "a roaring twenties flapper in a beaded silver dress with a feather headband"
+  },
+  {
+   "id": "horror-031",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a weeping spectre woman in a faded lilac dress with dripping wet hair"
+  },
+  {
+   "id": "horror-032",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a scarecrow with a burlap sack face, a ragged coat and straw sticking out"
+  },
+  {
+   "id": "horror-033",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a sand mummy in sun bleached wraps with a cracked clay mask and amber eyes"
+  },
+  {
+   "id": "horror-034",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a plague doctor with a long beaked mask, a black coat and a lantern"
+  },
+  {
+   "id": "horror-035",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a hulking butcher with a bloody apron, a pig mask and a cleaver"
+  },
+  {
+   "id": "horror-036",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a werewolf with shaggy grey fur, torn trousers and yellow eyes"
+  },
+  {
+   "id": "horror-037",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a zombie nurse with grey skin, a stained uniform and a hanging arm"
+  },
+  {
+   "id": "horror-038",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a creepy clown with a dead white face, an orange wig and a tattered suit"
+  },
+  {
+   "id": "horror-039",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a witch of the swamp with green warts, a black dress and a pointed hat"
+  },
+  {
+   "id": "horror-040",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a headless coachman in a mouldy green coat with a lantern in one hand"
+  },
+  {
+   "id": "horror-041",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a pale child ghost in a drowned blue raincoat with dripping hair"
+  },
+  {
+   "id": "horror-042",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a bride ghost with a torn veil, a blood stained gown and hollow eyes"
+  },
+  {
+   "id": "horror-043",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a swamp hag with mossy hair, bent back and long grey fingers"
+  },
+  {
+   "id": "horror-044",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a stitched flesh golem with a bolt in the neck and mismatched skin"
+  },
+  {
+   "id": "horror-045",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a hooded reaper in a black robe with an empty face and a scythe"
+  },
+  {
+   "id": "horror-046",
+   "group": "horror",
+   "body": "small-creature",
+   "description": "a rotting crow with missing feathers and glowing red eyes"
+  },
+  {
+   "id": "horror-047",
+   "group": "horror",
+   "body": "small-creature",
+   "description": "a possessed teddy bear with a stitched mouth and a torn ear"
+  },
+  {
+   "id": "horror-048",
+   "group": "horror",
+   "body": "floating",
+   "description": "a floating horned skull trailing a ribbon of purple smoke and two orange embers"
+  },
+  {
+   "id": "horror-049",
+   "group": "horror",
+   "body": "blob",
+   "description": "a dripping black tar monster with many white eyes and no limbs"
+  },
+  {
+   "id": "horror-050",
+   "group": "horror",
+   "body": "insect",
+   "description": "a giant pale spider with a human like face on its back"
+  },
+  {
+   "id": "horror-051",
+   "group": "horror",
+   "body": "quadruped",
+   "description": "a gaunt skinless hound with exposed red muscle and glowing eyes"
+  },
+  {
+   "id": "horror-052",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a gothic vampire countess in a crimson gown with sharp fangs"
+  },
+  {
+   "id": "horror-053",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a deranged lumberjack in a torn plaid shirt with a rusty axe and a mask"
+  },
+  {
+   "id": "horror-054",
+   "group": "horror",
+   "body": "serpent",
+   "description": "a long pale snake with two heads and sunken red eyes"
+  },
+  {
+   "id": "horror-055",
+   "group": "horror",
+   "body": "humanoid",
+   "description": "a cursed knight in black rusted armour with a broken sword and green mist"
+  },
+  {
+   "id": "animals-051",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a grey wolf with thick fur and amber eyes"
+  },
+  {
+   "id": "animals-052",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a brown bear with a pale muzzle and heavy shoulders"
+  },
+  {
+   "id": "animals-053",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a spotted leopard with a long tail and green eyes"
+  },
+  {
+   "id": "animals-054",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a white and black zebra with neat vertical stripes"
+  },
+  {
+   "id": "animals-055",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a woolly sheep with a cream fleece and a black face"
+  },
+  {
+   "id": "animals-056",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a brown highland cow with long shaggy hair and wide horns"
+  },
+  {
+   "id": "animals-057",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a golden retriever dog with a floppy tongue and a red collar"
+  },
+  {
+   "id": "animals-058",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a young grey elephant calf with small tusks, a red blanket and a raised trunk"
+  },
+  {
+   "id": "animals-059",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a one humped tan camel with a red saddle blanket"
+  },
+  {
+   "id": "animals-060",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a red panda with a ringed tail, a white muzzle and rusty orange fur"
+  },
+  {
+   "id": "animals-061",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a tan lion with a thick dark mane and a tufted tail"
+  },
+  {
+   "id": "animals-062",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a pink pig with a curly tail and muddy hooves"
+  },
+  {
+   "id": "animals-063",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a red deer stag with a large branching antler rack"
+  },
+  {
+   "id": "animals-064",
+   "group": "animals",
+   "body": "quadruped",
+   "description": "a tall giraffe with brown patches and short horns"
+  },
+  {
+   "id": "animals-065",
+   "group": "animals",
+   "body": "bird",
+   "description": "a blue and yellow macaw with a long tail and a heavy beak"
+  },
+  {
+   "id": "animals-066",
+   "group": "animals",
+   "body": "bird",
+   "description": "a white owl with a round face and yellow eyes"
+  },
+  {
+   "id": "animals-067",
+   "group": "animals",
+   "body": "bird",
+   "description": "a pink flamingo with a curved neck and black tipped wings"
+  },
+  {
+   "id": "animals-068",
+   "group": "animals",
+   "body": "bird",
+   "description": "a bald eagle with a white head and a yellow hooked beak"
+  },
+  {
+   "id": "animals-069",
+   "group": "animals",
+   "body": "bird",
+   "description": "a waddling emperor penguin with an orange neck patch"
+  },
+  {
+   "id": "animals-070",
+   "group": "animals",
+   "body": "bird",
+   "description": "a green and red parrot with a curved beak"
+  },
+  {
+   "id": "animals-071",
+   "group": "animals",
+   "body": "small-creature",
+   "description": "a brown hedgehog with a pale face and sharp spines"
+  },
+  {
+   "id": "animals-072",
+   "group": "animals",
+   "body": "small-creature",
+   "description": "a striped raccoon with a black mask and ringed tail"
+  },
+  {
+   "id": "animals-073",
+   "group": "animals",
+   "body": "small-creature",
+   "description": "a white rabbit with long pink ears and a fluffy tail"
+  },
+  {
+   "id": "animals-074",
+   "group": "animals",
+   "body": "small-creature",
+   "description": "a giant tortoise with a domed tan shell and thick wrinkled legs"
+  },
+  {
+   "id": "animals-075",
+   "group": "animals",
+   "body": "serpent",
+   "description": "a yellow and black banded python with a thick coiled body"
+  },
+  {
+   "id": "monsters-051",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a cyclops with a single big eye, blue skin and a wooden club"
+  },
+  {
+   "id": "monsters-052",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a three headed troll in a fur kilt with a stone hammer"
+  },
+  {
+   "id": "monsters-053",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a horned minotaur with a brown bull head and an iron axe"
+  },
+  {
+   "id": "monsters-054",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a swamp creature covered in algae with webbed hands and fish eyes"
+  },
+  {
+   "id": "monsters-055",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a stone gargoyle with grey bat wings and a grinning face"
+  },
+  {
+   "id": "monsters-056",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a red imp with tiny horns, a pointed tail and a mischievous grin"
+  },
+  {
+   "id": "monsters-057",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a frost giant with icy blue skin, a white beard and a frozen club"
+  },
+  {
+   "id": "monsters-058",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a yeti with shaggy white fur, a flat face and huge hands"
+  },
+  {
+   "id": "monsters-059",
+   "group": "monsters",
+   "body": "quadruped",
+   "description": "a chimera with a lion head, a goat head and a snake tail"
+  },
+  {
+   "id": "monsters-060",
+   "group": "monsters",
+   "body": "quadruped",
+   "description": "a fire breathing hellhound with charred black fur and lava cracks"
+  },
+  {
+   "id": "monsters-061",
+   "group": "monsters",
+   "body": "quadruped",
+   "description": "a spiked armoured rhino beast with a crystal horn"
+  },
+  {
+   "id": "monsters-062",
+   "group": "monsters",
+   "body": "quadruped",
+   "description": "a six legged purple lizard with a frilled neck and a long tongue"
+  },
+  {
+   "id": "monsters-063",
+   "group": "monsters",
+   "body": "serpent",
+   "description": "a giant cobra with a jewelled hood and glowing amber eyes"
+  },
+  {
+   "id": "monsters-064",
+   "group": "monsters",
+   "body": "serpent",
+   "description": "a lava worm with a ring of teeth and a glowing orange body"
+  },
+  {
+   "id": "monsters-065",
+   "group": "monsters",
+   "body": "blob",
+   "description": "a one eyed yellow slime with a wide fanged mouth and stubby feet"
+  },
+  {
+   "id": "monsters-066",
+   "group": "monsters",
+   "body": "blob",
+   "description": "a mimic chest with a purple tongue, sharp teeth and golden trim"
+  },
+  {
+   "id": "monsters-067",
+   "group": "monsters",
+   "body": "insect",
+   "description": "a giant armoured beetle with a metallic blue shell and curved pincers"
+  },
+  {
+   "id": "monsters-068",
+   "group": "monsters",
+   "body": "insect",
+   "description": "a massive scorpion with a rust red body and a glowing sting"
+  },
+  {
+   "id": "monsters-069",
+   "group": "monsters",
+   "body": "bird",
+   "description": "a harpy with brown feathered wings, clawed feet and wild black hair"
+  },
+  {
+   "id": "monsters-070",
+   "group": "monsters",
+   "body": "bird",
+   "description": "a two headed vulture with bald red necks and ragged wings"
+  },
+  {
+   "id": "monsters-071",
+   "group": "monsters",
+   "body": "floating",
+   "description": "a beholder like floating orb with many eye stalks and a green hide"
+  },
+  {
+   "id": "monsters-072",
+   "group": "monsters",
+   "body": "floating",
+   "description": "a pale banshee with a flowing white gown and long tattered sleeves"
+  },
+  {
+   "id": "monsters-073",
+   "group": "monsters",
+   "body": "small-creature",
+   "description": "a tiny gremlin with large bat ears, green skin and sharp teeth"
+  },
+  {
+   "id": "monsters-074",
+   "group": "monsters",
+   "body": "small-creature",
+   "description": "a mushroom monster with a red spotted cap and small clawed arms"
+  },
+  {
+   "id": "monsters-075",
+   "group": "monsters",
+   "body": "humanoid",
+   "description": "a crocodile folk guard with olive hide, a bronze helmet and a trident"
+  },
+  {
+   "id": "robots-026",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a dented bronze salvage robot with a bucket on its head and a claw hand"
+  },
+  {
+   "id": "robots-027",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a sleek white butler robot with a black bow tie and a silver tray"
+  },
+  {
+   "id": "robots-028",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a chunky red firefighter robot with a hose arm and a helmet"
+  },
+  {
+   "id": "robots-029",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a blue police robot with a siren on its head and a stun baton"
+  },
+  {
+   "id": "robots-030",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a gold plated royal guard robot with a plumed helmet and a halberd"
+  },
+  {
+   "id": "robots-031",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a tiny yellow construction robot with a hard hat and a drill hand"
+  },
+  {
+   "id": "robots-032",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a female nurse robot in pink and white with a heart on her chest"
+  },
+  {
+   "id": "robots-033",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "an old grey professor robot with round glasses and a tweed vest"
+  },
+  {
+   "id": "robots-034",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a black stealth assassin robot with thin limbs and a red slit visor"
+  },
+  {
+   "id": "robots-035",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a cheerful orange chef robot with a tall hat and a whisk hand"
+  },
+  {
+   "id": "robots-036",
+   "group": "robots",
+   "body": "floating",
+   "description": "a round teal hover robot with two small arms and a smiling screen face"
+  },
+  {
+   "id": "robots-037",
+   "group": "robots",
+   "body": "floating",
+   "description": "a white medic drone with a red cross and a folded tool arm"
+  },
+  {
+   "id": "robots-038",
+   "group": "robots",
+   "body": "floating",
+   "description": "a purple spy orb with a single lens and tiny propellers"
+  },
+  {
+   "id": "robots-039",
+   "group": "robots",
+   "body": "mech",
+   "description": "a bulky green military mech walker with twin cannons on the shoulders"
+  },
+  {
+   "id": "robots-040",
+   "group": "robots",
+   "body": "mech",
+   "description": "a tall silver mech with long legs and a glass cockpit"
+  },
+  {
+   "id": "robots-041",
+   "group": "robots",
+   "body": "mech",
+   "description": "a compact orange loader mech with big claw hands"
+  },
+  {
+   "id": "robots-042",
+   "group": "robots",
+   "body": "quadruped",
+   "description": "a four legged silver robot cat with a visor face and coiled spring tail"
+  },
+  {
+   "id": "robots-043",
+   "group": "robots",
+   "body": "quadruped",
+   "description": "a bronze mule robot with a cargo rack and thick hydraulic legs"
+  },
+  {
+   "id": "robots-044",
+   "group": "robots",
+   "body": "small-creature",
+   "description": "a tiny vacuum robot with a round white body and one blue light"
+  },
+  {
+   "id": "robots-045",
+   "group": "robots",
+   "body": "small-creature",
+   "description": "a small pink toy robot with a key on its back and stubby arms"
+  },
+  {
+   "id": "robots-046",
+   "group": "robots",
+   "body": "insect",
+   "description": "a mechanical metal beetle with a copper shell and red eyes"
+  },
+  {
+   "id": "robots-047",
+   "group": "robots",
+   "body": "bird",
+   "description": "a brass clockwork owl with gear wings and amber glass eyes"
+  },
+  {
+   "id": "robots-048",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a retro tin toy robot in silver with a square head and a red crank"
+  },
+  {
+   "id": "robots-049",
+   "group": "robots",
+   "body": "humanoid",
+   "description": "a heavy black and yellow mining robot with a pickaxe arm"
+  },
+  {
+   "id": "robots-050",
+   "group": "robots",
+   "body": "blob",
+   "description": "a rounded white gel bot with a screen face and a flexible tube body"
+  },
+  {
+   "id": "cute-chibi-031",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi witch with a large purple hat, a broom and big sparkly eyes"
+  },
+  {
+   "id": "cute-chibi-032",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi knight with an oversized silver helmet and a tiny wooden sword"
+  },
+  {
+   "id": "cute-chibi-033",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi baker with a tall white hat and a loaf of bread"
+  },
+  {
+   "id": "cute-chibi-034",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi princess in a pink puffy dress with a tiny gold crown"
+  },
+  {
+   "id": "cute-chibi-035",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi pirate with a red bandana, an eyepatch and a small hook hand"
+  },
+  {
+   "id": "cute-chibi-036",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi ninja in a navy suit with a red scarf and big round eyes"
+  },
+  {
+   "id": "cute-chibi-037",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi doctor with a white coat, a round head mirror and a teddy bear"
+  },
+  {
+   "id": "cute-chibi-038",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi astronaut with a huge glass helmet and an orange suit"
+  },
+  {
+   "id": "cute-chibi-039",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi mage girl with a starry blue cloak and a crescent moon staff"
+  },
+  {
+   "id": "cute-chibi-040",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi farmer boy in a straw hat, green overalls and a turnip"
+  },
+  {
+   "id": "cute-chibi-041",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi fairy girl with green hair, leaf wings and a flower crown"
+  },
+  {
+   "id": "cute-chibi-042",
+   "group": "cute-chibi",
+   "body": "humanoid",
+   "description": "a chibi vampire with a mini black cape, small fangs and a red bow"
+  },
+  {
+   "id": "cute-chibi-043",
+   "group": "cute-chibi",
+   "body": "small-creature",
+   "description": "a chibi cat in a yellow raincoat with a tiny umbrella"
+  },
+  {
+   "id": "cute-chibi-044",
+   "group": "cute-chibi",
+   "body": "small-creature",
+   "description": "a chibi bear with a honey pot and a blue bib"
+  },
+  {
+   "id": "cute-chibi-045",
+   "group": "cute-chibi",
+   "body": "small-creature",
+   "description": "a chibi bunny with a carrot backpack and floppy pink ears"
+  },
+  {
+   "id": "cute-chibi-046",
+   "group": "cute-chibi",
+   "body": "small-creature",
+   "description": "a chibi dragon with a mint green belly and tiny round wings"
+  },
+  {
+   "id": "cute-chibi-047",
+   "group": "cute-chibi",
+   "body": "small-creature",
+   "description": "a chibi panda in a bamboo hat with a pink scarf"
+  },
+  {
+   "id": "cute-chibi-048",
+   "group": "cute-chibi",
+   "body": "small-creature",
+   "description": "a chibi dinosaur in a green onesie with a spiky hood"
+  },
+  {
+   "id": "cute-chibi-049",
+   "group": "cute-chibi",
+   "body": "bird",
+   "description": "a chibi duckling in a yellow raincoat with orange boots"
+  },
+  {
+   "id": "cute-chibi-050",
+   "group": "cute-chibi",
+   "body": "bird",
+   "description": "a chibi owl scholar with a tiny graduation cap and round glasses"
+  },
+  {
+   "id": "cute-chibi-051",
+   "group": "cute-chibi",
+   "body": "blob",
+   "description": "a chibi ghost with a pastel blue sheet body and a blushing face"
+  },
+  {
+   "id": "cute-chibi-052",
+   "group": "cute-chibi",
+   "body": "blob",
+   "description": "a chibi pudding slime with a caramel top and a cherry hat"
+  },
+  {
+   "id": "cute-chibi-053",
+   "group": "cute-chibi",
+   "body": "floating",
+   "description": "a chibi cloud sprite with a smiling face and a little rain drop"
+  },
+  {
+   "id": "cute-chibi-054",
+   "group": "cute-chibi",
+   "body": "floating",
+   "description": "a chibi star spirit with yellow points and a sleepy smile"
+  },
+  {
+   "id": "cute-chibi-055",
+   "group": "cute-chibi",
+   "body": "quadruped",
+   "description": "a chibi puppy with a bone in its mouth and brown spotted ears"
+  },
+  {
+   "id": "nature-elementals-026",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a fire elemental with a body of orange flames and a crown of embers"
+  },
+  {
+   "id": "nature-elementals-027",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a water elemental in a flowing blue body with white foam crests"
+  },
+  {
+   "id": "nature-elementals-028",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "an earth elemental of brown stone with a moss beard and glowing eyes"
+  },
+  {
+   "id": "nature-elementals-029",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a wind elemental with a pale swirling body and trailing white ribbons"
+  },
+  {
+   "id": "nature-elementals-030",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a forest dryad with bark skin, green leaf hair and flowering vines"
+  },
+  {
+   "id": "nature-elementals-031",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a snow maiden with icy white skin, a frost gown and a crown of ice"
+  },
+  {
+   "id": "nature-elementals-032",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a sand spirit in a golden robe of drifting dust with turquoise eyes"
+  },
+  {
+   "id": "nature-elementals-033",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a lightning elemental with yellow sparks crawling over a dark violet body"
+  },
+  {
+   "id": "nature-elementals-034",
+   "group": "nature-elementals",
+   "body": "humanoid",
+   "description": "a mountain giant covered in grey rocks with small pine trees on its back"
+  },
+  {
+   "id": "nature-elementals-035",
+   "group": "nature-elementals",
+   "body": "blob",
+   "description": "a mud elemental of dark brown sludge with a leafy top and two white eyes"
+  },
+  {
+   "id": "nature-elementals-036",
+   "group": "nature-elementals",
+   "body": "blob",
+   "description": "a living coral mound with pink branches, tiny fish and bubble eyes"
+  },
+  {
+   "id": "nature-elementals-037",
+   "group": "nature-elementals",
+   "body": "blob",
+   "description": "a magma blob with a black crust, orange glowing cracks and a wide grin"
+  },
+  {
+   "id": "nature-elementals-038",
+   "group": "nature-elementals",
+   "body": "floating",
+   "description": "a will o wisp with a pale green flame and a ring of tiny sparks"
+  },
+  {
+   "id": "nature-elementals-039",
+   "group": "nature-elementals",
+   "body": "floating",
+   "description": "a storm cloud spirit with dark grey puffs and small lightning arcs"
+  },
+  {
+   "id": "nature-elementals-040",
+   "group": "nature-elementals",
+   "body": "floating",
+   "description": "a floating dandelion fairy with a white fluffy body and thin seed wisps"
+  },
+  {
+   "id": "nature-elementals-041",
+   "group": "nature-elementals",
+   "body": "floating",
+   "description": "a moon spirit with a pale silver glow and a thin crescent halo"
+  },
+  {
+   "id": "nature-elementals-042",
+   "group": "nature-elementals",
+   "body": "small-creature",
+   "description": "a tiny seedling sprite with a single leaf hat and brown root feet"
+  },
+  {
+   "id": "nature-elementals-043",
+   "group": "nature-elementals",
+   "body": "small-creature",
+   "description": "a pebble golem with a round grey body and a patch of green moss"
+  },
+  {
+   "id": "nature-elementals-044",
+   "group": "nature-elementals",
+   "body": "small-creature",
+   "description": "a glowing firefly sprite with yellow wings and a warm amber light"
+  },
+  {
+   "id": "nature-elementals-045",
+   "group": "nature-elementals",
+   "body": "quadruped",
+   "description": "a stag made of living oak branches with blossoming pink flowers on its antlers"
+  },
+  {
+   "id": "nature-elementals-046",
+   "group": "nature-elementals",
+   "body": "quadruped",
+   "description": "a crystal ram with turquoise horns and a body of cut gemstone"
+  },
+  {
+   "id": "nature-elementals-047",
+   "group": "nature-elementals",
+   "body": "quadruped",
+   "description": "a tidal wolf made of translucent blue water with white foam fur"
+  },
+  {
+   "id": "nature-elementals-048",
+   "group": "nature-elementals",
+   "body": "bird",
+   "description": "a bird of embers with a glowing red body and sparks in its tail"
+  },
+  {
+   "id": "nature-elementals-049",
+   "group": "nature-elementals",
+   "body": "serpent",
+   "description": "a vine serpent of green creepers with thorns and small purple blossoms"
+  },
+  {
+   "id": "nature-elementals-050",
+   "group": "nature-elementals",
+   "body": "serpent",
+   "description": "an ice dragon wyrm of pale blue frost with a jagged white crest"
+  },
+  {
+   "id": "villagers-npc-001",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a cheerful shopkeeper with a round belly, a green apron and a small coin purse"
+  },
+  {
+   "id": "villagers-npc-002",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a stern town guard in a dull grey helmet and a blue surcoat with a spear"
+  },
+  {
+   "id": "villagers-npc-003",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a young farmer boy with freckles, a straw hat and patched brown overalls"
+  },
+  {
+   "id": "villagers-npc-004",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "an old farmer woman with a white bun, a yellow headscarf and a wicker basket"
+  },
+  {
+   "id": "villagers-npc-005",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a little girl with red pigtails, a pink dress and a rag doll"
+  },
+  {
+   "id": "villagers-npc-006",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a bent elder with a long white beard, a grey robe and a walking stick"
+  },
+  {
+   "id": "villagers-npc-007",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a burly innkeeper with a bald head, a thick moustache and a stained white apron"
+  },
+  {
+   "id": "villagers-npc-008",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a village blacksmith woman with strong arms, a soot covered apron and tongs"
+  },
+  {
+   "id": "villagers-npc-009",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a traveling merchant with a huge backpack, a turban and a striped orange coat"
+  },
+  {
+   "id": "villagers-npc-010",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a baker with flour on his cheeks, a tall white cap and a tray of buns"
+  },
+  {
+   "id": "villagers-npc-011",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a fisherman with a yellow oilskin coat, a grey beard and a fishing net"
+  },
+  {
+   "id": "villagers-npc-012",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a gentle priestess in a cream robe with a green sash and a small bell"
+  },
+  {
+   "id": "villagers-npc-013",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a young shepherd girl with a woolly shawl, a crook and braided hair"
+  },
+  {
+   "id": "villagers-npc-014",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a stout miller with a dusty white tunic and a sack of grain"
+  },
+  {
+   "id": "villagers-npc-015",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a nervous clerk with round glasses, an ink stained shirt and a thick ledger"
+  },
+  {
+   "id": "villagers-npc-016",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a boy with a dirty face, torn trousers and a slingshot in his belt"
+  },
+  {
+   "id": "villagers-npc-017",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a washerwoman with rolled up sleeves, a blue skirt and a laundry bucket"
+  },
+  {
+   "id": "villagers-npc-018",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a tall village mayor with a purple sash, a feathered hat and a gold chain"
+  },
+  {
+   "id": "villagers-npc-019",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a healer herbalist with a green hooded cape and a bundle of dried herbs"
+  },
+  {
+   "id": "villagers-npc-020",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a tavern waitress with a red bandana, a white blouse and a tray of mugs"
+  },
+  {
+   "id": "villagers-npc-021",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a dark skinned hunter with a fur vest, a short bow and a rabbit on his belt"
+  },
+  {
+   "id": "villagers-npc-022",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a toddler in a cream smock and a knitted cap hugging a small sack"
+  },
+  {
+   "id": "villagers-npc-023",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a retired soldier with a grey moustache, a wooden leg and a faded red coat"
+  },
+  {
+   "id": "villagers-npc-024",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a chatty gossip woman with a lilac shawl, big earrings and a shopping basket"
+  },
+  {
+   "id": "villagers-npc-025",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a stable hand with a flat cap, a leather vest and a pitchfork"
+  },
+  {
+   "id": "villagers-npc-026",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a wandering minstrel with a floppy green hat and a small drum"
+  },
+  {
+   "id": "villagers-npc-027",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a gravedigger with a black coat, a flat hat and a long shovel"
+  },
+  {
+   "id": "villagers-npc-028",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a tailor with a measuring tape around the neck, pins in his lapel and a waistcoat"
+  },
+  {
+   "id": "villagers-npc-029",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a brewer with a ruddy face, a brown leather apron and a small keg"
+  },
+  {
+   "id": "villagers-npc-030",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a vegetable seller with a wide hat, a green dress and a crate of carrots"
+  },
+  {
+   "id": "villagers-npc-031",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a teenage apprentice with messy blond hair, a grey tunic and a toolbag"
+  },
+  {
+   "id": "villagers-npc-032",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a nun with a grey habit, a wooden cross and a candle"
+  },
+  {
+   "id": "villagers-npc-033",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a woodcutter with a plaid red shirt, a thick black beard and an axe"
+  },
+  {
+   "id": "villagers-npc-034",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "an elderly man in a patched blue coat with a pipe and a bald head"
+  },
+  {
+   "id": "villagers-npc-035",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a young mother in an olive dress with a baby wrapped in a shawl"
+  },
+  {
+   "id": "villagers-npc-036",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a potter with clay smeared hands, a rust apron and a round vase"
+  },
+  {
+   "id": "villagers-npc-037",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a night watchman with a lantern, a long brown coat and a woolly cap"
+  },
+  {
+   "id": "villagers-npc-038",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a plump cheesemonger with a white apron and a big wheel of cheese"
+  },
+  {
+   "id": "villagers-npc-039",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a bookseller with a long grey braid, small glasses and a stack of old books"
+  },
+  {
+   "id": "villagers-npc-040",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a boy with a bucket hat and a red scarf holding a fishing rod"
+  },
+  {
+   "id": "villagers-npc-041",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a stern schoolteacher with a bun, a navy dress and a long pointer"
+  },
+  {
+   "id": "villagers-npc-042",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a young bride in a white dress with a green flower garland"
+  },
+  {
+   "id": "villagers-npc-043",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a beekeeper in a white suit with a mesh hood and a smoker can"
+  },
+  {
+   "id": "villagers-npc-044",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a messenger boy with a cap, a satchel and a rolled letter"
+  },
+  {
+   "id": "villagers-npc-045",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a cook with a rosy face, a flowery apron and a large wooden spoon"
+  },
+  {
+   "id": "villagers-npc-046",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a tanned sailor with a striped shirt, a blue cap and a rope coil"
+  },
+  {
+   "id": "villagers-npc-047",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a quiet widow in a long black dress with a lace veil"
+  },
+  {
+   "id": "villagers-npc-048",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a cobbler with a leather apron, half moon glasses and a boot in hand"
+  },
+  {
+   "id": "villagers-npc-049",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a boy dressed as a knight with a pot helmet and a wooden stick"
+  },
+  {
+   "id": "villagers-npc-050",
+   "group": "villagers-npc",
+   "body": "humanoid",
+   "description": "a toy maker with a pointed hat, bright overalls and a wooden horse"
+  },
+  {
+   "id": "bosses-001",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a towering demon lord with crimson skin, huge curved horns and black spiked armour"
+  },
+  {
+   "id": "bosses-002",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a giant ogre king with a bone crown, a fur cloak and a huge spiked club"
+  },
+  {
+   "id": "bosses-003",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a lich emperor in a tattered purple robe with a skull crown and glowing green eyes"
+  },
+  {
+   "id": "bosses-004",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a massive armoured warlord in black and gold plate with a giant greatsword"
+  },
+  {
+   "id": "bosses-005",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a four armed sand titan with bronze skin, a gold headdress and curved blades"
+  },
+  {
+   "id": "bosses-006",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a sea witch queen with a tentacle skirt, purple skin and a shell crown"
+  },
+  {
+   "id": "bosses-007",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a giant frost king in blue ice armour with a white beard and a frozen axe"
+  },
+  {
+   "id": "bosses-008",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a corrupted angel with tattered black wings, a cracked halo and a silver spear"
+  },
+  {
+   "id": "bosses-009",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a huge cyclops chieftain with a single eye, a rope belt and a tree trunk club"
+  },
+  {
+   "id": "bosses-010",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a robed cult prophet with six glowing eyes, long fingers and a gold mask"
+  },
+  {
+   "id": "bosses-011",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a monstrous butcher lord with a bloody cleaver and a stitched apron"
+  },
+  {
+   "id": "bosses-012",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a gigantic stone knight with a cracked helm and glowing orange seams"
+  },
+  {
+   "id": "bosses-013",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a vampire elder with long white hair, a crimson cloak and a bat winged collar"
+  },
+  {
+   "id": "bosses-014",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a muscular minotaur general in bronze armour with a double headed axe"
+  },
+  {
+   "id": "bosses-015",
+   "group": "bosses",
+   "body": "quadruped",
+   "description": "a huge three headed hellhound with charcoal fur and burning red eyes"
+  },
+  {
+   "id": "bosses-016",
+   "group": "bosses",
+   "body": "quadruped",
+   "description": "a giant armoured war boar with golden tusks and a spiked saddle"
+  },
+  {
+   "id": "bosses-017",
+   "group": "bosses",
+   "body": "quadruped",
+   "description": "a winged sphinx with a woman's face, a golden lion body and feathered wings"
+  },
+  {
+   "id": "bosses-018",
+   "group": "bosses",
+   "body": "quadruped",
+   "description": "a towering rock bull with crystal horns and glowing blue veins"
+  },
+  {
+   "id": "bosses-019",
+   "group": "bosses",
+   "body": "serpent",
+   "description": "a colossal black dragon with spiked wings, ember eyes and a long jagged tail"
+  },
+  {
+   "id": "bosses-020",
+   "group": "bosses",
+   "body": "serpent",
+   "description": "a giant hydra with five green heads and gleaming yellow eyes"
+  },
+  {
+   "id": "bosses-021",
+   "group": "bosses",
+   "body": "serpent",
+   "description": "a huge sand worm with ringed purple armour and a gaping toothed maw"
+  },
+  {
+   "id": "bosses-022",
+   "group": "bosses",
+   "body": "serpent",
+   "description": "a golden wyrm with ornate jade horns and a long whiskered face"
+  },
+  {
+   "id": "bosses-023",
+   "group": "bosses",
+   "body": "insect",
+   "description": "a giant queen spider with a red hourglass mark and eight long legs"
+  },
+  {
+   "id": "bosses-024",
+   "group": "bosses",
+   "body": "insect",
+   "description": "a gigantic mantis lord with emerald armour and long serrated arms"
+  },
+  {
+   "id": "bosses-025",
+   "group": "bosses",
+   "body": "insect",
+   "description": "a massive hive queen wasp with a bloated yellow body and crown like horns"
+  },
+  {
+   "id": "bosses-026",
+   "group": "bosses",
+   "body": "bird",
+   "description": "a giant thunder roc with storm grey feathers and crackling blue talons"
+  },
+  {
+   "id": "bosses-027",
+   "group": "bosses",
+   "body": "bird",
+   "description": "a monstrous skeletal crow with a broken crown and tattered black wings"
+  },
+  {
+   "id": "bosses-028",
+   "group": "bosses",
+   "body": "mech",
+   "description": "a giant siege mech with a red cannon arm, thick steel legs and a skull emblem"
+  },
+  {
+   "id": "bosses-029",
+   "group": "bosses",
+   "body": "mech",
+   "description": "a towering war golem of iron and brass with a furnace chest"
+  },
+  {
+   "id": "bosses-030",
+   "group": "bosses",
+   "body": "mech",
+   "description": "a four legged spider tank with a glowing blue core and twin turrets"
+  },
+  {
+   "id": "bosses-031",
+   "group": "bosses",
+   "body": "floating",
+   "description": "a gigantic floating eye with a crimson iris and wriggling black tentacles"
+  },
+  {
+   "id": "bosses-032",
+   "group": "bosses",
+   "body": "floating",
+   "description": "a hovering ancient sorcerer in layered white robes with a halo of floating runes"
+  },
+  {
+   "id": "bosses-033",
+   "group": "bosses",
+   "body": "floating",
+   "description": "a swirling storm djinn with a bare muscular chest, gold bracers and a blue tail of smoke"
+  },
+  {
+   "id": "bosses-034",
+   "group": "bosses",
+   "body": "blob",
+   "description": "a gigantic purple slime king with a golden crown sunk into its head"
+  },
+  {
+   "id": "bosses-035",
+   "group": "bosses",
+   "body": "blob",
+   "description": "a monstrous flesh mound with many eyes, mouths and a fringe of tentacles"
+  },
+  {
+   "id": "bosses-036",
+   "group": "bosses",
+   "body": "small-creature",
+   "description": "a tiny but terrifying toad tyrant with a golden crown and a bloated throat"
+  },
+  {
+   "id": "bosses-037",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a towering plague queen in a rotting green gown with a beaked mask and a censer"
+  },
+  {
+   "id": "bosses-038",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a huge pale giant with iron shackles, a sack hood and a heavy chain"
+  },
+  {
+   "id": "bosses-039",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a flame wreathed samurai warlord in red lacquered armour with a huge demon mask"
+  },
+  {
+   "id": "mythology-001",
+   "group": "mythology",
+   "body": "humanoid",
+   "description": "a greek satyr with goat legs, curled horns and a set of pan pipes"
+  },
+  {
+   "id": "mythology-002",
+   "group": "mythology",
+   "body": "humanoid",
+   "description": "a norse valkyrie with a winged silver helm, a white cloak and a long spear"
+  },
+  {
+   "id": "mythology-003",
+   "group": "mythology",
+   "body": "humanoid",
+   "description": "a japanese oni with red skin, two horns and a spiked iron club"
+  },
+  {
+   "id": "mythology-004",
+   "group": "mythology",
+   "body": "humanoid",
+   "description": "a slavic forest spirit with a long white beard, moss clothes and antlers"
+  },
+  {
+   "id": "mythology-005",
+   "group": "mythology",
+   "body": "quadruped",
+   "description": "a greek centaur with a bay horse body, a bare chest and a bow"
+  },
+  {
+   "id": "mythology-006",
+   "group": "mythology",
+   "body": "quadruped",
+   "description": "a chinese qilin with scaled green skin, a deer body and fiery mane"
+  },
+  {
+   "id": "mythology-007",
+   "group": "mythology",
+   "body": "quadruped",
+   "description": "a japanese komainu lion dog with a stone grey body and a curled mane"
+  },
+  {
+   "id": "mythology-008",
+   "group": "mythology",
+   "body": "quadruped",
+   "description": "a celtic water horse with a dark teal body and a dripping seaweed mane"
+  },
+  {
+   "id": "mythology-009",
+   "group": "mythology",
+   "body": "quadruped",
+   "description": "a norse eight legged horse with a grey coat and a braided mane"
+  },
+  {
+   "id": "mythology-010",
+   "group": "mythology",
+   "body": "quadruped",
+   "description": "a persian simurgh dog bird with a blue fur body and peacock wings"
+  },
+  {
+   "id": "mythology-011",
+   "group": "mythology",
+   "body": "quadruped",
+   "description": "a mesoamerican xoloitzcuintli dog with hairless grey skin and a gold collar"
+  },
+  {
+   "id": "mythology-012",
+   "group": "mythology",
+   "body": "bird",
+   "description": "an arabian roc with golden brown feathers and enormous curved talons"
+  },
+  {
+   "id": "mythology-013",
+   "group": "mythology",
+   "body": "bird",
+   "description": "a slavic firebird with a long red and gold tail and a glowing crest"
+  },
+  {
+   "id": "mythology-014",
+   "group": "mythology",
+   "body": "bird",
+   "description": "a native thunderbird with banded red and blue wings and a sharp beak"
+  },
+  {
+   "id": "mythology-015",
+   "group": "mythology",
+   "body": "bird",
+   "description": "a chinese fenghuang with multicolour feathers and a long flowing tail"
+  },
+  {
+   "id": "mythology-016",
+   "group": "mythology",
+   "body": "serpent",
+   "description": "a mesoamerican feathered serpent with green plumage and a gold collar"
+  },
+  {
+   "id": "mythology-017",
+   "group": "mythology",
+   "body": "serpent",
+   "description": "a chinese water dragon with a blue whiskered face and pearl in its claw"
+  },
+  {
+   "id": "mythology-018",
+   "group": "mythology",
+   "body": "serpent",
+   "description": "a australian rainbow serpent with banded orange, yellow and red scales"
+  },
+  {
+   "id": "mythology-019",
+   "group": "mythology",
+   "body": "serpent",
+   "description": "a norse world serpent with dark green coils and a ring of silver spikes"
+  },
+  {
+   "id": "mythology-020",
+   "group": "mythology",
+   "body": "serpent",
+   "description": "a naga with a purple snake lower body, a golden crown and a human torso"
+  },
+  {
+   "id": "mythology-021",
+   "group": "mythology",
+   "body": "floating",
+   "description": "an arabian genie with blue skin, a gold earring and a smoke tail"
+  },
+  {
+   "id": "mythology-022",
+   "group": "mythology",
+   "body": "floating",
+   "description": "an irish banshee with long silver hair and a ragged grey shroud"
+  },
+  {
+   "id": "mythology-023",
+   "group": "mythology",
+   "body": "floating",
+   "description": "a japanese hitodama with a pale blue flame and a faint face"
+  },
+  {
+   "id": "mythology-024",
+   "group": "mythology",
+   "body": "floating",
+   "description": "a hindu apsara in a flowing pink sari with golden jewellery and bare feet"
+  },
+  {
+   "id": "mythology-025",
+   "group": "mythology",
+   "body": "small-creature",
+   "description": "a japanese kappa with a green shell, a water dish head and a beak"
+  },
+  {
+   "id": "mythology-026",
+   "group": "mythology",
+   "body": "small-creature",
+   "description": "a japanese tanuki in a straw hat with a big belly and a sake gourd"
+  },
+  {
+   "id": "mythology-027",
+   "group": "mythology",
+   "body": "small-creature",
+   "description": "a nine tailed fox spirit with white fur and gold tipped tails"
+  },
+  {
+   "id": "mythology-028",
+   "group": "mythology",
+   "body": "small-creature",
+   "description": "a celtic leprechaun in a green coat with a buckled hat and a gold pot"
+  },
+  {
+   "id": "mythology-029",
+   "group": "mythology",
+   "body": "small-creature",
+   "description": "a scandinavian tomte gnome with a red pointed hat and a long grey beard"
+  },
+  {
+   "id": "mythology-030",
+   "group": "mythology",
+   "body": "small-creature",
+   "description": "a filipino tiyanak with a baby face, sharp teeth and a ragged blanket"
+  },
+  {
+   "id": "mythology-031",
+   "group": "mythology",
+   "body": "small-creature",
+   "description": "a polynesian menehune with brown skin, a leaf skirt and a small stone adze"
+  },
+  {
+   "id": "mythology-032",
+   "group": "mythology",
+   "body": "blob",
+   "description": "a southern african tokoloshe with a hairy brown body and a wide toothy grin"
+  },
+  {
+   "id": "mythology-033",
+   "group": "mythology",
+   "body": "humanoid",
+   "description": "an egyptian jackal headed guide with a black head, a gold collar and a staff"
+  },
+  {
+   "id": "mythology-034",
+   "group": "mythology",
+   "body": "humanoid",
+   "description": "a hindu monkey warrior with golden fur, a red sash and a mace"
+  },
+  {
+   "id": "mythology-035",
+   "group": "mythology",
+   "body": "humanoid",
+   "description": "a yoruba orisha with deep brown skin, a white and blue wrap and a beaded crown"
+  },
+  {
+   "id": "mythology-036",
+   "group": "mythology",
+   "body": "humanoid",
+   "description": "a greek gorgon with writhing green snake hair, bronze wings and stone eyes"
+  },
+  {
+   "id": "mythology-037",
+   "group": "mythology",
+   "body": "humanoid",
+   "description": "a sami storm seer with a reindeer fur coat, a drum and a red hat"
+  },
+  {
+   "id": "mythology-038",
+   "group": "mythology",
+   "body": "humanoid",
+   "description": "a european giant with a rough green tunic and a heavy tree trunk staff"
+  },
+  {
+   "id": "mythology-039",
+   "group": "mythology",
+   "body": "humanoid",
+   "description": "a maori sea guardian with swirling blue face tattoos and a feather cloak"
+  },
+  {
+   "id": "mythology-040",
+   "group": "mythology",
+   "body": "humanoid",
+   "description": "a pacific volcano goddess with a long red skirt, black hair and orange flowers"
+  },
+  {
+   "id": "sports-jobs-001",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a soccer player in a red jersey with white shorts and long socks"
+  },
+  {
+   "id": "sports-jobs-002",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a basketball player with a tall frame, a yellow jersey and a headband"
+  },
+  {
+   "id": "sports-jobs-003",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a boxer with red gloves, blue shorts and a towel on the shoulders"
+  },
+  {
+   "id": "sports-jobs-004",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a baseball catcher with a mask, a navy chest guard and a thick glove"
+  },
+  {
+   "id": "sports-jobs-005",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a swimmer in a black swimsuit with a cap and goggles"
+  },
+  {
+   "id": "sports-jobs-006",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a sumo wrestler with a topknot and a pale green mawashi"
+  },
+  {
+   "id": "sports-jobs-007",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a tennis player in white with a green visor and a racket"
+  },
+  {
+   "id": "sports-jobs-008",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a gymnast in a sparkly purple leotard with a ribbon"
+  },
+  {
+   "id": "sports-jobs-009",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a hockey goalie in a bulky white pad set and a painted mask"
+  },
+  {
+   "id": "sports-jobs-010",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a marathon runner with a number bib, an orange singlet and a water bottle"
+  },
+  {
+   "id": "sports-jobs-011",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a weightlifter with a bald head, a tight blue singlet and thick wrist wraps"
+  },
+  {
+   "id": "sports-jobs-012",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a karate fighter in a white gi with a black belt and bare feet"
+  },
+  {
+   "id": "sports-jobs-013",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a cyclist in a skin tight yellow suit with an aero helmet"
+  },
+  {
+   "id": "sports-jobs-014",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a rugby player with a muddy green jersey, headgear and thick thighs"
+  },
+  {
+   "id": "sports-jobs-015",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a skier in a bright red jacket, goggles and a woolly hat"
+  },
+  {
+   "id": "sports-jobs-016",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a surfer with sun bleached hair, orange board shorts and a leash"
+  },
+  {
+   "id": "sports-jobs-017",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a referee in a black and white striped shirt with a whistle"
+  },
+  {
+   "id": "sports-jobs-018",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a head chef in a tall white hat, a grey moustache and a double breasted jacket"
+  },
+  {
+   "id": "sports-jobs-019",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a sushi chef with a white headband, a navy apron and a long knife"
+  },
+  {
+   "id": "sports-jobs-020",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a surgeon in green scrubs with a surgical mask and a cap"
+  },
+  {
+   "id": "sports-jobs-021",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a veterinarian in a teal smock with a stethoscope and a small cat carrier"
+  },
+  {
+   "id": "sports-jobs-022",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a farmer in denim overalls with a straw hat and a pitchfork"
+  },
+  {
+   "id": "sports-jobs-023",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a welder with a dark visor, a leather jacket and glowing gloves"
+  },
+  {
+   "id": "sports-jobs-024",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a pilot in a navy uniform with a white cap and aviator sunglasses"
+  },
+  {
+   "id": "sports-jobs-025",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a train conductor in a grey uniform with a red flag and a pocket watch"
+  },
+  {
+   "id": "sports-jobs-026",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a lab scientist with frizzy hair, a white coat and a glowing flask"
+  },
+  {
+   "id": "sports-jobs-027",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a plumber with a blue cap, a grey jumpsuit and a heavy wrench"
+  },
+  {
+   "id": "sports-jobs-028",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a librarian with a grey bun, a long cardigan and a stack of books"
+  },
+  {
+   "id": "sports-jobs-029",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a lifeguard in a red swimsuit with a white cross and a rescue buoy"
+  },
+  {
+   "id": "sports-jobs-030",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a window cleaner in blue overalls with a squeegee and a bucket"
+  },
+  {
+   "id": "sports-jobs-031",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a lumberjack with a red hardhat, a plaid jacket and a chainsaw"
+  },
+  {
+   "id": "sports-jobs-032",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a gardener with a wide straw hat, green gloves and a watering can"
+  },
+  {
+   "id": "sports-jobs-033",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a mechanic in a navy jumpsuit with a greasy face and a wrench"
+  },
+  {
+   "id": "sports-jobs-034",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a tall fashion model in a glittering gold gown with sunglasses"
+  },
+  {
+   "id": "sports-jobs-035",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a dentist with a pale mask, a purple coat and a mirror"
+  },
+  {
+   "id": "sports-jobs-036",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a news reporter in a trench coat with a microphone"
+  },
+  {
+   "id": "sports-jobs-037",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a stout butcher in a striped apron with a straw hat and a big knife"
+  },
+  {
+   "id": "sports-jobs-038",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a young cadet in a pressed dark uniform with a peaked cap"
+  },
+  {
+   "id": "sports-jobs-039",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a deep sea diver in a brass helmet and a heavy canvas suit"
+  },
+  {
+   "id": "sports-jobs-040",
+   "group": "sports-jobs",
+   "body": "humanoid",
+   "description": "a magician in a top hat and a red lined cape with a white rabbit"
+  },
+  {
+   "id": "cultures-001",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a woman in a red and gold sari with a bindi and bangles"
+  },
+  {
+   "id": "cultures-002",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a man in a white dhoti and a saffron shawl with a sacred thread"
+  },
+  {
+   "id": "cultures-003",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a girl in a pink hanbok with a short jacket and ribbon ties"
+  },
+  {
+   "id": "cultures-004",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a man in a pale blue hanbok with a wide sleeved coat and a horsehair hat"
+  },
+  {
+   "id": "cultures-005",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a woman in a green kimono with a wide yellow obi and wooden sandals"
+  },
+  {
+   "id": "cultures-006",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a man in a dark hakama with a crested jacket and white tabi socks"
+  },
+  {
+   "id": "cultures-007",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a woman in a red qipao with white floral embroidery and a hair pin"
+  },
+  {
+   "id": "cultures-008",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a man in a navy changshan robe with a mandarin collar and cloth shoes"
+  },
+  {
+   "id": "cultures-009",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a girl in a long white ao dai with blue trousers and a conical hat"
+  },
+  {
+   "id": "cultures-010",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a woman in a sarong kebaya with a batik skirt and a lace top"
+  },
+  {
+   "id": "cultures-011",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a man in a white thobe with a red checked headscarf and a black cord"
+  },
+  {
+   "id": "cultures-012",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a woman in a long black abaya with gold embroidered cuffs"
+  },
+  {
+   "id": "cultures-013",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a man in a turquoise caftan with a pointed slippers and a fez"
+  },
+  {
+   "id": "cultures-014",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a woman in a bright kente cloth wrap with a matching head tie"
+  },
+  {
+   "id": "cultures-015",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a man in a flowing blue boubou with a white embroidered cap"
+  },
+  {
+   "id": "cultures-016",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a maasai man in a red checked shuka with beaded collars and a long staff"
+  },
+  {
+   "id": "cultures-017",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a woman in a yellow and green dashiki dress with a high head wrap"
+  },
+  {
+   "id": "cultures-018",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a berber woman in an indigo robe with silver jewellery and a headscarf"
+  },
+  {
+   "id": "cultures-019",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "an ethiopian woman in a white cotton dress with a woven border and a shawl"
+  },
+  {
+   "id": "cultures-020",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a man in a scottish kilt with a green tartan, a sporran and knee socks"
+  },
+  {
+   "id": "cultures-021",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a woman in a norwegian bunad with a black bodice, red skirt and silver brooch"
+  },
+  {
+   "id": "cultures-022",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a bavarian man in lederhosen with green suspenders and a feathered hat"
+  },
+  {
+   "id": "cultures-023",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a bavarian woman in a blue dirndl with a white blouse and a pink apron"
+  },
+  {
+   "id": "cultures-024",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a polish girl in a floral folk dress with a ribbon crown"
+  },
+  {
+   "id": "cultures-025",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a man in a russian embroidered shirt with a red sash and tall boots"
+  },
+  {
+   "id": "cultures-026",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a spanish flamenco dancer in a ruffled red dress with a black comb"
+  },
+  {
+   "id": "cultures-027",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a woman in a greek chiton style gown with a folded blue edge"
+  },
+  {
+   "id": "cultures-028",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a mexican woman in a bright embroidered blouse with a wide ruffled skirt"
+  },
+  {
+   "id": "cultures-029",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a mexican man in a charro suit with silver buttons and a wide sombrero"
+  },
+  {
+   "id": "cultures-030",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a peruvian woman in a layered pink skirt with a woven shawl and a bowler hat"
+  },
+  {
+   "id": "cultures-031",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a peruvian man in a woollen chullo hat with ear flaps and a striped poncho"
+  },
+  {
+   "id": "cultures-032",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a brazilian carnival dancer in a feathered green and yellow outfit"
+  },
+  {
+   "id": "cultures-033",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "an argentine gaucho in baggy trousers, a black hat and a wide leather belt"
+  },
+  {
+   "id": "cultures-034",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a native plains man in a feathered headband with a fringed leather shirt"
+  },
+  {
+   "id": "cultures-035",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a native southwest woman in a velvet blouse with silver and turquoise necklaces"
+  },
+  {
+   "id": "cultures-036",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "an inuit hunter in a thick fur parka with a hood and sealskin boots"
+  },
+  {
+   "id": "cultures-037",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a hawaiian woman in a long floral muumuu with a flower crown and a lei"
+  },
+  {
+   "id": "cultures-038",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a samoan man in a patterned lavalava wrap with a shell necklace"
+  },
+  {
+   "id": "cultures-039",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a maori woman in a woven flax cloak with a greenstone pendant"
+  },
+  {
+   "id": "cultures-040",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "an aboriginal elder in an ochre pigmented body paint and a woven armband"
+  },
+  {
+   "id": "cultures-041",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a tibetan woman in a striped wraparound apron with a turquoise headpiece"
+  },
+  {
+   "id": "cultures-042",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a nepali man in a daura suruwal with a topi cap"
+  },
+  {
+   "id": "cultures-043",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a mongolian woman in a brocade deel with a tall hat and silver ornaments"
+  },
+  {
+   "id": "cultures-044",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a thai dancer in a golden pointed headdress with a silk wrap skirt"
+  },
+  {
+   "id": "cultures-045",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a burmese man in a checked longyi with a white jacket and a head cloth"
+  },
+  {
+   "id": "cultures-046",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a filipino woman in a butterfly sleeved terno gown in pale yellow"
+  },
+  {
+   "id": "cultures-047",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a filipino man in a sheer embroidered barong with dark trousers"
+  },
+  {
+   "id": "cultures-048",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a pakistani woman in an emerald shalwar kameez with a long dupatta"
+  },
+  {
+   "id": "cultures-049",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a sikh man in a bright orange turban with a long beard and a blue tunic"
+  },
+  {
+   "id": "cultures-050",
+   "group": "cultures",
+   "body": "humanoid",
+   "description": "a sri lankan woman in a white osari saree with a gold border"
+  },
+  {
+   "id": "bosses-040",
+   "group": "bosses",
+   "body": "humanoid",
+   "description": "a hulking dark knight king in spiked black armour with a flaming crown"
+  },
+  {
+   "id": "undead-dark-001",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a skeleton king with a rusted crown, a tattered purple cloak and a bone sceptre"
+  },
+  {
+   "id": "undead-dark-002",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a rotting zombie farmer in torn overalls with a sunken face and a pitchfork"
+  },
+  {
+   "id": "undead-dark-003",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a necromancer in a black hooded robe with a staff topped by a skull"
+  },
+  {
+   "id": "undead-dark-004",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a wight soldier with grey leathery skin and a dented iron helmet"
+  },
+  {
+   "id": "undead-dark-005",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a vampire hunter in a dark brown coat with a wide hat and a wooden stake"
+  },
+  {
+   "id": "undead-dark-006",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a ghoul scavenger with long claws, sunken yellow eyes and a patched grey cloak"
+  },
+  {
+   "id": "undead-dark-007",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a death knight in jet black armour with glowing violet eyes and a greatsword"
+  },
+  {
+   "id": "undead-dark-008",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a mummy pharaoh with gold wrapped limbs, a striped headdress and a crook"
+  },
+  {
+   "id": "undead-dark-009",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a revenant bride in a mouldy lace dress with a grey skin and a dead bouquet"
+  },
+  {
+   "id": "undead-dark-010",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a skeletal archer with a cracked skull and a tattered green hood"
+  },
+  {
+   "id": "undead-dark-011",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a dark elf assassin with ashen skin, white hair and twin curved daggers"
+  },
+  {
+   "id": "undead-dark-012",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a shadow cultist in a charcoal robe with a pale mask and red sigils"
+  },
+  {
+   "id": "undead-dark-013",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a drowned sailor with seaweed hair, blue skin and a barnacle crusted coat"
+  },
+  {
+   "id": "undead-dark-014",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a zombie child in a ragged yellow dress holding a broken doll"
+  },
+  {
+   "id": "undead-dark-015",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a bone armoured warlock with a ram skull helm and a gnarled staff"
+  },
+  {
+   "id": "undead-dark-016",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a fallen paladin with blackened gold armour and a broken holy symbol"
+  },
+  {
+   "id": "undead-dark-017",
+   "group": "undead-dark",
+   "body": "floating",
+   "description": "a hooded wraith with no legs, a torn grey cloak and two pale blue eyes"
+  },
+  {
+   "id": "undead-dark-018",
+   "group": "undead-dark",
+   "body": "floating",
+   "description": "a floating spectral lantern ghost with a ragged white sheet and a flickering flame"
+  },
+  {
+   "id": "undead-dark-019",
+   "group": "undead-dark",
+   "body": "floating",
+   "description": "a chained poltergeist with a faded brown suit and a smoky tail"
+  },
+  {
+   "id": "undead-dark-020",
+   "group": "undead-dark",
+   "body": "floating",
+   "description": "a cluster of grey skulls ringed with violet fire"
+  },
+  {
+   "id": "undead-dark-021",
+   "group": "undead-dark",
+   "body": "quadruped",
+   "description": "a skeletal warhorse with a ragged black blanket and glowing orange eyes"
+  },
+  {
+   "id": "undead-dark-022",
+   "group": "undead-dark",
+   "body": "quadruped",
+   "description": "a bone wolf with an exposed ribcage and green fire in its eye sockets"
+  },
+  {
+   "id": "undead-dark-023",
+   "group": "undead-dark",
+   "body": "quadruped",
+   "description": "a plague rat the size of a dog with matted fur and a bald tail"
+  },
+  {
+   "id": "undead-dark-024",
+   "group": "undead-dark",
+   "body": "bird",
+   "description": "a bone raven with ragged feathers and a cracked skull face"
+  },
+  {
+   "id": "undead-dark-025",
+   "group": "undead-dark",
+   "body": "serpent",
+   "description": "a skeletal serpent with a long spine and a flickering teal flame"
+  },
+  {
+   "id": "undead-dark-026",
+   "group": "undead-dark",
+   "body": "serpent",
+   "description": "a rotting wyrm with a mouldy green hide and exposed ribs"
+  },
+  {
+   "id": "undead-dark-027",
+   "group": "undead-dark",
+   "body": "small-creature",
+   "description": "a skeletal imp with a grinning skull, small wings and a stolen crown"
+  },
+  {
+   "id": "undead-dark-028",
+   "group": "undead-dark",
+   "body": "blob",
+   "description": "a mass of black ooze with floating bones and one glowing eye"
+  },
+  {
+   "id": "undead-dark-029",
+   "group": "undead-dark",
+   "body": "insect",
+   "description": "a corpse beetle with a skull shaped shell and dull purple legs"
+  },
+  {
+   "id": "undead-dark-030",
+   "group": "undead-dark",
+   "body": "humanoid",
+   "description": "a banshee knight with pale blue skin, a rusted helm and a shredded gown"
+  },
+  {
+   "id": "aquatic-001",
+   "group": "aquatic",
+   "body": "small-creature",
+   "description": "an orange clownfish with white stripes and wide round eyes"
+  },
+  {
+   "id": "aquatic-002",
+   "group": "aquatic",
+   "body": "small-creature",
+   "description": "a blue tang fish with a yellow tail and a black pattern"
+  },
+  {
+   "id": "aquatic-003",
+   "group": "aquatic",
+   "body": "small-creature",
+   "description": "a red crab with raised claws and stalked eyes"
+  },
+  {
+   "id": "aquatic-004",
+   "group": "aquatic",
+   "body": "small-creature",
+   "description": "a brown seahorse with a curled tail and a spiny back"
+  },
+  {
+   "id": "aquatic-005",
+   "group": "aquatic",
+   "body": "small-creature",
+   "description": "a yellow pufferfish with spines and a puzzled face"
+  },
+  {
+   "id": "aquatic-006",
+   "group": "aquatic",
+   "body": "small-creature",
+   "description": "a purple octopus with curling arms and white suckers"
+  },
+  {
+   "id": "aquatic-007",
+   "group": "aquatic",
+   "body": "small-creature",
+   "description": "a pink starfish with orange spots and a smiling face"
+  },
+  {
+   "id": "aquatic-008",
+   "group": "aquatic",
+   "body": "small-creature",
+   "description": "a grey sea otter with a cream face and a small shell"
+  },
+  {
+   "id": "aquatic-009",
+   "group": "aquatic",
+   "body": "small-creature",
+   "description": "a green frog with a speckled back and red toes"
+  },
+  {
+   "id": "aquatic-010",
+   "group": "aquatic",
+   "body": "small-creature",
+   "description": "a tan hermit crab with a spiral shell and tiny blue claws"
+  },
+  {
+   "id": "aquatic-011",
+   "group": "aquatic",
+   "body": "quadruped",
+   "description": "a blue and white seal with whiskers and black eyes"
+  },
+  {
+   "id": "aquatic-012",
+   "group": "aquatic",
+   "body": "quadruped",
+   "description": "a brown walrus with long white tusks and thick whiskers"
+  },
+  {
+   "id": "aquatic-013",
+   "group": "aquatic",
+   "body": "quadruped",
+   "description": "a grey and white sea lion with a flat nose and a smooth coat"
+  },
+  {
+   "id": "aquatic-014",
+   "group": "aquatic",
+   "body": "quadruped",
+   "description": "a green saltwater crocodile with a scaly back and yellow eyes"
+  },
+  {
+   "id": "aquatic-015",
+   "group": "aquatic",
+   "body": "quadruped",
+   "description": "a dark blue manatee with a round body and a paddle tail"
+  },
+  {
+   "id": "aquatic-016",
+   "group": "aquatic",
+   "body": "serpent",
+   "description": "a long green moray eel with yellow spots and sharp teeth"
+  },
+  {
+   "id": "aquatic-017",
+   "group": "aquatic",
+   "body": "serpent",
+   "description": "a silver sea serpent with a blue frilled fin and a pointed snout"
+  },
+  {
+   "id": "aquatic-018",
+   "group": "aquatic",
+   "body": "serpent",
+   "description": "a striped orange and black sea snake with a flat tail"
+  },
+  {
+   "id": "aquatic-019",
+   "group": "aquatic",
+   "body": "serpent",
+   "description": "a pale electric eel with yellow sparks along its body"
+  },
+  {
+   "id": "aquatic-020",
+   "group": "aquatic",
+   "body": "serpent",
+   "description": "a purple dragonfish with a long body and a glowing lure"
+  },
+  {
+   "id": "aquatic-021",
+   "group": "aquatic",
+   "body": "floating",
+   "description": "a translucent blue jellyfish with long trailing tentacles"
+  },
+  {
+   "id": "aquatic-022",
+   "group": "aquatic",
+   "body": "floating",
+   "description": "a glowing pink moon jellyfish with a pale ring and soft arms"
+  },
+  {
+   "id": "aquatic-023",
+   "group": "aquatic",
+   "body": "floating",
+   "description": "a flat grey manta ray with white wing tips and a long tail"
+  },
+  {
+   "id": "aquatic-024",
+   "group": "aquatic",
+   "body": "floating",
+   "description": "a yellow angler fish with a glowing bulb and a mouth of needle teeth"
+  },
+  {
+   "id": "aquatic-025",
+   "group": "aquatic",
+   "body": "floating",
+   "description": "a spotted white whale shark with a wide mouth and small eyes"
+  },
+  {
+   "id": "aquatic-026",
+   "group": "aquatic",
+   "body": "blob",
+   "description": "a round violet sea slug with orange frilly gills"
+  },
+  {
+   "id": "aquatic-027",
+   "group": "aquatic",
+   "body": "blob",
+   "description": "a pale green sea anemone with swaying pink tipped tentacles"
+  },
+  {
+   "id": "aquatic-028",
+   "group": "aquatic",
+   "body": "blob",
+   "description": "a gelatinous clear blob fish with a droopy pink face"
+  },
+  {
+   "id": "aquatic-029",
+   "group": "aquatic",
+   "body": "bird",
+   "description": "a white and grey seagull with a yellow beak and pink feet"
+  },
+  {
+   "id": "aquatic-030",
+   "group": "aquatic",
+   "body": "bird",
+   "description": "a grey pelican with a long beak pouch and webbed feet"
+  },
+  {
+   "id": "insects-small-001",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "an orange harlequin beetle with black dots and a tiny round head"
+  },
+  {
+   "id": "insects-small-002",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a golden honey bee with fuzzy stripes and clear wings"
+  },
+  {
+   "id": "insects-small-003",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a yellow swallowtail butterfly with long tailed black edged wings"
+  },
+  {
+   "id": "insects-small-004",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a green praying mantis with folded spiked forelegs"
+  },
+  {
+   "id": "insects-small-005",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a black ant with a shiny body and strong jaws"
+  },
+  {
+   "id": "insects-small-006",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a brown cockroach with a glossy shell and long feelers"
+  },
+  {
+   "id": "insects-small-007",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a green grasshopper with big hind legs and a long face"
+  },
+  {
+   "id": "insects-small-008",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a stag beetle with a dark chestnut shell and large antlers"
+  },
+  {
+   "id": "insects-small-009",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a hairy tarantula with a dark brown body and orange knees"
+  },
+  {
+   "id": "insects-small-010",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a fat yellow and black caterpillar with tiny feet"
+  },
+  {
+   "id": "insects-small-011",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a glowing firefly with a soft green abdomen and slim wings"
+  },
+  {
+   "id": "insects-small-012",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a long orange centipede with many legs and curved pincers"
+  },
+  {
+   "id": "insects-small-013",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a black widow spider with a red hourglass and thin legs"
+  },
+  {
+   "id": "insects-small-014",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a turquoise dragonfly with long glassy wings and big eyes"
+  },
+  {
+   "id": "insects-small-015",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a dusty brown moth with feathery antennae and eye spots"
+  },
+  {
+   "id": "insects-small-016",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a white termite worker with a soft body and brown head"
+  },
+  {
+   "id": "insects-small-017",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a rainbow scarab beetle with a polished metallic shell"
+  },
+  {
+   "id": "insects-small-018",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a grey pill bug curled slightly with segmented plates"
+  },
+  {
+   "id": "insects-small-019",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a tiny red mite with a round body and eight short legs"
+  },
+  {
+   "id": "insects-small-020",
+   "group": "insects-small",
+   "body": "insect",
+   "description": "a pale green stick insect with a thin twig like body"
+  },
+  {
+   "id": "vehicles-mounts-001",
+   "group": "vehicles-mounts",
+   "body": "quadruped",
+   "description": "a knight in blue plate armour riding a white warhorse with a red caparison"
+  },
+  {
+   "id": "vehicles-mounts-002",
+   "group": "vehicles-mounts",
+   "body": "quadruped",
+   "description": "a desert rider in a white robe on a tan camel with a woven saddle"
+  },
+  {
+   "id": "vehicles-mounts-003",
+   "group": "vehicles-mounts",
+   "body": "quadruped",
+   "description": "a viking rider on a shaggy black pony with a round shield on its side"
+  },
+  {
+   "id": "vehicles-mounts-004",
+   "group": "vehicles-mounts",
+   "body": "quadruped",
+   "description": "a mongol rider in a fur hat on a short chestnut steppe horse"
+  },
+  {
+   "id": "vehicles-mounts-005",
+   "group": "vehicles-mounts",
+   "body": "quadruped",
+   "description": "a cowboy in a tan hat on a spotted grey horse with a saddlebag"
+  },
+  {
+   "id": "vehicles-mounts-006",
+   "group": "vehicles-mounts",
+   "body": "quadruped",
+   "description": "a young elf on a giant white stag with a mossy saddle"
+  },
+  {
+   "id": "vehicles-mounts-007",
+   "group": "vehicles-mounts",
+   "body": "quadruped",
+   "description": "a dwarf in iron armour riding a stocky grey boar with tusks"
+  },
+  {
+   "id": "vehicles-mounts-008",
+   "group": "vehicles-mounts",
+   "body": "quadruped",
+   "description": "a goblin rider on a snarling green wolf with a bone bridle"
+  },
+  {
+   "id": "vehicles-mounts-009",
+   "group": "vehicles-mounts",
+   "body": "quadruped",
+   "description": "a child riding a fat orange tabby cat with a tiny red saddle"
+  },
+  {
+   "id": "vehicles-mounts-010",
+   "group": "vehicles-mounts",
+   "body": "quadruped",
+   "description": "a tribal hunter on a large grey rhino with a leather harness"
+  },
+  {
+   "id": "vehicles-mounts-011",
+   "group": "vehicles-mounts",
+   "body": "bird",
+   "description": "a rider in a green cloak on a tall yellow feathered giant bird"
+  },
+  {
+   "id": "vehicles-mounts-012",
+   "group": "vehicles-mounts",
+   "body": "bird",
+   "description": "a pilot in a leather cap on a giant brown eagle with a saddle"
+  },
+  {
+   "id": "vehicles-mounts-013",
+   "group": "vehicles-mounts",
+   "body": "serpent",
+   "description": "a sorcerer on the back of a coiled purple sea serpent with a gold bridle"
+  },
+  {
+   "id": "vehicles-mounts-014",
+   "group": "vehicles-mounts",
+   "body": "mech",
+   "description": "a small yellow mech suit with a clear canopy and short stubby legs"
+  },
+  {
+   "id": "vehicles-mounts-015",
+   "group": "vehicles-mounts",
+   "body": "mech",
+   "description": "a bulky green walker mech with a pilot visible in a glass cockpit"
+  },
+  {
+   "id": "vehicles-mounts-016",
+   "group": "vehicles-mounts",
+   "body": "mech",
+   "description": "a red firefighting mech with a water cannon arm and a ladder"
+  },
+  {
+   "id": "vehicles-mounts-017",
+   "group": "vehicles-mounts",
+   "body": "mech",
+   "description": "a steam powered copper mech with a smokestack and two riveted claw arms"
+  },
+  {
+   "id": "vehicles-mounts-018",
+   "group": "vehicles-mounts",
+   "body": "mech",
+   "description": "a compact white rescue mech with blue lights and a basket on its back"
+  },
+  {
+   "id": "vehicles-mounts-019",
+   "group": "vehicles-mounts",
+   "body": "mech",
+   "description": "a four legged cargo mech in orange with crates strapped to its back"
+  },
+  {
+   "id": "vehicles-mounts-020",
+   "group": "vehicles-mounts",
+   "body": "floating",
+   "description": "a wizard on a flying broomstick with a long purple robe and pointed hat"
+  }
+ ]
+}
