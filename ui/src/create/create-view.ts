@@ -37,5 +37,6 @@ export function galleryItem(entry: GeneratedEntry): LibraryItem {
     pictures: entry.sheets,
     character: null,
     facts: facts(entry),
+    made: { folder: entry.folder, characters: entry.sheets.length },
   };
 }

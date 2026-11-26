@@ -51,6 +51,7 @@ interface CreateState {
   job: JobView;
   items: GeneratedEntry[];
   refusal?: { status: number; detail: string };
+  trash?: GeneratedEntry[];
 }
 
 const json = (body: object, status = 200) =>
@@ -68,6 +69,22 @@ function loras(url: string) {
   return { loras: [{ value: `runs/${task}-v1/final`, label: `${task}-v1 · final` }] };
 }
 
+// Delete moves a folder to the trash and Undo brings it back, as the server does.
+function moveMade(state: CreateState, path: string, body: { folder: string }) {
+  const trash = (state.trash ??= []);
+
+  if (path.endsWith('/trash')) {
+    trash.push(...state.items.filter((item) => item.folder === body.folder));
+    state.items = state.items.filter((item) => item.folder !== body.folder);
+
+    return { folder: body.folder, trashed: body.folder };
+  }
+
+  state.items = [...trash.filter((item) => item.folder === body.folder), ...state.items];
+
+  return { folder: body.folder };
+}
+
 // The Create API with a state the test can change: the job, what was made, a refusal to give.
 export function createServer(state: CreateState) {
   return vi.fn(async (url: string, init?: RequestInit) => {
@@ -77,6 +94,10 @@ export function createServer(state: CreateState) {
       return state.refusal
         ? json({ detail: state.refusal.detail }, state.refusal.status)
         : json((state.job = RUNNING));
+    }
+
+    if (path.startsWith('/api/generated/') && init?.method === 'POST') {
+      return json(moveMade(state, path, JSON.parse(String(init.body))));
     }
 
     if (path === '/api/loras') {

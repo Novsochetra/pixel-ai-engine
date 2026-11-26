@@ -14,6 +14,8 @@ export interface LibraryItem {
   pictures: Picture[];
   character: string | null;
   facts: Fact[];
+  // Set for what Create and Rotate made: the folder under data/generated/ it can be deleted as.
+  made?: { folder: string; characters: number | null };
 }
 
 export interface LibrarySection {

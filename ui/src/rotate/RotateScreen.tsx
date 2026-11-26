@@ -4,7 +4,7 @@ import { FormError } from '@/create/FormError';
 import { JobButton } from '@/jobs/JobButton';
 import { ScreenFrame } from '@/layout/ScreenFrame';
 import { NARROW, useMediaQuery } from '@/layout/use-media-query';
-import { PictureSheet } from '@/library/PictureSheet';
+import { MadeSheet } from '@/made/MadeSheet';
 import type { LibraryItem } from '@/library/library-view';
 import { RotateInspector } from './RotateInspector';
 import { RotateTryouts } from './RotateTryouts';
@@ -57,7 +57,7 @@ export function RotateScreen() {
       ) : (
         <RotateTryouts onOpen={setViewing} />
       )}
-      <PictureSheet key={viewing?.key ?? ''} item={viewing} onClosed={() => setViewing(null)} />
+      <MadeSheet item={viewing} onClosed={() => setViewing(null)} />
     </ScreenFrame>
   );
 }

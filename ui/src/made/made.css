@@ -1,0 +1,71 @@
+.delete-made {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.delete-made__question {
+  font-size: var(--font-size-subheadline);
+  line-height: var(--leading-body);
+}
+
+.delete-made__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.delete-made__error {
+  margin-inline-end: auto;
+  font-size: var(--font-size-footnote);
+  color: var(--color-error);
+}
+
+/* A floating glass capsule at the bottom, above the phone's tab bar, as an iOS toast. */
+.undo-toast {
+  position: fixed;
+  inset-block-end: calc(env(safe-area-inset-bottom) + var(--space-6));
+  inset-inline-start: 50%;
+  z-index: var(--layer-toast);
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  max-inline-size: calc(100% - 2 * var(--size-panel-gap));
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5);
+  background: var(--color-panel);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-panel);
+  translate: -50% 0;
+  -webkit-backdrop-filter: var(--blur-panel);
+  backdrop-filter: var(--blur-panel);
+  animation: toast-rise var(--duration-sheet) var(--easing-spring);
+}
+
+.undo-toast__text {
+  overflow: hidden;
+  font-size: var(--font-size-subheadline);
+  font-weight: var(--font-weight-medium);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 47.99rem) {
+  .undo-toast {
+    inset-block-end: calc(var(--size-tab-bar) + env(safe-area-inset-bottom) + var(--space-5));
+  }
+}
+
+@keyframes toast-rise {
+  from {
+    opacity: 0;
+    translate: -50% var(--offset-rise);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .undo-toast {
+    animation: none;
+  }
+}

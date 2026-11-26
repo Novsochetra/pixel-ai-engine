@@ -202,6 +202,7 @@
   --duration-panel: 320ms;
   --duration-segment: 320ms;
   --duration-fade: 400ms;
+  --duration-undo: 8s;
   --duration-sheet: 450ms;
   --duration-pulse: 800ms;
   --duration-loading-delay: 400ms;
@@ -214,6 +215,7 @@
 
   --layer-content: 1;
   --layer-bar: 40;
+  --layer-toast: 50;
 }
 
 :root[data-appearance='light'] {

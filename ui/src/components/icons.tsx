@@ -22,6 +22,7 @@ const PATHS = {
   previous: 'M14.5 6l-6 6 6 6',
   next: 'M9.5 6l6 6-6 6',
   upload: 'M12 15.5V4.5M7.5 9L12 4.5 16.5 9M5 19.5h14',
+  trash: 'M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13M10 11v5.5M14 11v5.5',
   warning: 'M12 4L2.8 19.5h18.4zM12 10v4.5M12 17.5h.01',
 } as const;
 

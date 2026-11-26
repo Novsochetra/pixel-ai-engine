@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { JobButton } from '@/jobs/JobButton';
 import { ScreenFrame } from '@/layout/ScreenFrame';
+import { MadeSheet } from '@/made/MadeSheet';
 import { NARROW, useMediaQuery } from '@/layout/use-media-query';
-import { PictureSheet } from '@/library/PictureSheet';
 import type { LibraryItem } from '@/library/library-view';
 import { CreateGallery } from './CreateGallery';
 import { CreateInspector } from './CreateInspector';
@@ -32,7 +32,7 @@ export function CreateScreen() {
         {isNarrow ? error : null}
         <CreateGallery query={generated} onOpen={setViewing} />
       </div>
-      <PictureSheet key={viewing?.key ?? ''} item={viewing} onClosed={() => setViewing(null)} />
+      <MadeSheet item={viewing} onClosed={() => setViewing(null)} />
     </ScreenFrame>
   );
 }

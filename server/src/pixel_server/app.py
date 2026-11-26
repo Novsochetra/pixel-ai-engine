@@ -13,6 +13,7 @@ from pixel_server.routes import (
     flagged,
     health,
     jobs,
+    made,
     pictures,
     rotate,
     training,
@@ -33,7 +34,7 @@ def create_app(job_runner: Jobs, ui_dist: Path | None = None) -> FastAPI:
 
         return await call_next(request)
 
-    for routes in (health, jobs, characters, flagged, collections, create, rotate, animate, training, pictures):
+    for routes in (health, jobs, characters, flagged, collections, create, made, rotate, animate, training, pictures):
         app.include_router(routes.router)
 
     if ui_dist and (ui_dist / "index.html").exists():

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Icon } from '@/components/icons';
 import { Sheet } from '@/components/sheet/Sheet';
 import { ItemDetails } from './ItemDetails';
@@ -72,12 +72,14 @@ function PictureViewer({ item }: { item: LibraryItem }) {
   );
 }
 
-// One picture large, at a whole-number zoom, with its other views and its details below.
+// One picture large, at a whole-number zoom, with its other views, its details and any actions below.
 export function PictureSheet({
   item,
+  actions,
   onClosed,
 }: {
   item: LibraryItem | null;
+  actions?: ReactNode;
   onClosed: () => void;
 }) {
   return (
@@ -86,6 +88,7 @@ export function PictureSheet({
         <>
           <PictureViewer item={item} />
           <ItemDetails item={item} />
+          {actions}
         </>
       ) : null}
     </Sheet>

@@ -29,5 +29,6 @@ export function turnedItem(character: TurnedCharacter): LibraryItem {
     pictures: character.views,
     character: null,
     facts: facts(character),
+    made: { folder: character.folder, characters: null },
   };
 }
