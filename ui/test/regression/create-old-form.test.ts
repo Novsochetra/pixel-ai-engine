@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { createBody, defaultValues } from '@/create/create-form';
 import { OPTIONS } from '../integration/create-server';
 
-// The old /generate page sent these when only the prompt was filled; the new form must match.
+// The old /generate page sent these when only the prompt was filled; the new form must match,
+// except that it leaves out the turning, so the server keeps its default of none: front only.
 describe('the create form, as the old /generate page', () => {
   it('sends the old defaults', () => {
     const values = { ...defaultValues(OPTIONS, []), prompt: 'a frog wizard with a staff' };
@@ -15,8 +16,6 @@ describe('the create form, as the old /generate page', () => {
       sprite: '128',
       drawWith: '',
       drawingModel: 'flux2-klein-4b',
-      turnWith: '',
-      turningModel: 'flux2-klein-4b',
     });
   });
 });

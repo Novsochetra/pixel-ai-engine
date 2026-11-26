@@ -4,28 +4,29 @@ import {
   defaultValues,
   drawWithNote,
   isReady,
+  facingNote,
   modelFor,
-  turnWithNote,
 } from '@/create/create-form';
 import { BASE, OPTIONS } from '../integration/create-server';
 
 const ROTATE = [{ value: 'runs/rotate-v2/final', label: 'rotate-v2 · final', model: BASE }];
-const values = { ...defaultValues(OPTIONS, ROTATE), prompt: ' a frog ', drawWith: 'runs/c/final' };
+const CREATE = [{ value: 'runs/create-v1/final', label: 'create-v1 · final', model: BASE }];
+const values = { ...defaultValues(OPTIONS, []), prompt: ' a frog ', drawWith: 'runs/c/final' };
 
 describe('the create form', () => {
-  it('starts from the server defaults and the newest rotate LoRA', () => {
-    expect(defaultValues(OPTIONS, ROTATE)).toMatchObject({
+  it('draws with the newest create LoRA on the base model it learnt on, never turning', () => {
+    expect(defaultValues(OPTIONS, CREATE)).toEqual({
+      prompt: '',
+      pose: '',
       facing: 'front',
       characters: 2,
       sprite: '128',
-      drawWith: '',
-      turnWith: 'runs/rotate-v2/final',
-      drawingModel: 'flux2-klein-4b',
-      turningModel: BASE,
+      drawWith: 'runs/create-v1/final',
+      drawingModel: BASE,
     });
     expect(defaultValues(OPTIONS, [])).toMatchObject({
-      turnWith: '',
-      turningModel: 'flux2-klein-4b',
+      drawWith: '',
+      drawingModel: 'flux2-klein-4b',
     });
   });
 
@@ -42,15 +43,15 @@ describe('the create form', () => {
     expect(drawWithNote({ facing: 'side', pose: '' })).toMatch(/front views/);
   });
 
-  it('turns only a front view', () => {
-    expect(turnWithNote('front')).toBeNull();
-    expect(turnWithNote('side')).toMatch(/not turned/);
+  it('says a front view is turned later on Rotate, and a side view is mirrored', () => {
+    expect(facingNote('front')).toMatch(/Turn it on Rotate/);
+    expect(facingNote('side')).toMatch(/left is its mirror/);
   });
 
   it('sends a choice that is turned off as none', () => {
     expect(createBody(values)).toMatchObject({ prompt: 'a frog', drawWith: 'runs/c/final' });
     expect(createBody({ ...values, pose: 'flying' }).drawWith).toBe('');
-    expect(createBody({ ...values, facing: 'side' })).toMatchObject({ drawWith: '', turnWith: '' });
+    expect(createBody({ ...values, facing: 'side' }).drawWith).toBe('');
   });
 
   it('is ready once there is something to draw', () => {

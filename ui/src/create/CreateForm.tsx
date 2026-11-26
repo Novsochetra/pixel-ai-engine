@@ -3,7 +3,7 @@ import { Segmented } from '@/components/segmented/Segmented';
 import { Stepper } from '@/components/stepper/Stepper';
 import { TextField } from '@/components/text-field/TextField';
 import type { Facing, FormOptions } from './create-client';
-import { STANDING, type CreateValues } from './create-form';
+import { facingNote, STANDING, type CreateValues } from './create-form';
 import { ModelFields } from './ModelFields';
 import type { CreateForm as Form } from './use-create-form';
 
@@ -20,7 +20,6 @@ function FacingField({ options, values, onChange }: FieldsProps) {
     value: facing.value as Facing,
     label: facingLabel(facing.value),
   }));
-  const meaning = options.facing.find((facing) => facing.value === values.facing)?.label;
 
   return (
     <div className="form-field">
@@ -33,7 +32,7 @@ function FacingField({ options, values, onChange }: FieldsProps) {
         value={values.facing}
         onChange={(facing) => onChange({ facing })}
       />
-      <p className="form-note">Drawn {meaning}.</p>
+      <p className="form-note">{facingNote(values.facing)}</p>
     </div>
   );
 }
@@ -74,7 +73,7 @@ function DrawingFields({ options, values, onChange }: FieldsProps) {
   );
 }
 
-// The inspector's form: what to draw first, then the models that draw and turn it.
+// The inspector's form: what to draw first, then the model that draws it.
 export function CreateForm({ form }: { form: Form }) {
   const { options, values, change } = form;
 

@@ -78,22 +78,21 @@ describe('the create screen', () => {
       characters: 3,
       sprite: '64',
       drawWith: '',
-      drawingModel: 'flux2-klein-4b',
-      turnWith: 'runs/rotate-v1/final',
-      turningModel: 'flux2-klein-base-4b',
+      drawingModel: 'flux2-klein-base-4b',
     });
   });
 
-  it('draws with the model a create LoRA learnt on, and fast with none', async () => {
+  it('starts with the newest create LoRA on the base model, and draws fast with none', async () => {
     renderApp('/create', createServer(startState()));
     const drawWith = await within(inspector()).findByLabelText('Draw with');
     const drawingModel = () => within(inspector()).getByLabelText('Drawing model');
 
-    expect(drawingModel()).toHaveProperty('value', 'flux2-klein-4b');
-    await userEvent.selectOptions(drawWith, 'runs/create-v1/final');
+    expect(drawWith).toHaveProperty('value', 'runs/create-v1/final');
     expect(drawingModel()).toHaveProperty('value', 'flux2-klein-base-4b');
     await userEvent.selectOptions(drawWith, '');
     expect(drawingModel()).toHaveProperty('value', 'flux2-klein-4b');
+    await userEvent.selectOptions(drawWith, 'runs/create-v1/final');
+    expect(drawingModel()).toHaveProperty('value', 'flux2-klein-base-4b');
   });
 
   it('generates with ⌘↩ from the form', async () => {
@@ -148,16 +147,16 @@ describe('the create screen', () => {
     await vi.waitFor(() => expect(postedBody(server)?.drawWith).toBe(''));
   });
 
-  it('turns nothing for a side view', async () => {
+  it('only draws, leaving the turning to Rotate', async () => {
     renderApp('/create', createServer(startState()));
 
     await fillPrompt('a dragon');
-    await userEvent.click(within(inspector()).getByRole('button', { name: 'Side' }));
 
-    const turnWith = within(inspector()).getByLabelText('Turn with') as HTMLSelectElement;
-    expect(turnWith.disabled).toBe(true);
-    expect(turnWith.value).toBe('');
-    expect(within(inspector()).getByText(/flipped for the left, not turned/)).toBeTruthy();
+    expect(within(inspector()).queryByText('Turning')).toBeNull();
+    expect(within(inspector()).queryByLabelText('Turn with')).toBeNull();
+    expect(within(inspector()).getByText(/Turn it on Rotate/)).toBeTruthy();
+    await userEvent.click(within(inspector()).getByRole('button', { name: 'Side' }));
+    expect(within(inspector()).getByText(/The left is its mirror/)).toBeTruthy();
   });
 
   it('refreshes the gallery when the job ends', async () => {

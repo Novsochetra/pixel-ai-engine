@@ -7,12 +7,14 @@ export const STANDING = 'standing';
 export const modelFor = (loras: readonly LoraChoice[], value: string, fallback: string) =>
   loras.find((lora) => lora.value === value)?.model ?? fallback;
 
+// The newest create LoRA draws by default, on the model it learnt on (the base model); with none
+// trained yet, the server's default model draws.
 export function defaultValues(
   options: FormOptions,
-  rotateLoras: readonly LoraChoice[],
+  createLoras: readonly LoraChoice[],
 ): CreateValues {
   const { defaults } = options;
-  const turnWith = rotateLoras[0]?.value ?? '';
+  const drawWith = createLoras[0]?.value ?? '';
 
   return {
     prompt: '',
@@ -20,10 +22,8 @@ export function defaultValues(
     facing: defaults.facing,
     characters: options.characters.default,
     sprite: defaults.sprite,
-    drawWith: '',
-    drawingModel: defaults.model,
-    turnWith,
-    turningModel: modelFor(rotateLoras, turnWith, defaults.model),
+    drawWith,
+    drawingModel: modelFor(createLoras, drawWith, defaults.model),
   };
 }
 
@@ -46,8 +46,12 @@ export function drawWithNote({ facing, pose }: Pick<CreateValues, 'facing' | 'po
   return null;
 }
 
-export const turnWithNote = (facing: Facing) =>
-  facing === 'side' ? 'A side view is flipped for the left, not turned.' : null;
+// Create draws the character only; Rotate turns it afterwards. The server would turn it here
+// too when given a rotate LoRA, so the form never sends one.
+export const facingNote = (facing: Facing) =>
+  facing === 'side'
+    ? 'Drawn from the side, facing right. The left is its mirror.'
+    : 'Drawn from the front. Turn it on Rotate once you like it.';
 
 export const isReady = (values: CreateValues) => values.prompt.trim() !== '';
 
@@ -58,6 +62,5 @@ export function createBody(values: CreateValues): GenerateBody {
     prompt: values.prompt.trim(),
     pose: values.pose.trim(),
     drawWith: drawWithNote(values) ? '' : values.drawWith,
-    turnWith: turnWithNote(values.facing) ? '' : values.turnWith,
   };
 }

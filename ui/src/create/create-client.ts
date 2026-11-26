@@ -45,8 +45,6 @@ export interface GenerateBody {
   sprite: string;
   drawWith: string;
   drawingModel: string;
-  turnWith: string;
-  turningModel: string;
 }
 
 export type LoraTask = 'create' | 'rotate';

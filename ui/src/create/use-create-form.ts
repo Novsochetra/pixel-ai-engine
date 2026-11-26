@@ -6,20 +6,18 @@ import { useFormOptions, useLoras } from './use-create';
 export function useCreateForm() {
   const options = useFormOptions();
   const createLoras = useLoras('create');
-  const rotateLoras = useLoras('rotate');
   const [changes, setChanges] = useState<Partial<CreateValues>>({});
 
-  const queries = [options, createLoras, rotateLoras];
+  const queries = [options, createLoras];
   const failed = queries.find((query) => query.isError);
-  const isLoaded = options.data && createLoras.data && rotateLoras.data;
+  const isLoaded = options.data && createLoras.data;
   const values = isLoaded
-    ? { ...defaultValues(options.data!, rotateLoras.data!), ...changes }
+    ? { ...defaultValues(options.data!, createLoras.data!), ...changes }
     : null;
 
   return {
     options: options.data,
     createLoras: createLoras.data ?? [],
-    rotateLoras: rotateLoras.data ?? [],
     values,
     error: failed?.error ?? null,
     change: (next: Partial<CreateValues>) => setChanges((current) => ({ ...current, ...next })),
