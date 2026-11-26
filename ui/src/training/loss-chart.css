@@ -1,0 +1,178 @@
+.loss-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 0;
+}
+
+.loss-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  padding: 0;
+  margin: 0;
+  font-size: var(--font-size-caption);
+  color: var(--color-label-secondary);
+  list-style: none;
+}
+
+.loss-chart__legend li {
+  display: inline-flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.loss-chart__key,
+.loss-chart__line-key {
+  display: inline-block;
+  inline-size: var(--size-chart-key);
+  block-size: var(--size-chart-line);
+  border-radius: var(--radius-pill);
+}
+
+.loss-chart__key--loss {
+  background: var(--color-chart-loss);
+}
+
+.loss-chart__key--val {
+  background: var(--color-chart-val);
+}
+
+.loss-chart__frame {
+  position: relative;
+  inline-size: 100%;
+}
+
+.loss-chart__plot {
+  display: block;
+  overflow: visible;
+  touch-action: pan-y;
+  border-radius: var(--radius-sm);
+  outline: none;
+}
+
+.loss-chart__plot:focus-visible {
+  outline: var(--border-width-ring) solid var(--color-focus-ring);
+}
+
+.loss-chart__axes line {
+  stroke: var(--color-chart-grid);
+  stroke-width: 1;
+}
+
+.loss-chart__axes text {
+  font-size: var(--font-size-caption-2);
+  font-variant-numeric: tabular-nums;
+  fill: var(--color-label-secondary);
+}
+
+.loss-chart__loss,
+.loss-chart__val {
+  fill: none;
+  stroke-width: var(--size-chart-line);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.loss-chart__loss {
+  stroke: var(--color-chart-loss);
+}
+
+.loss-chart__val {
+  stroke: var(--color-chart-val);
+}
+
+/* The ring in the surface colour keeps a dot readable where it sits on a line. */
+.loss-chart__check,
+.loss-chart__marker {
+  stroke: var(--color-chart-ring);
+  stroke-width: var(--size-chart-line);
+}
+
+.loss-chart__check {
+  fill: var(--color-chart-val);
+}
+
+.loss-chart__marker {
+  fill: var(--color-chart-loss);
+}
+
+.loss-chart__crosshair {
+  stroke: var(--color-label-tertiary);
+  stroke-width: 1;
+}
+
+.loss-chart__readout {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: clamp(
+    0px,
+    calc(var(--readout-x) - var(--size-chart-readout) / 2),
+    calc(100% - var(--size-chart-readout))
+  );
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  inline-size: var(--size-chart-readout);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-caption);
+  color: var(--color-label-secondary);
+  pointer-events: none;
+  background: var(--color-material);
+  backdrop-filter: var(--blur-glass);
+  border-radius: var(--radius-row);
+  box-shadow: var(--shadow-floating);
+}
+
+.loss-chart__readout strong {
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-label);
+}
+
+.loss-chart__readout-row {
+  display: flex;
+  white-space: nowrap;
+  gap: var(--space-1);
+  align-items: center;
+}
+
+.loss-chart__line-key {
+  margin-inline-end: var(--space-1);
+}
+
+.loss-chart__empty {
+  font-size: var(--font-size-footnote);
+  color: var(--color-label-secondary);
+}
+
+.loss-chart__table summary {
+  min-block-size: var(--size-target);
+  align-content: center;
+  font-size: var(--font-size-footnote);
+  color: var(--color-tint);
+  cursor: pointer;
+}
+
+.loss-chart__table table {
+  inline-size: 100%;
+  font-size: var(--font-size-footnote);
+  font-variant-numeric: tabular-nums;
+  border-collapse: collapse;
+}
+
+.loss-chart__table th,
+.loss-chart__table td {
+  padding: var(--space-1) var(--space-2);
+  text-align: end;
+  border-block-end: var(--border-width-hairline) solid var(--color-separator);
+}
+
+.loss-chart__table thead th {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-label-secondary);
+}
+
+.loss-chart__table tbody th {
+  font-weight: var(--font-weight-regular);
+}

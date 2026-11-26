@@ -14,8 +14,8 @@ Each step of building the engine gets its own folder:
 | [`dataset/`](dataset/) | gather the image data, import it as records, analyze, annotate and export it, and browse it | gather, import, analyze, export and browser done; annotate later |
 | [`training/`](training/) | try existing models (FLUX 3 Klein, FLUX.2 Klein 4B), then train on an export | try-out and LoRA training (rotate) ready to run on the Mac |
 | `engine/` | run the trained models: create, rotate, animate, landscape | later |
-| [`server/`](server/) | the dashboard's API (FastAPI): jobs, records, images, exports, try-outs, Generate and Animate | steps 1 to 4 of [the dashboard plan](docs/dashboard-plan.md) done |
-| [`ui/`](ui/) | the dashboard (React): sidebar, inspector, job status, Library, Create, Animate; run `npm run dev` in `ui/` | steps 1 to 4 of [the dashboard plan](docs/dashboard-plan.md) done |
+| [`server/`](server/) | the dashboard's API (FastAPI): jobs, records, images, exports, try-outs, Generate, Animate and Training | steps 1 to 5 of [the dashboard plan](docs/dashboard-plan.md) done |
+| [`ui/`](ui/) | the dashboard (React): sidebar, inspector, job status, Library, Create, Animate, Training; run `npm run dev` in `ui/` | steps 1 to 5 of [the dashboard plan](docs/dashboard-plan.md) done |
 
 ## The four tasks
 

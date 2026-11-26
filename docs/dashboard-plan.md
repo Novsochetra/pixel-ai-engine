@@ -53,7 +53,7 @@ Selecting an image opens it large in a sheet, with zoom and download.
 
 ## API
 
-Built (steps 1 to 4):
+Built (steps 1 to 5):
 
 ```
 GET  /api/health                            GET  /api/jobs/current      POST /api/jobs/stop
@@ -69,6 +69,8 @@ GET  /api/files/animated/{path}             GET  /api/files/uploads/{path}
 GET  /api/animated                          GET  /api/animate/options
 GET  /api/animate/sources                   POST /api/animate
 POST /api/uploads?name=
+GET  /api/runs                              GET  /api/training/options
+POST /api/training/start      POST /api/training/resume     POST /api/training/tryout
 ```
 
 Character and image ids hold slashes (`pac/train/0/front`), so they are the rest of the path.
@@ -93,12 +95,18 @@ frames and the URLs of its GIF, raw GIF and sheet.
 another type, 413 past 10 MB, and 400 for a file that is not a PNG or is too big a picture; it saves
 with `animate_page.save_upload`.
 
-Still to build:
+`GET /api/runs` lists the runs newest first with `studio.read_runs`: each run's settings, the steps
+done and planned, seconds a step, the latest `passes` (how many times over the data it has gone;
+`null` in logs from before it was counted), checkpoints, final, the `loss` and `val` points as
+`[step, value]`, the checkpoints a try-out may load, and `isTraining` for the run the running job
+trains. `/api/training/options` lists the tasks, models, sizes and exports, each export with its
+sources, licences and use, from the old page's constants.
 
-```
-GET  /api/runs
-POST /api/training/start      POST /api/training/resume     POST /api/training/tryout
-```
+`POST /api/training/start` takes JSON (`name`, `task`, `export`, `model`, `size`, `steps`, `sources`
+as a list) and checks it with `studio.train_job`; `/api/training/resume` (`run`, `steps`, the step to
+train to) with `studio.resume_job`; `/api/training/tryout` (`run`, `checkpoint`, `model`,
+`characters`) with `studio.tryout_job`. Each answers 400 and 409 as Generate does. A resume keeps
+the run's own settings, its `--more-exports`, `--more-repeat` and `--repeat` among them.
 
 The job functions in `studio.py` and `animate_page.py` already return the command to run.
 The API calls them as they are and sends JSON, not HTML.
@@ -110,7 +118,7 @@ The API calls them as they are and sends JSON, not HTML.
 2. Library (read only, so it is the safest first real screen). Done.
 3. Create. Done.
 4. Animate. Done.
-5. Training.
+5. Training. Done.
 6. Rotate and Landscape, when their models are ready.
 7. Remove the old HTML pages and `pixel browse`.
 

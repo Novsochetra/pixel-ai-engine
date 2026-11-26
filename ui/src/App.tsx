@@ -6,6 +6,7 @@ import { AppShell } from '@/layout/AppShell';
 import { LibraryScreen } from '@/library/LibraryScreen';
 import { SECTIONS } from '@/navigation/sections';
 import { SectionScreen } from '@/screens/SectionScreen';
+import { TrainingScreen } from '@/training/TrainingScreen';
 
 const FIRST_SECTION = SECTIONS[0]!.path;
 
@@ -14,6 +15,7 @@ const SCREENS: Partial<Record<string, ComponentType>> = {
   animate: AnimateScreen,
   create: CreateScreen,
   library: LibraryScreen,
+  training: TrainingScreen,
 };
 
 export function App() {

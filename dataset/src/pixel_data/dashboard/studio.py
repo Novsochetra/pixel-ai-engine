@@ -208,11 +208,16 @@ def resume_job(data: Path, form: dict) -> tuple[str, list[str]]:
     args = ["train", "--name", run["name"], "--resume", "--task", task_of(run), "--steps", str(steps)]
     for flag, key in (("--export", "export"), ("--model", "model"), ("--size", "size"), ("--rank", "rank"),
                       ("--learning-rate", "learning_rate"), ("--accumulate", "accumulate"), ("--every", "every"),
-                      ("--val", "val_count"), ("--seed", "seed")):
+                      ("--val", "val_count"), ("--seed", "seed"), ("--more-repeat", "more_repeat")):
         if key in settings:
             args += [flag, str(settings[key])]
     if settings.get("sources"):
         args += ["--sources", *settings["sources"]]
+    # Without these a create run goes on with less data than it started with.
+    if settings.get("more_exports"):
+        args += ["--more-exports", *settings["more_exports"]]
+    if settings.get("repeat"):
+        args += ["--repeat", *(f"{source}={times:g}" for source, times in settings["repeat"])]
 
     return f"Resume {run['name']} to {steps} steps", args
 

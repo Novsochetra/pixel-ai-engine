@@ -72,6 +72,13 @@
   --color-mark-top: var(--color-apple-orange);
   --color-mark-bottom: var(--color-apple-pink);
 
+  /* The loss chart's two lines, from the dataviz palette (violet and orange), checked for colour
+     blindness and contrast on this dark surface and the light one below. */
+  --color-chart-loss: #9085e9;
+  --color-chart-val: #d95926;
+  --color-chart-grid: var(--color-separator);
+  --color-chart-ring: var(--color-apple-gray-6);
+
   --font-system: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
 
@@ -146,6 +153,9 @@
   --size-frame-text: 6.5rem;
   --size-speed: 15rem;
   --size-search: 16rem;
+  --size-chart-line: 2px;
+  --size-chart-key: 0.75rem;
+  --size-chart-readout: 13.5rem;
   --size-filter: 22rem;
   --size-stroke-icon: 2;
   --size-stroke-bold: 2.4;
@@ -244,6 +254,9 @@
   --color-log: rgb(255 255 255 / 60%);
   --color-checker-light: var(--color-white);
   --color-checker-dark: var(--color-apple-gray-5-light);
+  --color-chart-loss: #6250d6;
+  --color-chart-val: #eb6834;
+  --color-chart-ring: var(--color-white);
 
   --shadow-glass:
     inset 0 0 0 1px var(--color-glass-edge), inset 0 1px 0 var(--color-glass-highlight),

@@ -216,6 +216,21 @@ def test_resume_keeps_the_settings_of_the_run(tmp_path):
         studio.resume_job(fake_data(tmp_path / "again"), {"run": "rotate-v2", "steps": "20"})
 
 
+def test_resume_keeps_the_more_exports_and_repeats_of_a_create_run(tmp_path):
+    data = fake_data(tmp_path)
+    run = data / "runs" / "rotate-v2" / "run.json"
+    info = json.loads(run.read_text())
+    info["settings"] |= {"more_exports": ["opengameart-v1"], "more_repeat": 1,
+                         "repeat": [["opengameart-2d", 5.0], ["pixellab", 0.5]]}
+    run.write_text(json.dumps(info))
+
+    _, args = studio.resume_job(data, {"run": "rotate-v2", "steps": "40"})
+
+    assert args[args.index("--more-repeat") + 1] == "1"
+    assert args[args.index("--more-exports"):args.index("--repeat")] == ["--more-exports", "opengameart-v1"]
+    assert args[args.index("--repeat"):] == ["--repeat", "opengameart-2d=5", "pixellab=0.5"]
+
+
 def test_a_tryout_loads_a_checkpoint_of_that_run_only(tmp_path):
     data = fake_data(tmp_path)
 
