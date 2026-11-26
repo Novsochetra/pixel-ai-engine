@@ -4,6 +4,10 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 
+# Node
+node_modules/
+ui/dist/
+
 # Downloaded and generated data stays on your machine
 dataset/data/
 *.log

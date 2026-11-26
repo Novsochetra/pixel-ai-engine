@@ -1,0 +1,32 @@
+.shell {
+  display: grid;
+  grid-template-columns: var(--size-sidebar) minmax(0, 1fr);
+  block-size: 100dvh;
+}
+
+.shell__main {
+  min-inline-size: 0;
+  block-size: 100dvh;
+  overflow: hidden;
+}
+
+/* The 48rem breakpoint matches NARROW in use-media-query.ts. */
+@media (max-width: 47.99rem) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .shell > .sidebar {
+    display: none;
+  }
+
+  .shell__main {
+    block-size: calc(100dvh - var(--size-tab-bar) - env(safe-area-inset-bottom));
+  }
+}
+
+@media (min-width: 48rem) {
+  .job-status--floating {
+    display: none;
+  }
+}

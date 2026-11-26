@@ -1,0 +1,88 @@
+.tab-bar {
+  display: none;
+}
+
+@media (max-width: 47.99rem) {
+  .tab-bar {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: var(--layer-bar);
+    display: grid;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+    block-size: calc(var(--size-tab-bar) + env(safe-area-inset-bottom));
+    padding-block-end: env(safe-area-inset-bottom);
+    background: var(--color-material);
+    border-block-start: var(--border-width-hairline) solid var(--color-separator);
+    -webkit-backdrop-filter: var(--blur-glass);
+    backdrop-filter: var(--blur-glass);
+  }
+}
+
+.tab-bar__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  align-items: center;
+  justify-content: center;
+  min-block-size: var(--size-target);
+  padding: 0;
+  font-family: inherit;
+  font-size: var(--font-size-caption-2);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-label-secondary);
+  text-decoration: none;
+  cursor: pointer;
+  background: none;
+  border: 0;
+  outline: none;
+}
+
+.tab-bar__item[aria-current='page'] {
+  color: var(--color-tint);
+}
+
+.tab-bar__item:active {
+  opacity: var(--dim-pressed);
+}
+
+.tab-bar__item:focus-visible {
+  outline: var(--border-width-ring) solid var(--color-focus-ring);
+  outline-offset: calc(-1 * var(--border-width-ring));
+}
+
+.more-list {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  list-style: none;
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-card);
+}
+
+.more-list li + li {
+  border-block-start: var(--border-width-hairline) solid var(--color-separator);
+}
+
+.more-list__row {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  min-block-size: var(--size-row);
+  padding-inline: var(--space-4);
+  font-size: var(--font-size-body);
+  color: var(--color-label);
+  text-decoration: none;
+}
+
+.more-list__row .icon {
+  color: var(--color-tint);
+}
+
+.more-list__appearance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: var(--space-4);
+}

@@ -1,0 +1,60 @@
+.progress {
+  --progress: 0;
+
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  block-size: var(--size-progress);
+  overflow: hidden;
+  background: var(--color-progress-track);
+  border-radius: var(--radius-pill);
+}
+
+.progress::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: var(--color-tint);
+  border-radius: var(--radius-pill);
+  transform: scaleX(var(--progress));
+  transform-origin: left;
+  transition: transform var(--duration-panel) var(--easing-standard);
+}
+
+/* Apple's activity indicator: eight petals fading around a circle, turning a petal at a time. */
+.spinner {
+  display: block;
+  flex: none;
+  inline-size: var(--size-spinner);
+  block-size: var(--size-spinner);
+  background: conic-gradient(var(--color-label-secondary), var(--color-clear));
+  mask:
+    radial-gradient(
+      circle,
+      var(--color-clear) var(--size-spinner-petal-gap),
+      var(--color-black) calc(var(--size-spinner-petal-gap) + 1%)
+    ),
+    repeating-conic-gradient(
+      from -7deg,
+      var(--color-black) 0deg 14deg,
+      var(--color-clear) 14deg 45deg
+    );
+  mask-composite: intersect;
+  animation: spin var(--duration-pulse) var(--easing-step-8) infinite;
+}
+
+@keyframes spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress::after {
+    transition: none;
+  }
+
+  .spinner {
+    animation: none;
+  }
+}
