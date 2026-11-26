@@ -206,13 +206,13 @@
     {
       "id": "pixellab",
       "kind": "pixellab",
-      "license": "PixelLab output (paid account). ToS 1.2: no training own models without written permission",
-      "use": "hold",
+      "license": "PixelLab output (paid account). PixelLab gave permission to train on it for local use only: no commercial app",
+      "use": "train",
       "tasks": [
         "create",
         "rotate"
       ],
-      "notes": "Made with the PixelLab API from pixellab/plan.json. On hold: export skips it until PixelLab says yes in writing, then set use to train.",
+      "notes": "Made with the PixelLab API from pixellab/plan.json. Training allowed by PixelLab for local, non-commercial use. A LoRA with it in is not for a game or app that is sold.",
       "links": [
         "https://www.pixellab.ai/termsofservice",
         "https://api.pixellab.ai/v2/llms.txt"

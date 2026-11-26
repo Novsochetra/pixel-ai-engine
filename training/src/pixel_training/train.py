@@ -55,6 +55,7 @@ class Settings:
     task: str = "rotate"
     more_exports: tuple[str, ...] = ()  # create only: more exports whose captioned characters join in
     more_repeat: int = 1
+    repeat: tuple[tuple[str, float], ...] = ()  # (source, times): 5 shows it 5 times as often, 0.5 half of it
 
 
 class Backend(Protocol):
@@ -131,6 +132,27 @@ def read_captioned(export: Path, split: str, template: str, sources: tuple[str, 
     return pairs
 
 
+def source_of(pair: Pair) -> str:
+    return pair.character.split("/", 1)[0]
+
+
+def repeated(pairs: list[Pair], times: dict[str, float], seed: int) -> list[Pair]:
+    """Show some sources more or less often.
+
+    A small source would hardly be seen next to a big one. 5 puts each of its pairs in 5 times;
+    0.5 keeps a fixed half of them (the same half every run, so a resumed run sees the same pairs).
+    """
+    kept = []
+    for source in dict.fromkeys(source_of(pair) for pair in pairs):
+        group = [pair for pair in pairs if source_of(pair) == source]
+        share = times.get(source, 1)
+        whole = int(share)
+        kept += group * whole
+        kept += random.Random(f"{seed}-{source}").sample(group, round((share - whole) * len(group)))
+
+    return kept
+
+
 def val_sample(pairs: list[Pair], count: int, seed: int) -> list[Pair]:
     return random.Random(seed).sample(pairs, min(count, len(pairs)))
 
@@ -165,6 +187,36 @@ def run_settings(path: Path) -> dict:
             return json.loads((folder / "run.json").read_text())["settings"]
 
     return {}
+
+
+class Order:
+    """Which pairs each step learns from: every pair once in a shuffled order, then again in a new one.
+
+    So 500 steps a day go through all the data before any picture comes back. The order depends
+    only on the seed and the pairs, so a resumed run sees what an unbroken one would have.
+    """
+
+    def __init__(self, pairs: list[Pair], seed: int, batch: int):
+        self.pairs, self.seed, self.batch = pairs, seed, min(batch, len(pairs))
+        self.orders: dict[int, list[int]] = {}
+
+    def order(self, number: int) -> list[int]:
+        if number not in self.orders:
+            self.orders = {key: value for key, value in self.orders.items() if key >= number - 1}
+            order = list(range(len(self.pairs)))
+            random.Random(self.seed * 1_000_003 + number).shuffle(order)
+            self.orders[number] = order
+
+        return self.orders[number]
+
+    def picks(self, step: int) -> list[Pair]:
+        positions = range((step - 1) * self.batch, step * self.batch)
+
+        return [self.pairs[self.order(at // len(self.pairs))[at % len(self.pairs)]] for at in positions]
+
+    def passes(self, step: int) -> float:
+        """How many times over the whole data the run has gone after this step."""
+        return step * self.batch / len(self.pairs)
 
 
 def log(run: Path, row: dict) -> None:
@@ -205,16 +257,13 @@ def train(run: Path, settings: Settings, train_pairs: list[Pair], val_pairs: lis
                       for pair in val_pairs],
     }, indent=2))
 
-    # The order of the pairs depends only on the seed and the step, so a resumed run sees what an
-    # unbroken one would have.
-    batch = settings.accumulate
+    order = Order(train_pairs, settings.seed, settings.accumulate)
     started = time.monotonic()
     val = None
 
     for step in range(start + 1, settings.steps + 1):
-        picks = random.Random(settings.seed * 1_000_003 + step).sample(train_pairs, min(batch, len(train_pairs)))
-        loss = backend.train_step(picks)
-        row = {"step": step, "loss": round(loss, 5)}
+        loss = backend.train_step(order.picks(step))
+        row = {"step": step, "loss": round(loss, 5), "passes": round(order.passes(step), 4)}
 
         if step % settings.every == 0 or step == settings.steps:
             val = backend.val_loss(val_pairs)
@@ -227,7 +276,8 @@ def train(run: Path, settings: Settings, train_pairs: list[Pair], val_pairs: lis
 
         left = (settings.steps - step) * seconds / 60
         extra = f", val {row['val_loss']:.4f}, saved" if "val_loss" in row else ""
-        say(f"step {step}/{settings.steps}: loss {loss:.4f}{extra} ({seconds:.1f}s per step, ~{left:.0f} min left)")
+        say(f"step {step}/{settings.steps}: loss {loss:.4f}{extra}, {row['passes']:.1%} of the data"
+            f" ({seconds:.1f}s per step, ~{left:.0f} min left)")
 
     final = run / FINAL
     final.mkdir(exist_ok=True)

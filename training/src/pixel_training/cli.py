@@ -1,5 +1,6 @@
 import argparse
 import json
+from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
@@ -73,10 +74,23 @@ def tryout_command(args) -> None:
     print(f"\nResults in {plan.folder}. Open them with `uv run pixel browse` in dataset/, under Try-outs.")
 
 
+def source_times(text: str) -> tuple[str, float]:
+    source, _, times = text.partition("=")
+    try:
+        value = float(times)
+    except ValueError:
+        value = -1
+    if not source or value < 0:
+        raise argparse.ArgumentTypeError(f"{text!r}: write it as SOURCE=TIMES, like pixellab=10 or lpc-4view=0.5")
+
+    return source, value
+
+
 def train_command(args) -> None:
     from pixel_training.lora import FluxLora
     from pixel_training.models import pick_device
-    from pixel_training.train import Settings, read_captioned, read_labels, read_pairs, train, val_sample
+    from pixel_training.train import (Settings, latest_checkpoint, read_captioned, read_labels, read_pairs, repeated,
+                                      source_of, train, val_sample)
 
     export = args.data / "exports" / args.export
     if not (export / "characters.jsonl").exists():
@@ -111,15 +125,27 @@ def train_command(args) -> None:
         instructions = prompts["rotate"]
         train_pairs = read_pairs(export, "train", list(instructions), sources)
         val_pairs = val_sample(read_pairs(export, "val", list(instructions), sources), args.val, args.seed)
+    times = dict(args.repeat)
+    if times:
+        train_pairs = repeated(train_pairs, times, args.seed)
     if not train_pairs:
         hint = " Only lpc-4view has captions; label others with dataset/labelling." if args.task == "create" else ""
         raise SystemExit(f"No training pairs in {export} for sources {sources or 'all'}.{hint}")
 
-    settings = Settings(model=args.model, export=args.export, size=args.size, steps=args.steps, rank=args.rank,
+    run = args.data / "runs" / (args.name or datetime.now().strftime("lora-%Y%m%d-%H%M"))
+    steps = args.steps
+    if args.add_steps:
+        # The same command every day: it starts the run, then goes on with it.
+        found = latest_checkpoint(run)
+        done = found[0] if found else 0
+        steps, args.resume = done + args.add_steps, found is not None
+        print(f"Steps {done + 1} to {steps} ({args.add_steps} more)")
+
+    settings = Settings(model=args.model, export=args.export, size=args.size, steps=steps, rank=args.rank,
                         learning_rate=args.learning_rate, accumulate=args.accumulate, every=args.every,
                         val_count=len(val_pairs), sources=sources, seed=args.seed, task=args.task,
-                        more_exports=tuple(args.more_exports), more_repeat=args.more_repeat)
-    run = args.data / "runs" / (args.name or datetime.now().strftime("lora-%Y%m%d-%H%M"))
+                        more_exports=tuple(args.more_exports), more_repeat=args.more_repeat,
+                        repeat=tuple(args.repeat))
     before = run_settings(run).get("task", "rotate") if (run / "run.json").exists() else args.task
     if args.resume and before != args.task:
         raise SystemExit(f"{run.name} is a {before} run: resume it with --task {before}.")
@@ -131,6 +157,8 @@ def train_command(args) -> None:
     device = pick_device()
 
     print(f"{args.task}: {len(train_pairs):,} training pairs, {len(val_pairs)} check pairs, {args.size}px, on {device}")
+    counts = Counter(source_of(pair) for pair in train_pairs)
+    print("Pairs per source: " + ", ".join(f"{name} {count:,}" for name, count in counts.most_common()))
     print(f"Sources and licences: {', '.join(f'{name} ({licence})' for name, licence in used.items())}")
     print(f"Run folder: {run}")
     print("Loading the model...")
@@ -286,7 +314,11 @@ def parser() -> argparse.ArgumentParser:
                        help="create only: also train on the captioned characters of these exports (e.g. opengameart-v1)")
     train.add_argument("--more-repeat", type=int, default=1,
                        help="show each character of --more-exports this many times, so a small export is not lost")
+    train.add_argument("--repeat", nargs="+", type=source_times, default=[], metavar="SOURCE=TIMES",
+                       help="show a source more or less often: pixellab=10 (each pair 10 times), lpc-4view=0.5 (half)")
     train.add_argument("--steps", type=int, default=1000, help="optimiser steps")
+    train.add_argument("--add-steps", type=int, metavar="N",
+                       help="train N more steps than the run's last checkpoint (starts the run if it is new)")
     train.add_argument("--accumulate", type=int, default=4, help="pairs per step")
     train.add_argument("--size", type=int, default=512, help="picture size the model sees, a multiple of 16")
     train.add_argument("--rank", type=int, default=16, help="LoRA size: higher learns more, and takes more memory")

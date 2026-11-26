@@ -76,15 +76,16 @@ Two sources are downloaded by hand: `itch-8dir-cc0` and `spritedatabase`. Run
 `uv run pixel gather itch-8dir-cc0` to get the links and its folder, put the files there, then run
 `uv run pixel dashboard`.
 
-## PixelLab (paid, on hold)
+## PixelLab (paid, local and non-commercial)
 
 `pixellab` makes characters with your PixelLab account, from the 400 descriptions in
 `pixellab/plan.json` (8 views each, 64x64). Each character costs about 2 generations.
 
-Its `use` is `hold`. PixelLab's terms (section 1.2) do not allow training your own model on its
-pictures without their written permission. So `pixel export` always leaves it out, even with
-`--experimental`. You can still gather, import, analyze and browse it. When PixelLab says yes in
-writing, change its `use` in `sources.json` to `train`.
+PixelLab's terms (section 1.2) do not allow training your own model on its pictures without their
+written permission. PixelLab gave that permission for local use only: no commercial app. So its
+`use` is `train`, and a LoRA with `pixellab` in it is for your own use, not for a game or app that
+is sold. Keep PixelLab's message. To leave it out again, set its `use` back to `hold`: then `pixel
+export` always skips it, even with `--experimental`.
 
 Put your token (from https://pixellab.ai/account) in `dataset/.env`, which git ignores:
 

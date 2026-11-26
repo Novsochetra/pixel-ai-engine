@@ -5,7 +5,8 @@ import pytest
 
 from pixel_training.cli import parser
 from pixel_training.train import (Pair, Settings, caption_text, latest_checkpoint, lora_folder, read_captioned,
-                                  read_labels, read_pairs, run_settings, train, val_sample)
+                                  read_labels, read_pairs, repeated, run_settings, source_of, train,
+                                  val_sample)
 
 VIEWS = ["left", "back", "right"]
 
@@ -187,3 +188,33 @@ def test_create_training_takes_more_exports():
     assert args.more_exports == ["opengameart-v1"]
     assert args.more_repeat == 1
     assert parser().parse_args(["train"]).more_exports == []
+
+
+def test_a_run_sees_every_pair_once_before_any_comes_back(tmp_path):
+    backend = FakeBackend()
+    train(tmp_path, settings(steps=6, every=10), pairs(6), pairs(1), backend, say=lambda _: None)
+
+    first, second = sum(backend.seen[:3], []), sum(backend.seen[3:], [])
+    assert sorted(first) == sorted(second) == sorted(f"c{index}/left" for index in range(6))
+    assert first != second
+    assert json.loads((tmp_path / "log.jsonl").read_text().splitlines()[2])["passes"] == 1.0
+
+
+def test_a_source_can_be_shown_more_or_less_often():
+    found = [Pair(f"{source}/{index}", "front", None, Path("t.png"))
+             for source, count in (("lpc", 10), ("pixellab", 2)) for index in range(count)]
+
+    kept = repeated(found, {"pixellab": 3, "lpc": 0.5}, seed=0)
+
+    assert sum(source_of(pair) == "pixellab" for pair in kept) == 6
+    assert sum(source_of(pair) == "lpc" for pair in kept) == 5
+    assert kept == repeated(found, {"pixellab": 3, "lpc": 0.5}, seed=0)
+
+
+def test_repeat_and_add_steps_are_read_from_the_command():
+    args = parser().parse_args(["train", "--repeat", "pixellab=10", "lpc-4view=0.5", "--add-steps", "500"])
+
+    assert args.repeat == [("pixellab", 10.0), ("lpc-4view", 0.5)]
+    assert args.add_steps == 500
+    with pytest.raises(SystemExit):
+        parser().parse_args(["train", "--repeat", "pixellab"])

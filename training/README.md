@@ -159,6 +159,53 @@ With `--create-lora`, the front view is drawn at the LoRA's size scaled with `--
 128 sprite), as for turning. `--lora` must be a rotate LoRA and `--create-lora` a create one;
 `generate` stops if they are the other way round. `--resume` needs the run's own `--task`.
 
+### Model names
+
+Every model is a Pixie, named for its job. The number goes up when the recipe changes (other data,
+other sources or repeats, other settings). The daily checkpoints (`step-000500`, `step-001000`, ...)
+are the steps inside one version.
+
+| Name | Job | `--task` |
+|---|---|---|
+| `pixie-draw-v1` | words to a character's front view | `create` |
+| `pixie-turn-v1` | front view to the left, back and right views | `rotate` |
+| `pixie-animate-v1` | a sprite to the frames of an action | (to be built) |
+| `pixie-draw-object-v1` | words to an object or icon | `create`, own export |
+
+Two older runs are kept: `rotate-v2` (the turning model until `pixie-turn-v1` is better) and `create-v1` (LPC only, the one create LoRA you can sell with).
+
+### One create LoRA on all character data, a little each day
+
+`characters-v2` is the export with every character source that has 4 views: lpc-4view, pac and
+pixellab (moss-64 is only in its test split). With the OpenGameArt export next to it, that is all
+the character data:
+
+```bash
+cd dataset && uv run pixel export characters-v2 && cd ../training
+```
+
+Run the same command every day. `--add-steps 500` trains 500 more steps than the last checkpoint
+(it starts the run the first time). 500 steps of 4 pairs is 2,000 pictures, about 4 hours at 256
+pixels on an M1 Max:
+
+```bash
+HF_HUB_OFFLINE=1 caffeinate -i uv run pixel-train train --task create --name pixie-draw-v1 --export characters-v2 --size 256 --more-exports opengameart-v1 --repeat opengameart-2d=5 pixellab=10 --add-steps 500
+```
+
+`--repeat` shows a small source more often (`pixellab=10`: each of its characters 10 times), or a
+big one less (`lpc-4view=0.5`: a fixed half). The run goes through every pair once, in a shuffled
+order, before any comes back; the log and the screen say how much of the data it has seen. Keep the
+command the same each day: other sources or repeats make another set of pairs, and so another order.
+
+Try it at any time with `uv run pixel-train generate "a frog wizard" --create-lora pixie-draw-v1`.
+
+Licences: pac (CC-BY-NC-4.0) and pixellab (PixelLab's permission: local use, no commercial app) make
+this LoRA non-commercial. For one you can sell with, train on lpc-4view and OpenGameArt only.
+
+atlas-1.4m, icons-172k, pixelart-308k and landscapes-20k are not in it. They are objects, icons and
+scenes, not characters. In a character LoRA they would teach it to draw a chair when you ask for a
+knight. They fit a LoRA of their own (icons, scenes), with their own words.
+
 ## Step 4: animate a character (try-out)
 
 `pixel-train animate` gives a sprite from `generate`, or a PNG of your own, to Wan 2.2 image-to-video with the
