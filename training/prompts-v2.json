@@ -1,0 +1,22 @@
+{
+  "create": {
+    "template": "PXLSPRT, {subject}, full body, {pose}, {view}, centered, plain flat white background",
+    "subjects": [
+      "a knight in silver armour with a red cape and a sword",
+      "a young wizard in a blue robe holding a wooden staff",
+      "a female archer with green hood and a bow",
+      "a green slime monster with big eyes",
+      "a goblin with a dagger and leather vest",
+      "a small robot with antenna and glowing eyes",
+      "a martial artist with a red headband and white gi",
+      "a skeleton warrior with a rusty shield",
+      "a cat girl with orange hair and a school uniform",
+      "a dwarf blacksmith with a big beard and a hammer"
+    ]
+  },
+  "rotate": {
+    "left": "Show this exact same pixel art character from its left side, turned to face left. Keep the same design, colours, size and pixel art style. Plain flat white background.",
+    "back": "Show this exact same pixel art character from behind, seen from the back. Keep the same design, colours, size and pixel art style. Plain flat white background.",
+    "right": "Show this exact same pixel art character from its right side, turned to face right. Keep the same design, colours, size and pixel art style. Plain flat white background."
+  }
+}
