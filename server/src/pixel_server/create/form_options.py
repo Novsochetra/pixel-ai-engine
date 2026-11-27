@@ -1,9 +1,9 @@
 from pathlib import Path
 
 from pixel_data.dashboard import animate, studio
+from pixel_data.dashboard.studio import PROMPT_LENGTH
 
 # studio.generate_job checks these; the form shows the same limits before it sends.
-PROMPT_LENGTH = 300
 POSE_LENGTH = 100
 CHARACTERS = {"min": 1, "max": 8, "default": 2}
 DEFAULT_SPRITE = 128

@@ -19,7 +19,7 @@ export const OPTIONS: FormOptions = {
     { value: 'front', label: 'front, then turned to left, back, right' },
     { value: 'side', label: 'side, facing right (left is its mirror)' },
   ],
-  promptLength: 300,
+  promptLength: 1000,
   poseLength: 100,
   characters: { min: 1, max: 8, default: 2 },
   largestUpload: 2048,

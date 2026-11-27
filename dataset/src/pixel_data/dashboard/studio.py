@@ -14,6 +14,8 @@ FACING = {"front": "front, then turned to left, back, right", "side": "side, fac
 TASKS = {"rotate": "rotate: turn a front view", "create": "create: draw a front view from text"}
 NAME = re.compile(r"^[A-Za-z0-9_-]{1,40}$")
 GALLERY = 40
+# FLUX.2 Klein reads 512 tokens (about 2,000 characters); the create template takes about 60.
+PROMPT_LENGTH = 1000
 
 
 # Reading what is on disk
@@ -123,8 +125,8 @@ def number(value: str, low: int, high: int, what: str) -> int:
 
 def generate_job(data: Path, form: dict) -> tuple[str, list[str]]:
     prompt = " ".join(form.get("prompt", "").split())
-    if not prompt or len(prompt) > 300:
-        raise Invalid("Write what to draw, in at most 300 characters.")
+    if not prompt or len(prompt) > PROMPT_LENGTH:
+        raise Invalid(f"Write what to draw, in at most {PROMPT_LENGTH:,} characters.")
 
     seeds = number(form.get("seeds", "2"), 1, 8, "Characters")
     sprite = one_of(form.get("sprite", "128"), SPRITES, "sprite size")

@@ -1,6 +1,6 @@
 [project]
 name = "pixel-dataset"
-version = "0.4.1"
+version = "0.4.2"
 description = "Gathers, cleans and shows the datasets for the pixel art engine"
 requires-python = ">=3.10"
 dependencies = [

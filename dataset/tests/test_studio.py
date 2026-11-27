@@ -169,6 +169,7 @@ def test_a_side_view_is_drawn_without_turning(tmp_path):
 
 @pytest.mark.parametrize("form", [
     {"prompt": ""},
+    {"prompt": "x" * 1001},
     {"prompt": "x", "facing": "up"},
     {"prompt": "x", "pose": "x" * 101},
     {"prompt": "x", "seeds": "99"},
@@ -178,6 +179,12 @@ def test_a_side_view_is_drawn_without_turning(tmp_path):
 def test_generate_form_refuses_bad_values(tmp_path, form):
     with pytest.raises(studio.Invalid):
         studio.generate_job(fake_data(tmp_path), form)
+
+
+def test_a_long_prompt_of_a_thousand_characters_is_drawn(tmp_path):
+    _, args = studio.generate_job(fake_data(tmp_path), {"prompt": "x" * 1000})
+
+    assert args[1] == "x" * 1000
 
 
 def test_a_new_run_names_its_sources_only_when_some_are_left_out(tmp_path):

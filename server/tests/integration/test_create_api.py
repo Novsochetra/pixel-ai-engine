@@ -81,7 +81,7 @@ def test_a_side_view_is_drawn_and_not_turned(client, jobs):
 
 
 @pytest.mark.parametrize(("body", "message"), [
-    ({"prompt": ""}, "Write what to draw, in at most 300 characters."),
+    ({"prompt": ""}, "Write what to draw, in at most 1,000 characters."),
     ({"prompt": "a frog", "characters": 9}, "Characters must be a whole number from 1 to 8."),
     ({"prompt": "a frog", "drawWith": "runs/create-v1/final", "pose": "flying"}, "A create LoRA draws only standing"),
     ({"prompt": "a frog", "turnWith": "runs/nothing/final"}, "Pick a trained model from the list."),
