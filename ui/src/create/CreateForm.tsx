@@ -5,6 +5,7 @@ import { TextField } from '@/components/text-field/TextField';
 import type { Facing, FormOptions } from './create-client';
 import { facingNote, STANDING, type CreateValues } from './create-form';
 import { ModelFields } from './ModelFields';
+import { ReferenceField } from './ReferenceField';
 import type { CreateForm as Form } from './use-create-form';
 
 interface FieldsProps {
@@ -88,6 +89,11 @@ export function CreateForm({ form }: { form: Form }) {
       onSubmit={(event) => event.preventDefault()}
     >
       <DrawingFields options={options} values={values} onChange={change} />
+      <ReferenceField
+        limits={options}
+        value={values.reference}
+        onChange={(reference) => change({ reference })}
+      />
       <ModelFields form={form} values={values} options={options} />
     </form>
   );

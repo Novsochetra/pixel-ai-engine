@@ -1,4 +1,5 @@
 import { vi } from 'vitest';
+import type { UploadSource } from '@/animate/animate-client';
 import type { FormOptions, GeneratedEntry } from '@/create/create-client';
 import type { JobView } from '@/jobs/jobs-client';
 import { NO_JOB, RUNNING } from './render-app';
@@ -21,6 +22,8 @@ export const OPTIONS: FormOptions = {
   promptLength: 300,
   poseLength: 100,
   characters: { min: 1, max: 8, default: 2 },
+  largestUpload: 2048,
+  uploadLimit: 10_000_000,
   defaults: { sprite: '128', model: 'flux2-klein-4b', facing: 'front' },
 };
 
@@ -34,10 +37,17 @@ export const DRAGON: GeneratedEntry = {
   drawingModel: 'flux2-klein-4b',
   turnWith: 'rotate-v2 · final',
   turningModel: 'flux2-klein-4b',
+  reference: '',
   sheets: [
     { label: 'Character 1', src: '/api/files/generated/dragon/s0-sheet.png' },
     { label: 'Character 2', src: '/api/files/generated/dragon/s1-sheet.png' },
   ],
+};
+
+export const HERO: UploadSource = {
+  value: 'uploads/20261127-100000-hero.png',
+  label: '20261127-100000-hero.png',
+  src: '/api/files/uploads/20261127-100000-hero.png',
 };
 
 export const FROG: GeneratedEntry = {
@@ -54,6 +64,7 @@ interface CreateState {
   items: GeneratedEntry[];
   refusal?: { status: number; detail: string };
   trash?: GeneratedEntry[];
+  uploads?: UploadSource[];
 }
 
 const json = (body: object, status = 200) =>
@@ -63,6 +74,7 @@ const GETS: Record<string, (state: CreateState) => object> = {
   '/api/jobs/current': (state) => state.job,
   '/api/generate/options': () => OPTIONS,
   '/api/generated': (state) => ({ items: state.items }),
+  '/api/uploads': (state) => ({ uploads: state.uploads ?? [] }),
 };
 
 function loras(url: string) {
@@ -89,19 +101,31 @@ function moveMade(state: CreateState, path: string, body: { folder: string }) {
   return { folder: body.folder };
 }
 
+function posted(state: CreateState, path: string, body: string) {
+  if (path === '/api/generate') {
+    return state.refusal
+      ? json({ detail: state.refusal.detail }, state.refusal.status)
+      : json((state.job = RUNNING));
+  }
+
+  if (path === '/api/uploads') {
+    state.uploads = [HERO, ...(state.uploads ?? [])];
+
+    return json({ upload: HERO });
+  }
+
+  return path.startsWith('/api/generated/')
+    ? json(moveMade(state, path, JSON.parse(body)))
+    : json({}, 404);
+}
+
 // The Create API with a state the test can change: the job, what was made, a refusal to give.
 export function createServer(state: CreateState) {
   return vi.fn(async (url: string, init?: RequestInit) => {
     const path = url.split('?')[0]!;
 
-    if (path === '/api/generate' && init?.method === 'POST') {
-      return state.refusal
-        ? json({ detail: state.refusal.detail }, state.refusal.status)
-        : json((state.job = RUNNING));
-    }
-
-    if (path.startsWith('/api/generated/') && init?.method === 'POST') {
-      return json(moveMade(state, path, JSON.parse(String(init.body))));
+    if (init?.method === 'POST') {
+      return posted(state, path, String(init.body));
     }
 
     if (path === '/api/loras') {

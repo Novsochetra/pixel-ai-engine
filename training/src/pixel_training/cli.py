@@ -192,7 +192,7 @@ def trained_lora(path: Path, task: str, flag: str, data: Path | None = None) -> 
 
 
 def generate_command(args) -> None:
-    from pixel_training.generate import make_fronts, mirror, sheets, turn, write_info
+    from pixel_training.generate import make_fronts, mirror, read_reference, sheets, turn, with_reference, write_info
     from pixel_training.models import free_memory, generator_for, pick_device
 
     prompts = json.loads(args.prompts.read_text())
@@ -214,9 +214,14 @@ def generate_command(args) -> None:
         raise SystemExit("A side view is drawn without LoRAs: they learned front views only. Leave out --lora and --create-lora.")
     if args.lora:
         trained_lora(args.lora, "rotate", "--lora", args.data)
+    if args.reference and not args.reference.is_file():
+        raise SystemExit(f"No picture at {args.reference}. Give --reference a PNG.")
 
     print(f"== front view: {args.front_model}, {front_size}px, {len(seeds)} seeds" + (f", LoRA {create}" if create else ""))
     front = generator_for(PRESETS[args.front_model], device, front_size, create)
+    if args.reference:
+        front = with_reference(front, read_reference(args.reference, front_size))
+        info |= {"reference": str(args.reference)}
     if args.facing == "side":
         # The right side from the text; the left side is that sprite flipped.
         mirror(make_fronts(folder, text, seeds, front, args.sprite, view="right"))
@@ -350,6 +355,8 @@ def parser() -> argparse.ArgumentParser:
     generate.add_argument("--facing", choices=["front", "side"], default="front",
                           help="front: draw the front view, and turn it with --lora; side: draw the right side, "
                                "and flip it for the left (for a pose such as flying, seen from the side)")
+    generate.add_argument("--reference", type=Path,
+                          help="a PNG of the character, or of the look, for the model to draw from")
     generate.add_argument("--raw", action="store_true", help="use the prompt as written, without the pixel art sprite wording")
     generate.add_argument("--prompts", type=Path, default=Path("prompts.json"))
     generate.add_argument("--name", help="folder name under data/generated (default: <date>-<prompt>)")

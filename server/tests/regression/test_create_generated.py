@@ -19,3 +19,12 @@ def test_an_early_generation_reads_as_a_64_px_front(tmp_path):
     assert entry["sprite"] == 64
     assert entry["facing"] == "front"
     assert entry["turnWith"] == "rotate-v2 · final"
+
+
+# Generations before references (2026-11-27) name none.
+def test_an_early_generation_has_no_reference(tmp_path):
+    folder = tmp_path / "generated" / "20261121-1146-a-frog"
+    save_png(folder / "s0-sheet.png")
+    (folder / "generated.json").write_text(json.dumps({"prompt": "a frog", "seeds": [0]}))
+
+    assert generated_list(tmp_path)["items"][0]["reference"] == ""

@@ -6,6 +6,7 @@ from pixel_data.dashboard import studio
 from pixel_server.create.form_options import form_options, lora_list
 from pixel_server.create.generate_form import studio_form
 from pixel_server.create.generated_list import generated_list
+from pixel_server.create.reference import reference_args
 from pixel_server.routes.jobs import latest_view
 
 router = APIRouter()
@@ -29,9 +30,11 @@ def loras(request: Request, task: Literal["create", "rotate"]) -> dict:
 # A plain def, so FastAPI runs it on a worker thread while the job's process starts.
 @router.post("/api/generate")
 def generate(request: Request, body: dict) -> dict:
+    data = request.app.state.layout.data
+
     try:
-        title, args = studio.generate_job(request.app.state.layout.data, studio_form(body))
-        request.app.state.jobs.start("generate", title, args)
+        title, args = studio.generate_job(data, studio_form(body))
+        request.app.state.jobs.start("generate", title, [*args, *reference_args(data, body.get("reference"))])
     except studio.Invalid as error:
         raise HTTPException(400, str(error)) from error
     except RuntimeError as error:

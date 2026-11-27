@@ -1,4 +1,5 @@
 import { getJson, postJson } from '@/api/read-json';
+import type { UploadLimits, UploadSource } from '@/animate/animate-client';
 import type { JobView } from '@/jobs/jobs-client';
 import type { Picture } from '@/library/library-client';
 
@@ -12,7 +13,7 @@ export interface LoraChoice extends Choice {
   model: string;
 }
 
-export interface FormOptions {
+export interface FormOptions extends UploadLimits {
   models: Choice[];
   sprites: Choice[];
   facing: Choice[];
@@ -34,6 +35,7 @@ export interface GeneratedEntry {
   drawingModel: string;
   turnWith: string;
   turningModel: string;
+  reference: string;
   sheets: Picture[];
 }
 
@@ -45,6 +47,7 @@ export interface GenerateBody {
   sprite: string;
   drawWith: string;
   drawingModel: string;
+  reference: string;
 }
 
 export type LoraTask = 'create' | 'rotate';
@@ -53,6 +56,9 @@ export const fetchFormOptions = () => getJson<FormOptions>('/api/generate/option
 
 export const fetchLoras = (task: LoraTask) =>
   getJson<{ loras: LoraChoice[] }>(`/api/loras?task=${task}`).then((reply) => reply.loras);
+
+export const fetchUploads = () =>
+  getJson<{ uploads: UploadSource[] }>('/api/uploads').then((reply) => reply.uploads);
 
 export const fetchGenerated = () => getJson<{ items: GeneratedEntry[] }>('/api/generated');
 

@@ -18,6 +18,13 @@ describe('a made character', () => {
     expect(item.facts).toContainEqual({ label: 'Characters', value: '1' });
   });
 
+  it('names the reference it was drawn from, or none', () => {
+    const drawnFrom = galleryItem({ ...FROG, reference: '20261127-hero.png' });
+
+    expect(drawnFrom.facts).toContainEqual({ label: 'Reference', value: '20261127-hero.png' });
+    expect(galleryItem(FROG).facts).toContainEqual({ label: 'Reference', value: 'None' });
+  });
+
   it('says on a tile when it was made and how many characters it holds', () => {
     expect(tileText(DRAGON)).toBe('Nov 24 · 2 characters');
     expect(tileText(FROG)).toBe('Nov 21 · 1 character');

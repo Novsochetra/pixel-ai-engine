@@ -149,3 +149,44 @@ def test_the_form_options_are_listed(client):
 
     assert options["defaults"] == {"sprite": "128", "model": "flux2-klein-4b", "facing": "front"}
     assert options["characters"] == {"min": 1, "max": 8, "default": 2}
+
+
+def test_an_uploaded_reference_goes_to_the_job(client, jobs, studio_data):
+    save_png(studio_data / "uploads" / "20261127-hero.png")
+    body = {"prompt": "a frog", "reference": "uploads/20261127-hero.png"}
+
+    assert client.post("/api/generate", json=body, headers=SAME_SITE).status_code == 200
+    assert started_args(jobs)[-2:] == ["--reference", str(studio_data.resolve() / "uploads/20261127-hero.png")]
+
+
+def test_no_reference_adds_nothing(client, jobs):
+    reply = client.post("/api/generate", json={"prompt": "a frog", "reference": ""}, headers=SAME_SITE)
+
+    assert reply.status_code == 200
+    assert "--reference" not in started_args(jobs)
+
+
+@pytest.mark.parametrize("reference", ["uploads/missing.png", "generated/old-frog/s0-sheet.png", "../secret.png", 3])
+def test_a_reference_must_be_an_upload(client, jobs, reference):
+    reply = client.post("/api/generate", json={"prompt": "a frog", "reference": reference}, headers=SAME_SITE)
+
+    assert reply.status_code == 400
+    assert reply.json()["detail"] == "Pick a reference picture from your uploads."
+    assert jobs.all() == []
+
+
+def test_the_uploads_are_listed_newest_first(client, studio_data):
+    save_png(studio_data / "uploads" / "20261126-old.png")
+    save_png(studio_data / "uploads" / "20261127-new.png")
+
+    uploads = client.get("/api/uploads").json()["uploads"]
+
+    assert [upload["value"] for upload in uploads] == ["uploads/20261127-new.png", "uploads/20261126-old.png"]
+    assert uploads[0]["src"] == "/api/files/uploads/20261127-new.png"
+
+
+def test_the_form_options_have_the_upload_limits(client):
+    options = client.get("/api/generate/options").json()
+
+    assert options["largestUpload"] == 2048
+    assert options["uploadLimit"] == 10_000_000

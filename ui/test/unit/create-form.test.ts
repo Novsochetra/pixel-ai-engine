@@ -23,6 +23,7 @@ describe('the create form', () => {
       sprite: '128',
       drawWith: 'runs/create-v1/final',
       drawingModel: BASE,
+      reference: '',
     });
     expect(defaultValues(OPTIONS, [])).toMatchObject({
       drawWith: '',

@@ -28,6 +28,7 @@ function facts(entry: GeneratedEntry): Fact[] {
     { label: 'Sprite size', value: `${entry.sprite} × ${entry.sprite}` },
     { label: 'Drawn with', value: entry.drawWith || 'The model as it is' },
     { label: 'Drawing model', value: entry.drawingModel || 'Unknown' },
+    { label: 'Reference', value: entry.reference || 'None' },
     { label: 'Turned with', value: turnText(entry) },
     ...turning,
   ];

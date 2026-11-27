@@ -1,7 +1,7 @@
 import { cleanup, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createServer, postedBody, startState } from './create-server';
+import { createServer, HERO, postedBody, startState } from './create-server';
 import { RUNNING, renderApp } from './render-app';
 
 afterEach(() => {
@@ -79,6 +79,7 @@ describe('the create screen', () => {
       sprite: '64',
       drawWith: '',
       drawingModel: 'flux2-klein-base-4b',
+      reference: '',
     });
   });
 
@@ -172,5 +173,35 @@ describe('the create screen', () => {
     expect(
       await screen.findByRole('list', { name: 'Made so far' }, { timeout: 4000 }),
     ).toBeTruthy();
+  });
+
+  it('uploads a reference, shows it, and sends it with Generate', async () => {
+    const server = createServer(startState());
+    renderApp('/create', server);
+
+    await fillPrompt('a hero');
+    const png = new File(['png'], 'hero.png', { type: 'image/png' });
+    await userEvent.upload(within(inspector()).getByLabelText('PNG to upload'), png);
+
+    await vi.waitFor(() =>
+      expect(within(inspector()).getByLabelText('Reference')).toHaveProperty('value', HERO.value),
+    );
+    expect(within(inspector()).getByRole('img', { name: `Reference: ${HERO.label}` })).toBeTruthy();
+    await userEvent.click(generateButton());
+
+    await vi.waitFor(() => expect(postedBody(server)?.reference).toBe(HERO.value));
+  });
+
+  it('picks an earlier upload as the reference, or none', async () => {
+    const server = createServer({ ...startState(), uploads: [HERO] });
+    renderApp('/create', server);
+
+    await fillPrompt('a hero');
+    const picker = await within(inspector()).findByRole('option', { name: HERO.label });
+    await userEvent.selectOptions(within(inspector()).getByLabelText('Reference'), picker);
+    await userEvent.selectOptions(within(inspector()).getByLabelText('Reference'), 'None');
+    await userEvent.click(generateButton());
+
+    await vi.waitFor(() => expect(postedBody(server)?.reference).toBe(''));
   });
 });

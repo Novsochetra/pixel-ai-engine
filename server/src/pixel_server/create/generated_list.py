@@ -32,6 +32,7 @@ def generated_entry(item: dict) -> dict:
         "drawingModel": item.get("front_model", ""),
         "turnWith": lora_label(item.get("lora")),
         "turningModel": item.get("turn_model", "") if item.get("lora") else "",
+        "reference": Path(item["reference"]).name if item.get("reference") else "",
         "sheets": sheets,
     }
 

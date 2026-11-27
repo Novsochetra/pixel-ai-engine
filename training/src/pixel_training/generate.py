@@ -34,6 +34,25 @@ def make_fronts(folder: Path, prompt: str, seeds: list[int], generate: Generate,
     return fronts
 
 
+def read_reference(path: Path, size: int) -> Image.Image:
+    picture = Image.open(path).convert("RGBA")
+    flat = Image.new("RGBA", picture.size, (255, 255, 255, 255))
+    flat.alpha_composite(picture)
+
+    # Scaled up with hard edges here: the model's own resize would blur a small sprite.
+    scale = max(1, size // max(picture.size))
+
+    return flat.convert("RGB").resize((picture.width * scale, picture.height * scale), Image.NEAREST)
+
+
+# A view drawn from text has no picture in; the reference fills that slot, so the model draws from it.
+def with_reference(generate: Generate, reference: Image.Image) -> Generate:
+    def draw(prompt: str, image: Image.Image | None, seed: int) -> Image.Image:
+        return generate(prompt, reference if image is None else image, seed)
+
+    return draw
+
+
 def mirror(sides: list[Path]) -> list[Path]:
     """The left view of each right view: the same sprite flipped."""
     made = []

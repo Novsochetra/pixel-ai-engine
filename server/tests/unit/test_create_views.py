@@ -71,3 +71,10 @@ def test_the_options_come_from_the_old_form():
     assert [model["value"] for model in options["models"]] == list(studio.MODELS)
     assert [sprite["value"] for sprite in options["sprites"]] == [str(size) for size in studio.SPRITES]
     assert [facing["value"] for facing in options["facing"]] == ["front", "side"]
+
+
+def test_a_generated_entry_names_its_reference():
+    item = {"folder": "hero", "reference": "/data/uploads/20261127-hero.png", "sheets": ["s0-sheet.png"]}
+
+    assert generated_entry(item)["reference"] == "20261127-hero.png"
+    assert generated_entry({"folder": "frog", "sheets": []})["reference"] == ""

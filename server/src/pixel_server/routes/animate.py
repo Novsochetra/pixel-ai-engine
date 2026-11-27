@@ -4,7 +4,7 @@ from pixel_data.dashboard.studio import Invalid
 from starlette.concurrency import run_in_threadpool
 
 from pixel_server.animate.animate_form import old_form
-from pixel_server.animate.animate_options import animate_options, animate_sources
+from pixel_server.animate.animate_options import animate_options, animate_sources, upload_list
 from pixel_server.animate.animated_list import animated_list
 from pixel_server.animate.upload import TooBig, read_capped, save_png
 from pixel_server.routes.jobs import latest_view
@@ -39,6 +39,11 @@ def animate(request: Request, body: dict) -> dict:
         raise HTTPException(409, str(error)) from error
 
     return latest_view(request)
+
+
+@router.get("/api/uploads")
+def uploads(request: Request) -> dict:
+    return upload_list(request.app.state.layout.data)
 
 
 # The PNG is the whole body: FastAPI's multipart forms need a package this project does not have.

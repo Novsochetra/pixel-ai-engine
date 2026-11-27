@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from pixel_data.dashboard import studio
+from pixel_data.dashboard import animate, studio
 
 # studio.generate_job checks these; the form shows the same limits before it sends.
 PROMPT_LENGTH = 300
@@ -24,6 +24,8 @@ def form_options() -> dict:
         "promptLength": PROMPT_LENGTH,
         "poseLength": POSE_LENGTH,
         "characters": CHARACTERS,
+        "largestUpload": animate.LARGEST_UPLOAD,
+        "uploadLimit": animate.UPLOAD_LIMIT,
         "defaults": {"sprite": str(DEFAULT_SPRITE), "model": DEFAULT_MODEL, "facing": "front"},
     }
 

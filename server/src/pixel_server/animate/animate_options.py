@@ -35,7 +35,11 @@ def animate_sources(data: Path) -> dict:
         for seed, views in item["sprites"].items()
     ]
 
-    return {"characters": made, "uploads": [upload_source(name) for name in animate.uploads(data)]}
+    return {"characters": made, **upload_list(data)}
+
+
+def upload_list(data: Path) -> dict:
+    return {"uploads": [upload_source(name) for name in animate.uploads(data)]}
 
 
 def made_source(item: dict, seed: int, views: list[str]) -> dict:

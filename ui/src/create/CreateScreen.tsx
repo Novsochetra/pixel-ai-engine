@@ -8,6 +8,7 @@ import { CreateInspector } from './CreateInspector';
 import { FormError } from './FormError';
 import { useGenerated } from './use-create';
 import { useCreateScreen } from './use-create-screen';
+import '@/animate/animate.css';
 import './create.css';
 
 // The gallery of made characters; the inspector holds the form, the toolbar its Generate.

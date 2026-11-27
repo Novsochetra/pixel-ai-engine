@@ -3,7 +3,7 @@ import json
 from PIL import Image
 
 from pixel_training.cli import parser
-from pixel_training.generate import make_fronts, mirror, sheets, turn, write_info
+from pixel_training.generate import make_fronts, mirror, read_reference, sheets, turn, with_reference, write_info
 
 INSTRUCTIONS = {"left": "turn left", "back": "turn around", "right": "turn right"}
 
@@ -89,3 +89,40 @@ def test_a_side_view_is_drawn_and_flipped_for_the_left(tmp_path):
     assert left.getpixel((0, 32)) == right.getpixel((63, 32))
     assert not (tmp_path / "s0-front.png").exists()
     assert Image.open(sheets(tmp_path, [0])[0]).size == (2 * 256, 256)
+
+
+def test_a_reference_fills_the_empty_picture_slot_and_keeps_a_given_one():
+    calls = []
+    reference = Image.new("RGB", (32, 32))
+    given = Image.new("RGB", (16, 16))
+
+    draw = with_reference(fake(calls), reference)
+    draw("a knight", None, 0)
+    draw("turn left", given, 1)
+
+    assert calls == [("a knight", (32, 32), 0), ("turn left", (16, 16), 1)]
+
+
+def test_a_reference_is_scaled_up_with_hard_edges_on_white(tmp_path):
+    sprite = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
+    sprite.putpixel((0, 0), (200, 30, 30, 255))
+    sprite.save(tmp_path / "hero.png")
+
+    picture = read_reference(tmp_path / "hero.png", 256)
+
+    assert picture.mode == "RGB"
+    assert picture.size == (256, 128)
+    assert picture.getpixel((3, 3)) == (200, 30, 30)
+    assert picture.getpixel((4, 4)) == (255, 255, 255)
+
+
+def test_a_big_reference_keeps_its_size(tmp_path):
+    Image.new("RGB", (1500, 1000)).save(tmp_path / "photo.png")
+
+    assert read_reference(tmp_path / "photo.png", 1024).size == (1500, 1000)
+
+
+def test_generate_takes_a_reference():
+    args = parser().parse_args(["generate", "a knight", "--reference", "hero.png"])
+
+    assert str(args.reference) == "hero.png"

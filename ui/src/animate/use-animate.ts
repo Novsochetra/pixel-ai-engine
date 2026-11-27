@@ -11,7 +11,7 @@ import {
   type UploadSource,
 } from './animate-client';
 
-const SOURCES = ['animate', 'sources'];
+export const SOURCES = ['animate', 'sources'];
 
 // Each finished job may have made something: a clip here, or a character to animate.
 export function useFinishedJob() {

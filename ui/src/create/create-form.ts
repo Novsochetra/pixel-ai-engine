@@ -24,6 +24,7 @@ export function defaultValues(
     sprite: defaults.sprite,
     drawWith,
     drawingModel: modelFor(createLoras, drawWith, defaults.model),
+    reference: '',
   };
 }
 
