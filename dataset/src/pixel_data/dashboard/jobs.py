@@ -31,7 +31,7 @@ def default_command() -> list[str]:
     # caffeinate keeps a Mac awake while a long run works; elsewhere it is not there and not needed.
     awake = ["caffeinate", "-i"] if shutil.which("caffeinate") else []
 
-    return [*awake, "uv", "run", "pixel-train"]
+    return [*awake, "uv", "run", "--extra", "models", "pixel-train"]
 
 
 @dataclass

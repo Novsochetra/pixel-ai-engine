@@ -8,6 +8,7 @@ from pixel_data.dashboard.jobs import Jobs
 from pixel_server.app import create_app
 
 FAKE_JOB = "import time; print(' 50%|█████     | 1/2', flush=True); time.sleep(30)"
+FAKE_TRAINING = "import time; print('step 3/12: loss 0.2, 1.0% of the data', flush=True); time.sleep(30)"
 
 
 @pytest.fixture
@@ -54,6 +55,19 @@ def test_running_job_shows_progress_and_stops(client, jobs):
 
     stopped = client.post("/api/jobs/stop", headers={"sec-fetch-site": "same-origin"}).json()
     assert stopped["job"]["status"] in ("running", "stopped")
+
+
+def test_training_job_shows_its_steps_as_progress(tmp_path):
+    runner = Jobs(tmp_path / "jobs", tmp_path, command=[sys.executable, "-c", FAKE_TRAINING], cwd=tmp_path)
+    runner.start("train", "Train rotate-v3", [])
+
+    try:
+        view = wait_for_progress(TestClient(create_app(runner)))
+    finally:
+        runner.stop()
+
+    assert view["progress"] == 0.25
+    assert view["step"].startswith("step 3/12")
 
 
 def test_another_site_cannot_stop_a_job(client, jobs):

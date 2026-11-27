@@ -45,3 +45,13 @@ def test_view_of_a_finished_job_has_no_progress():
 
     assert view["progress"] is None
     assert view["step"] == ""
+
+
+def test_progress_reads_the_training_step():
+    log = "Loading: 100%|██████████| 5/5\nstep 125/500: loss 0.1234, 12.5% of the data (3.1s per step, ~19 min left)"
+
+    assert progress_of(log) == 0.25
+
+
+def test_progress_of_a_resumed_run_counts_all_its_steps():
+    assert progress_of("Picked up from step-00400\nstep 450/500: loss 0.1, 90.0% of the data") == 0.9
