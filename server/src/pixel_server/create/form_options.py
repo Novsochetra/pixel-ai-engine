@@ -30,12 +30,14 @@ def form_options() -> dict:
     }
 
 
-# A LoRA draws best on the model it learnt on, so the form picks that model with it.
+# A LoRA draws best on the model it learnt on, so the form picks that model with it. A create
+# LoRA from before side views learnt the front only.
 def lora_list(data: Path, task: str) -> dict:
-    trained_on = {run["name"]: run["settings"].get("model", TRAINED_ON) for run in studio.read_runs(data)}
+    settings = {run["name"]: run["settings"] for run in studio.read_runs(data)}
     loras = []
     for value, label in studio.lora_options(data, task):
-        run = value.split("/")[1]
-        loras.append({"value": value, "label": label, "model": trained_on.get(run, TRAINED_ON)})
+        trained = settings.get(value.split("/")[1], {})
+        lora = {"value": value, "label": label, "model": trained.get("model", TRAINED_ON)}
+        loras.append(lora | ({"views": trained.get("views", ["front"])} if task == "create" else {}))
 
     return {"loras": loras}

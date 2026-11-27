@@ -80,9 +80,15 @@ const GETS: Record<string, (state: CreateState) => object> = {
 function loras(url: string) {
   const task = new URL(url, 'http://test').searchParams.get('task');
 
-  return {
-    loras: [{ value: `runs/${task}-v1/final`, label: `${task}-v1 · final`, model: BASE }],
+  const first = { value: `runs/${task}-v1/final`, label: `${task}-v1 · final`, model: BASE };
+  const sides = {
+    value: 'runs/pixie-draw-v1/final',
+    label: 'pixie-draw-v1 · final',
+    model: BASE,
+    views: ['front', 'side'],
   };
+
+  return { loras: task === 'create' ? [{ ...first, views: ['front'] }, sides] : [first] };
 }
 
 // Delete moves a folder to the trash and Undo brings it back, as the server does.

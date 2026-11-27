@@ -167,6 +167,19 @@ def test_a_side_view_is_drawn_without_turning(tmp_path):
         studio.generate_job(data, {"prompt": "a dragon", "facing": "side", "create_lora": "runs/create-v1/final"})
 
 
+def test_a_create_lora_trained_on_sides_draws_a_side_view(tmp_path):
+    data = fake_data(tmp_path)
+    run = data / "runs" / "create-v1" / "run.json"
+    trained = json.loads(run.read_text())
+    trained["settings"]["views"] = ["front", "side"]
+    run.write_text(json.dumps(trained))
+
+    _, args = studio.generate_job(data, {"prompt": "a knight", "facing": "side", "create_lora": "runs/create-v1/final"})
+
+    assert args[args.index("--create-lora") + 1] == str(data.resolve() / "runs/create-v1/final")
+    assert args[-2:] == ["--facing", "side"]
+
+
 @pytest.mark.parametrize("form", [
     {"prompt": ""},
     {"prompt": "x" * 1001},

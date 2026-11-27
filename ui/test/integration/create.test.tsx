@@ -148,6 +148,29 @@ describe('the create screen', () => {
     await vi.waitFor(() => expect(postedBody(server)?.drawWith).toBe(''));
   });
 
+  it('draws a side view only with a create LoRA that learnt sides', async () => {
+    const server = createServer(startState());
+    renderApp('/create', server);
+
+    await fillPrompt('a knight');
+    await userEvent.click(within(inspector()).getByRole('button', { name: 'Side' }));
+    const drawWith = within(inspector()).getByLabelText('Draw with') as HTMLSelectElement;
+
+    expect([...drawWith.options].map((option) => option.value)).toEqual([
+      '',
+      'runs/pixie-draw-v1/final',
+    ]);
+    expect(drawWith.value).toBe('');
+    await userEvent.selectOptions(drawWith, 'runs/pixie-draw-v1/final');
+    await userEvent.click(generateButton());
+    await vi.waitFor(() =>
+      expect(postedBody(server)).toMatchObject({
+        facing: 'side',
+        drawWith: 'runs/pixie-draw-v1/final',
+      }),
+    );
+  });
+
   it('only draws, leaving the turning to Rotate', async () => {
     renderApp('/create', createServer(startState()));
 

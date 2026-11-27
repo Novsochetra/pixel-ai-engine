@@ -9,7 +9,7 @@ describe('the create form, as the old /generate page', () => {
   it('sends the old defaults', () => {
     const values = { ...defaultValues(OPTIONS, []), prompt: 'a frog wizard with a staff' };
 
-    expect(createBody(values)).toEqual({
+    expect(createBody(values, [])).toEqual({
       prompt: 'a frog wizard with a staff',
       pose: '',
       facing: 'front',

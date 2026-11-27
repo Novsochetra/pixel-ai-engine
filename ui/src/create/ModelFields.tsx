@@ -1,6 +1,6 @@
 import { Picker } from '@/components/picker/Picker';
 import type { Choice, FormOptions } from './create-client';
-import { createBody, drawWithNote, modelFor, type CreateValues } from './create-form';
+import { createBody, drawChoices, drawWithNote, modelFor, type CreateValues } from './create-form';
 import type { CreateForm } from './use-create-form';
 
 const NO_CREATE_LORA = { value: '', label: 'None: the model as it is' };
@@ -40,11 +40,11 @@ interface ModelFieldsProps {
 function drawingGroup({ form, values, options }: ModelFieldsProps): GroupProps {
   return {
     title: 'Drawing',
-    note: drawWithNote(values),
+    note: drawWithNote(values, form.createLoras),
     lora: {
       label: 'Draw with',
-      value: createBody(values).drawWith,
-      choices: [NO_CREATE_LORA, ...form.createLoras],
+      value: createBody(values, form.createLoras).drawWith,
+      choices: [NO_CREATE_LORA, ...drawChoices(form.createLoras, values.facing)],
 
       onChange: (drawWith) =>
         form.change({
@@ -61,7 +61,8 @@ function drawingGroup({ form, values, options }: ModelFieldsProps): GroupProps {
   };
 }
 
-// A LoRA the server would refuse shows as none, with the reason under it.
+// A LoRA the server would refuse shows as none, with the reason under it; a side view lists only
+// the LoRAs that learnt sides.
 export function ModelFields(props: ModelFieldsProps) {
   return <ModelGroup {...drawingGroup(props)} />;
 }

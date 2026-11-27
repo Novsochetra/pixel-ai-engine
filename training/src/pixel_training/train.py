@@ -10,7 +10,7 @@ Backend methods, so the tests run it with a stand-in.
 import json
 import random
 import time
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Protocol
@@ -21,12 +21,15 @@ FINAL = "final"
 
 # A labeller writes this for a picture that is not one character seen from the front.
 SKIP = "skip"
-# The pose and view words in the create template. Every training sprite stands and faces the
-# viewer, so training always uses these.
+# The pose and view words in the create template. Every training sprite stands, so training
+# always uses this pose.
 POSE = "standing"
 FRONT = "front view facing the viewer"
 # The view words for a character drawn from the side, flying or running to the right.
 SIDE = "side view, facing right, seen from the side"
+# A create run learns these views: the export file each one comes from, and its words. The side
+# is the right view, the one generate draws and flips for the left.
+CREATE_VIEWS = {"front": ("front", FRONT), "side": ("right", SIDE)}
 CAPTION_PREFIX = "lpc-style pixel art character, "
 
 
@@ -56,6 +59,14 @@ class Settings:
     more_exports: tuple[str, ...] = ()  # create only: more exports whose captioned characters join in
     more_repeat: int = 1
     repeat: tuple[tuple[str, float], ...] = ()  # (source, times): 5 shows it 5 times as often, 0.5 half of it
+    views: tuple[str, ...] = ("front",)  # create only: a run from before side views learnt the front only
+
+
+@dataclass(frozen=True)
+class Captions:
+    template: str
+    labels: dict[str, str] = field(default_factory=dict)
+    views: tuple[str, ...] = ("front",)
 
 
 class Backend(Protocol):
@@ -87,7 +98,7 @@ def read_pairs(export: Path, split: str, views: list[str], sources: tuple[str, .
     return pairs
 
 
-def caption_text(caption: str, template: str) -> str:
+def caption_text(caption: str, template: str, view: str = FRONT) -> str:
     """An export caption in the words `generate` uses, so the LoRA learns what it will be asked.
 
     "lpc-style pixel art character, with male human body, ..." becomes the create template around
@@ -95,7 +106,7 @@ def caption_text(caption: str, template: str) -> str:
     """
     subject = caption.removeprefix(CAPTION_PREFIX).strip().rstrip(".")
 
-    return template.format(subject=f"a character {subject}" if subject.startswith("with ") else subject, pose=POSE, view=FRONT)
+    return template.format(subject=f"a character {subject}" if subject.startswith("with ") else subject, pose=POSE, view=view)
 
 
 def read_labels(folder: Path) -> dict[str, str]:
@@ -110,24 +121,32 @@ def read_labels(folder: Path) -> dict[str, str]:
     return labels
 
 
-def read_captioned(export: Path, split: str, template: str, sources: tuple[str, ...] = (),
-                   labels: dict[str, str] | None = None) -> list[Pair]:
-    """One pair per character with a caption: its caption in, its front view out.
+def read_captioned(export: Path, split: str, captions: Captions, sources: tuple[str, ...] = ()) -> list[Pair]:
+    """One pair per character and view with a caption: its caption in, that view out.
 
     The export's own caption wins (lpc-4view's comes from its art layers); a character without one
     takes its AI label, if it has one.
     """
-    labels = labels or {}
     pairs = []
     for line in (export / "characters.jsonl").read_text().splitlines():
         entry = json.loads(line)
         if entry["split"] != split or (sources and entry["source"] not in sources):
             continue
 
-        caption = entry.get("caption") or labels.get(entry["character"])
-        if caption and caption != SKIP and "front" in entry["views"]:
-            pairs.append(Pair(entry["character"], "front", None, export / entry["views"]["front"],
-                              caption_text(caption, template)))
+        caption = entry.get("caption") or captions.labels.get(entry["character"])
+        if caption and caption != SKIP:
+            pairs += captioned_views(export, entry, caption, captions)
+
+    return pairs
+
+
+def captioned_views(export: Path, entry: dict, caption: str, captions: Captions) -> list[Pair]:
+    pairs = []
+    for view in captions.views:
+        file, words = CREATE_VIEWS[view]
+        if file in entry["views"]:
+            text = caption_text(caption, captions.template, words)
+            pairs.append(Pair(entry["character"], view, None, export / entry["views"][file], text))
 
     return pairs
 

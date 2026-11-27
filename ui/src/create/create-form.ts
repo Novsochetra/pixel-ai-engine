@@ -34,10 +34,19 @@ const isStanding = (pose: string) => {
   return words === '' || words === STANDING;
 };
 
+// A LoRA from before side views names none and learnt the front only.
+const hasLearnt = (lora: LoraChoice, facing: Facing) => (lora.views ?? ['front']).includes(facing);
+
+export const drawChoices = (loras: readonly LoraChoice[], facing: Facing) =>
+  loras.filter((lora) => hasLearnt(lora, facing));
+
 // The same refusals as the server's, said before Generate rather than after it.
-export function drawWithNote({ facing, pose }: Pick<CreateValues, 'facing' | 'pose'>) {
-  if (facing === 'side') {
-    return 'A create LoRA draws only front views, so a side view is drawn with none.';
+export function drawWithNote(
+  { facing, pose }: Pick<CreateValues, 'facing' | 'pose'>,
+  loras: readonly LoraChoice[],
+) {
+  if (facing === 'side' && drawChoices(loras, 'side').length === 0) {
+    return 'No create LoRA has learnt side views yet, so a side view is drawn with none.';
   }
 
   if (!isStanding(pose)) {
@@ -56,12 +65,17 @@ export const facingNote = (facing: Facing) =>
 
 export const isReady = (values: CreateValues) => values.prompt.trim() !== '';
 
-// A choice the form shows as off is sent as none, so the server never refuses it.
-export function createBody(values: CreateValues): GenerateBody {
+// A choice the form shows as off, or a LoRA that never learnt this view, is sent as none, so the
+// server never refuses it.
+export function createBody(values: CreateValues, loras: readonly LoraChoice[]): GenerateBody {
+  const canDraw =
+    drawWithNote(values, loras) === null &&
+    drawChoices(loras, values.facing).some((lora) => lora.value === values.drawWith);
+
   return {
     ...values,
     prompt: values.prompt.trim(),
     pose: values.pose.trim(),
-    drawWith: drawWithNote(values) ? '' : values.drawWith,
+    drawWith: canDraw ? values.drawWith : '',
   };
 }

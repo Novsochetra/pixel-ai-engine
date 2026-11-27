@@ -87,11 +87,20 @@ def source_times(text: str) -> tuple[str, float]:
     return source, value
 
 
+def create_views(args) -> tuple[str, ...]:
+    # A run that goes on keeps the views it started with, so its data does not change under it.
+    run = args.data / "runs" / (args.name or "")
+    if args.name and (run / "run.json").exists():
+        return tuple(run_settings(run).get("views", ["front"]))
+
+    return tuple(args.views)
+
+
 def train_command(args) -> None:
     from pixel_training.lora import FluxLora
     from pixel_training.models import pick_device
-    from pixel_training.train import (Settings, latest_checkpoint, read_captioned, read_labels, read_pairs, repeated,
-                                      source_of, train, val_sample)
+    from pixel_training.train import (Captions, Settings, latest_checkpoint, read_captioned, read_labels, read_pairs,
+                                      repeated, source_of, train, val_sample)
 
     export = args.data / "exports" / args.export
     if not (export / "characters.jsonl").exists():
@@ -108,21 +117,23 @@ def train_command(args) -> None:
     sources = tuple(args.sources or ())
     if args.task == "create":
         # Text to the front view: only characters with a caption count.
-        template = prompts["create"]["template"]
+        views = create_views(args)
+        captions = Captions(prompts["create"]["template"], read_labels(args.data / "labels"), views)
         instructions = {}
-        labels = read_labels(args.data / "labels")
         train_pairs, val_pairs = [], []
         for folder in [export, *more]:
             # A small extra export would hardly be seen next to a big one, so it can be shown more often.
-            train_pairs += read_captioned(folder, "train", template, sources, labels) * (args.more_repeat if folder in more else 1)
-            val_pairs += read_captioned(folder, "val", template, sources, labels)
+            train_pairs += read_captioned(folder, "train", captions, sources) * (args.more_repeat if folder in more else 1)
+            val_pairs += read_captioned(folder, "val", captions, sources)
         val_pairs = val_sample(val_pairs, args.val, args.seed)
-        labelled = sum(pair.character in labels for pair in train_pairs)
+        labelled = sum(pair.character in captions.labels for pair in train_pairs)
         print(f"{len(train_pairs) - labelled:,} with the export's caption, {labelled:,} with an AI label (data/labels)")
+        print(f"Views: {', '.join(views)}")
         if more:
             print(f"{', '.join(args.more_exports)}: {sum(pair.target.is_relative_to(folder) for folder in more for pair in train_pairs):,} pairs"
                   f" (each character {args.more_repeat} times)")
     else:
+        views = ()
         instructions = prompts["rotate"]
         train_pairs = read_pairs(export, "train", list(instructions), sources)
         val_pairs = val_sample(read_pairs(export, "val", list(instructions), sources), args.val, args.seed)
@@ -146,7 +157,7 @@ def train_command(args) -> None:
                         learning_rate=args.learning_rate, accumulate=args.accumulate, every=args.every,
                         val_count=len(val_pairs), sources=sources, seed=args.seed, task=args.task,
                         more_exports=tuple(args.more_exports), more_repeat=args.more_repeat,
-                        repeat=tuple(args.repeat))
+                        repeat=tuple(args.repeat), views=views)
     before = run_settings(run).get("task", "rotate") if (run / "run.json").exists() else args.task
     if args.resume and before != args.task:
         raise SystemExit(f"{run.name} is a {before} run: resume it with --task {before}.")
@@ -210,8 +221,10 @@ def generate_command(args) -> None:
         # As for turning: the LoRA's own size, scaled with the sprite.
         front_size = args.front_size or made_by.get("size", 256) * args.sprite // 64
         info |= {"create_lora": str(create)}
-    if args.facing == "side" and (args.lora or args.create_lora):
-        raise SystemExit("A side view is drawn without LoRAs: they learned front views only. Leave out --lora and --create-lora.")
+        if args.facing == "side" and "side" not in made_by.get("views", ["front"]):
+            raise SystemExit(f"{create} learnt front views only. Leave out --create-lora, or give one trained with side views.")
+    if args.facing == "side" and args.lora:
+        raise SystemExit("A side view is not turned: leave out --lora.")
     if args.lora:
         trained_lora(args.lora, "rotate", "--lora", args.data)
     if args.reference and not args.reference.is_file():
@@ -322,6 +335,8 @@ def parser() -> argparse.ArgumentParser:
                        help="show each character of --more-exports this many times, so a small export is not lost")
     train.add_argument("--repeat", nargs="+", type=source_times, default=[], metavar="SOURCE=TIMES",
                        help="show a source more or less often: pixellab=10 (each pair 10 times), lpc-4view=0.5 (half)")
+    train.add_argument("--views", nargs="+", choices=["front", "side"], default=["front", "side"],
+                       help="create only: the views it learns to draw; side is each character's right view")
     train.add_argument("--steps", type=int, default=1000, help="optimiser steps")
     train.add_argument("--add-steps", type=int, metavar="N",
                        help="train N more steps than the run's last checkpoint (starts the run if it is new)")

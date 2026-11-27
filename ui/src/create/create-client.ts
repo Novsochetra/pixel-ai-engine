@@ -8,9 +8,11 @@ export interface Choice {
   label: string;
 }
 
-// A LoRA comes with the model it learnt on, which it draws best with.
+// A LoRA comes with the model it learnt on, which it draws best with. A create LoRA also names
+// the views it learnt to draw.
 export interface LoraChoice extends Choice {
   model: string;
+  views?: Facing[];
 }
 
 export interface FormOptions extends UploadLimits {

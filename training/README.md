@@ -176,6 +176,13 @@ of `prompts.json`), so the LoRA learns the words it will be asked with. There is
 character, too many to turn into embeddings up front, so the text model (8 GB) stays loaded and
 encodes each caption as it comes. On an M1 Max that is about 35 s per step at 256 pixels.
 
+A create run learns the front view and the side view (`--views front side`, the default). The side
+is each character's right view, captioned "side view, facing right", so `generate --facing side
+--create-lora` draws it and flips it for the left. Exports with front views only, such as
+OpenGameArt, give front pairs only. A run keeps the views it started with when it goes on; a run
+from before side views (no `views` in its `run.json`) learnt the front only, and `generate` and the
+dashboard draw its side views with none.
+
 With `--create-lora`, the front view is drawn at the LoRA's size scaled with `--sprite` (512 for a
 128 sprite), as for turning. `--lora` must be a rotate LoRA and `--create-lora` a create one;
 `generate` stops if they are the other way round. `--resume` needs the run's own `--task`.
@@ -188,7 +195,7 @@ are the steps inside one version.
 
 | Name | Job | `--task` |
 |---|---|---|
-| `pixie-draw-v1` | words to a character's front view | `create` |
+| `pixie-draw-v1` | words to a character's front or side view | `create` |
 | `pixie-turn-v1` | front view to the left, back and right views | `rotate` |
 | `pixie-animate-v1` | a sprite to the frames of an action | (to be built) |
 | `pixie-draw-object-v1` | words to an object or icon | `create`, own export |

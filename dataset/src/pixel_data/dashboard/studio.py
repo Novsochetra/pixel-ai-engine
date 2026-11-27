@@ -123,6 +123,25 @@ def number(value: str, low: int, high: int, what: str) -> int:
     return int(value)
 
 
+def learnt_views(data: Path, lora: str) -> list[str]:
+    run = lora.split("/")[1]
+
+    return read_json(data / "runs" / run / "run.json").get("settings", {}).get("views", ["front"])
+
+
+def create_args(data: Path, create: str, pose: str, facing: str) -> list[str]:
+    if not create:
+        return []
+
+    one_of(create, [value for value, _ in lora_options(data, "create")], "create model")
+    if pose and pose.lower() != "standing":
+        raise Invalid('A create LoRA draws only standing sprites. For this pose, set "Draw with" to none.')
+    if facing not in learnt_views(data, create):
+        raise Invalid(f'This create LoRA learnt no {facing} view. Set "Draw with" to none, or pick one trained on it.')
+
+    return ["--create-lora", str(data.resolve() / create)]
+
+
 def generate_job(data: Path, form: dict) -> tuple[str, list[str]]:
     prompt = " ".join(form.get("prompt", "").split())
     if not prompt or len(prompt) > PROMPT_LENGTH:
@@ -140,17 +159,10 @@ def generate_job(data: Path, form: dict) -> tuple[str, list[str]]:
         args += ["--pose", pose]
     facing = one_of(form.get("facing", "front"), list(FACING), "facing")
 
-    create = form.get("create_lora", "")
-    if create and pose and pose.lower() != "standing":
-        raise Invalid('A create LoRA draws only standing sprites. For this pose, set "Draw with" to none.')
-    if create and facing == "side":
-        raise Invalid('A create LoRA draws only front views. For a side view, set "Draw with" to none.')
+    args += create_args(data, form.get("create_lora", ""), pose, facing)
     if facing == "side":
         # The side is drawn from the text and flipped for the left; nothing is turned.
         return f"Generate: {prompt}", [*args, "--facing", "side"]
-    if create:
-        one_of(create, [value for value, _ in lora_options(data, "create")], "create model")
-        args += ["--create-lora", str(data.resolve() / create)]
     lora = form.get("lora", "")
     if lora:
         one_of(lora, [value for value, _ in lora_options(data, "rotate")], "trained model")

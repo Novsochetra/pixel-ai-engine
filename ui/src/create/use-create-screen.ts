@@ -12,7 +12,7 @@ export function useCreateScreen() {
 
   const run = () => {
     if (form.values && isFilled && !isBusy && !generate.isPending) {
-      generate.mutate(createBody(form.values));
+      generate.mutate(createBody(form.values, form.createLoras));
     }
   };
 

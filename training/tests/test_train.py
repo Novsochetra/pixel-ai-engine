@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from pixel_training.cli import parser
-from pixel_training.train import (Pair, Settings, caption_text, latest_checkpoint, lora_folder, read_captioned,
+from pixel_training.train import (Captions, Pair, Settings, caption_text, latest_checkpoint, lora_folder, read_captioned,
                                   read_labels, read_pairs, repeated, run_settings, source_of, train,
                                   val_sample)
 
@@ -145,7 +145,7 @@ def test_create_pairs_are_the_captioned_front_views_of_the_split(tmp_path):
     rows[1]["caption"] = "lpc-style pixel art character, with a hat"
     (export / "characters.jsonl").write_text("\n".join(json.dumps(row) for row in rows))
 
-    found = read_captioned(export, "train", TEMPLATE)
+    found = read_captioned(export, "train", Captions(TEMPLATE))
 
     assert found == [Pair("lpc/b", "front", None, export / "images/b/front.png",
                           "pixel art game sprite of a character with a hat, front view")]
@@ -167,7 +167,7 @@ def test_a_character_without_a_caption_takes_its_ai_label(tmp_path):
     folder.mkdir(parents=True)
     (folder / "labels.jsonl").write_text(json.dumps({"character": "pac/a", "label": "a small chibi character with red hair."}))
 
-    found = read_captioned(export, "train", TEMPLATE, labels=read_labels(tmp_path / "labels"))
+    found = read_captioned(export, "train", Captions(TEMPLATE, read_labels(tmp_path / "labels")))
 
     assert [(pair.character, pair.caption) for pair in found] == \
         [("pac/a", "pixel art game sprite of a small chibi character with red hair, front view")]
@@ -179,7 +179,7 @@ def test_a_skip_label_is_left_out(tmp_path):
     folder.mkdir(parents=True)
     (folder / "labels.jsonl").write_text(json.dumps({"character": "pac/a", "label": "skip"}))
 
-    assert read_captioned(export, "train", TEMPLATE, labels=read_labels(tmp_path / "labels")) == []
+    assert read_captioned(export, "train", Captions(TEMPLATE, read_labels(tmp_path / "labels"))) == []
 
 
 def test_create_training_takes_more_exports():

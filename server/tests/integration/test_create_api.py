@@ -80,10 +80,22 @@ def test_a_side_view_is_drawn_and_not_turned(client, jobs):
     assert started_args(jobs)[-4:] == ["--pose", "flying", "--facing", "side"]
 
 
+def test_a_side_view_draws_with_a_create_lora_that_learnt_sides(client, jobs, studio_data):
+    run = studio_data / "runs" / "create-v1" / "run.json"
+    run.write_text(json.dumps({"settings": {"task": "create", "views": ["front", "side"]}, "created_at": "2026-11-28"}))
+    body = {"prompt": "a knight", "facing": "side", "drawWith": "runs/create-v1/final"}
+
+    assert client.post("/api/generate", json=body, headers=SAME_SITE).status_code == 200
+    args = started_args(jobs)
+    assert args[args.index("--create-lora") + 1].endswith("runs/create-v1/final")
+    assert args[-2:] == ["--facing", "side"]
+
+
 @pytest.mark.parametrize(("body", "message"), [
     ({"prompt": ""}, "Write what to draw, in at most 1,000 characters."),
     ({"prompt": "a frog", "characters": 9}, "Characters must be a whole number from 1 to 8."),
     ({"prompt": "a frog", "drawWith": "runs/create-v1/final", "pose": "flying"}, "A create LoRA draws only standing"),
+    ({"prompt": "a frog", "drawWith": "runs/create-v1/final", "facing": "side"}, "This create LoRA learnt no side"),
     ({"prompt": "a frog", "turnWith": "runs/nothing/final"}, "Pick a trained model from the list."),
 ])
 def test_a_bad_form_says_what_is_wrong(client, jobs, body, message):
@@ -129,8 +141,22 @@ def test_the_loras_are_listed_by_task(client):
     create = client.get("/api/loras", params={"task": "create"}).json()["loras"]
 
     assert rotate == [{"value": "runs/rotate-v2/final", "label": "rotate-v2 · final", "model": "flux2-klein-base-4b"}]
-    assert create == [{"value": "runs/create-v1/final", "label": "create-v1 · final", "model": "flux2-klein-base-4b"}]
+    assert create == [{"value": "runs/create-v1/final", "label": "create-v1 · final", "model": "flux2-klein-base-4b",
+                       "views": ["front"]}]
     assert client.get("/api/loras", params={"task": "paint"}).status_code == 422
+
+
+def test_a_create_lora_names_the_views_it_learnt(client, studio_data):
+    write_run(studio_data, "pixie-draw-v1", "create")
+    run = studio_data / "runs" / "pixie-draw-v1" / "run.json"
+    run.write_text(json.dumps({"settings": {"task": "create", "views": ["front", "side"]}, "created_at": "2026-11-28"}))
+
+    create = client.get("/api/loras", params={"task": "create"}).json()["loras"]
+
+    assert {lora["value"]: lora["views"] for lora in create} == {
+        "runs/pixie-draw-v1/final": ["front", "side"],
+        "runs/create-v1/final": ["front"],
+    }
 
 
 def test_a_lora_names_the_model_it_was_trained_on(client, studio_data):
