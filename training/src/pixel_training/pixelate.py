@@ -1,6 +1,9 @@
 from collections import Counter, deque
+from dataclasses import dataclass, field
 
 from PIL import Image
+
+from pixel_training.palettes import NO_PALETTE, SHADES, Colours, limit_colours, palette_image
 
 PALETTE_SIZE = 32
 CLEAR = (0, 0, 0, 0)
@@ -99,8 +102,33 @@ def clear_background(image: Image.Image) -> Image.Image:
     return image
 
 
-def pixelate(image: Image.Image, size: int) -> Image.Image:
-    return clear_background(block_mode(image, size))
+def snap_palette(image: Image.Image, colours: Colours) -> Image.Image | None:
+    if colours.palette != NO_PALETTE:
+        return palette_image(colours.palette)
+
+    if colours.most <= PALETTE_SIZE:
+        return None
+
+    # One more than asked: the background takes a colour too, and it is cleared afterwards.
+    return image.convert("RGB").quantize(colors=colours.most + 1, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE)
+
+
+def pixelate(image: Image.Image, size: int, colours: Colours = Colours()) -> Image.Image:
+    if colours.palette in SHADES:
+        image = image.convert("L").convert("RGB")
+
+    sprite = clear_background(block_mode(image, size, snap_palette(image, colours)))
+
+    return limit_colours(sprite, colours)
+
+
+@dataclass(frozen=True)
+class Snap:
+    size: int = 64
+    colours: Colours = field(default_factory=Colours)
+
+    def __call__(self, image: Image.Image) -> Image.Image:
+        return pixelate(image, self.size, self.colours)
 
 
 def blow_up(image: Image.Image, size: int, background: tuple = (255, 255, 255)) -> Image.Image:

@@ -26,6 +26,8 @@ function facts(entry: GeneratedEntry): Fact[] {
     { label: 'Made', value: whenText(entry.createdAt) },
     { label: 'Characters', value: String(entry.sheets.length) },
     { label: 'Sprite size', value: `${entry.sprite} × ${entry.sprite}` },
+    { label: 'Palette', value: entry.palette },
+    { label: 'Max colours', value: String(entry.colours) },
     { label: 'Drawn with', value: entry.drawWith || 'The model as it is' },
     { label: 'Drawing model', value: entry.drawingModel || 'Unknown' },
     { label: 'Reference', value: entry.reference || 'None' },

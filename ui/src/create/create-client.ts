@@ -19,10 +19,12 @@ export interface FormOptions extends UploadLimits {
   models: Choice[];
   sprites: Choice[];
   facing: Choice[];
+  palettes: Choice[];
+  colours: { min: number; max: number; default: number };
   promptLength: number;
   poseLength: number;
   characters: { min: number; max: number; default: number };
-  defaults: { sprite: string; model: string; facing: Facing };
+  defaults: { sprite: string; model: string; facing: Facing; palette: string };
 }
 
 export type Facing = 'front' | 'side';
@@ -38,6 +40,8 @@ export interface GeneratedEntry {
   turnWith: string;
   turningModel: string;
   reference: string;
+  palette: string;
+  colours: number;
   sheets: Picture[];
 }
 
@@ -47,6 +51,8 @@ export interface GenerateBody {
   facing: Facing;
   characters: number;
   sprite: string;
+  palette: string;
+  colours: number;
   drawWith: string;
   drawingModel: string;
   reference: string;

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  colourChoices,
   createBody,
   defaultValues,
   drawChoices,
@@ -33,6 +34,8 @@ describe('the create form', () => {
       facing: 'front',
       characters: 2,
       sprite: '128',
+      palette: 'none',
+      colours: 32,
       drawWith: 'runs/create-v1/final',
       drawingModel: BASE,
       reference: '',
@@ -82,6 +85,24 @@ describe('the create form', () => {
     const side = { ...values, facing: 'side' as const, drawWith: SIDES.value };
 
     expect(createBody(side, BOTH).drawWith).toBe(SIDES.value);
+  });
+
+  it('offers common colour counts within the range the server allows', () => {
+    expect(colourChoices({ min: 2, max: 64, default: 32 }).map((choice) => choice.value)).toEqual([
+      '2',
+      '4',
+      '8',
+      '12',
+      '16',
+      '24',
+      '32',
+      '48',
+      '64',
+    ]);
+    expect(colourChoices({ min: 4, max: 16, default: 8 })[0]).toEqual({
+      value: '4',
+      label: '4 colours',
+    });
   });
 
   it('is ready once there is something to draw', () => {

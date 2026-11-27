@@ -124,7 +124,14 @@ def test_generate_form_becomes_arguments(tmp_path):
 
     assert title == "Generate: a frog wizard"
     assert args == ["generate", "a frog wizard", "--seeds", "3", "--sprite", "128", "--turn-model", "flux2-klein-4b",
-                    "--front-model", "flux2-klein-4b", "--lora", str(data.resolve() / "runs/rotate-v2/final")]
+                    "--front-model", "flux2-klein-4b", "--palette", "none", "--colours", "32",
+                    "--lora", str(data.resolve() / "runs/rotate-v2/final")]
+
+
+def test_a_palette_and_a_colour_limit_go_to_generate(tmp_path):
+    _, args = studio.generate_job(fake_data(tmp_path), {"prompt": "a frog", "palette": "pico-8", "colours": "8"})
+
+    assert args[args.index("--palette"):args.index("--palette") + 4] == ["--palette", "pico-8", "--colours", "8"]
 
 
 def test_a_create_lora_draws_and_a_rotate_lora_turns(tmp_path):
@@ -184,6 +191,9 @@ def test_a_create_lora_trained_on_sides_draws_a_side_view(tmp_path):
     {"prompt": ""},
     {"prompt": "x" * 1001},
     {"prompt": "x", "facing": "up"},
+    {"prompt": "x", "palette": "rainbow"},
+    {"prompt": "x", "colours": "1"},
+    {"prompt": "x", "colours": "65"},
     {"prompt": "x", "pose": "x" * 101},
     {"prompt": "x", "seeds": "99"},
     {"prompt": "x", "sprite": "65"},

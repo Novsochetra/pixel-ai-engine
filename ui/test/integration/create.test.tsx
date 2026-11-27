@@ -68,6 +68,8 @@ describe('the create screen', () => {
       within(inspector()).getByRole('button', { name: 'Characters: one more' }),
     );
     await userEvent.selectOptions(within(inspector()).getByLabelText('Sprite size'), '64');
+    await userEvent.selectOptions(within(inspector()).getByLabelText('Palette'), 'pico-8');
+    await userEvent.selectOptions(within(inspector()).getByLabelText('Max colours'), '8');
     await userEvent.click(generateButton());
 
     await vi.waitFor(() => expect(postedBody(server)).toBeDefined());
@@ -77,6 +79,8 @@ describe('the create screen', () => {
       facing: 'front',
       characters: 3,
       sprite: '64',
+      palette: 'pico-8',
+      colours: 8,
       drawWith: '',
       drawingModel: 'flux2-klein-base-4b',
       reference: '',

@@ -10,7 +10,7 @@ from PIL import Image
 from pixel_training.animate import square
 from pixel_training.generate import sheets, turn, write_info
 from pixel_training.models import PRESETS, Generate
-from pixel_training.pixelate import blow_up, pixelate
+from pixel_training.pixelate import Snap, blow_up, pixelate
 
 TURNED = ("left", "back", "right")
 FRONT = re.compile(r"^s(\d+)-front\.png$")
@@ -80,7 +80,7 @@ def place_fronts(folder: Path, source: Path, seeds: list[int] | None, sprite: in
 
 
 def turn_fronts(folder: Path, fronts: list[Path], turner: Generate, turning: Turning) -> list[Path]:
-    turn(folder, fronts, turning.instructions, turner, turning.size, turning.sprite)
+    turn(folder, fronts, turning.instructions, turner, turning.size, Snap(turning.sprite))
 
     return sheets(folder, [int(FRONT.match(front.name)[1]) for front in fronts])
 

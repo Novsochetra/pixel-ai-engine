@@ -19,12 +19,18 @@ export const OPTIONS: FormOptions = {
     { value: 'front', label: 'front, then turned to left, back, right' },
     { value: 'side', label: 'side, facing right (left is its mirror)' },
   ],
+  palettes: [
+    { value: 'none', label: 'None' },
+    { value: 'game-boy', label: 'Game Boy (4)' },
+    { value: 'pico-8', label: 'PICO-8 (16)' },
+  ],
+  colours: { min: 2, max: 64, default: 32 },
   promptLength: 1000,
   poseLength: 100,
   characters: { min: 1, max: 8, default: 2 },
   largestUpload: 2048,
   uploadLimit: 10_000_000,
-  defaults: { sprite: '128', model: 'flux2-klein-4b', facing: 'front' },
+  defaults: { sprite: '128', model: 'flux2-klein-4b', facing: 'front', palette: 'none' },
 };
 
 export const DRAGON: GeneratedEntry = {
@@ -38,6 +44,8 @@ export const DRAGON: GeneratedEntry = {
   turnWith: 'rotate-v2 · final',
   turningModel: 'flux2-klein-4b',
   reference: '',
+  palette: 'None',
+  colours: 32,
   sheets: [
     { label: 'Character 1', src: '/api/files/generated/dragon/s0-sheet.png' },
     { label: 'Character 2', src: '/api/files/generated/dragon/s1-sheet.png' },

@@ -5,6 +5,8 @@ from datetime import datetime
 from pathlib import Path
 
 from pixel_training.models import PRESETS
+from pixel_training.palettes import FEWEST_COLOURS, MAX_COLOURS, MOST_COLOURS, NO_PALETTE, PALETTES, Colours
+from pixel_training.pixelate import Snap
 from pixel_training.rotate import add_rotate_parser, rotate_command
 from pixel_training.train import FRONT, POSE, SIDE, lora_folder, run_settings
 from pixel_training.tryout import GENERATE_SIZE, Plan, create_jobs, rotate_jobs, run_model, write_results
@@ -202,6 +204,13 @@ def trained_lora(path: Path, task: str, flag: str, data: Path | None = None) -> 
     return lora, trained
 
 
+def colour_count(text: str) -> int:
+    if not text.isdigit() or not FEWEST_COLOURS <= int(text) <= MAX_COLOURS:
+        raise argparse.ArgumentTypeError(f"give a whole number from {FEWEST_COLOURS} to {MAX_COLOURS}")
+
+    return int(text)
+
+
 def generate_command(args) -> None:
     from pixel_training.generate import make_fronts, mirror, read_reference, sheets, turn, with_reference, write_info
     from pixel_training.models import free_memory, generator_for, pick_device
@@ -214,7 +223,9 @@ def generate_command(args) -> None:
     seeds = list(range(args.seeds))
     device = pick_device()
 
-    info = {"prompt": args.prompt, "text": text, "seeds": seeds, "front_model": args.front_model, "sprite": args.sprite}
+    info = {"prompt": args.prompt, "text": text, "seeds": seeds, "front_model": args.front_model, "sprite": args.sprite,
+            "palette": args.palette, "colours": args.colours}
+    snap = Snap(args.sprite, Colours(args.palette, args.colours))
     create, front_size = None, args.front_size or 1024
     if args.create_lora:
         create, made_by = trained_lora(args.create_lora, "create", "--create-lora", args.data)
@@ -237,10 +248,10 @@ def generate_command(args) -> None:
         info |= {"reference": str(args.reference)}
     if args.facing == "side":
         # The right side from the text; the left side is that sprite flipped.
-        mirror(make_fronts(folder, text, seeds, front, args.sprite, view="right"))
+        mirror(make_fronts(folder, text, seeds, front, snap, view="right"))
         fronts = []
     else:
-        fronts = make_fronts(folder, text, seeds, front, args.sprite)
+        fronts = make_fronts(folder, text, seeds, front, snap)
     del front
     free_memory()
     info |= {"front_size": front_size, "facing": args.facing}
@@ -253,7 +264,7 @@ def generate_command(args) -> None:
         size = args.turn_size or trained.get("size", 512) * args.sprite // 64
         print(f"== turning with the LoRA in {lora}: {model}, {size}px")
         turner = generator_for(PRESETS[model], device, size, lora, args.steps)
-        turn(folder, fronts, prompts["rotate"], turner, size, args.sprite)
+        turn(folder, fronts, prompts["rotate"], turner, size, snap)
         info |= {"lora": str(lora), "turn_model": model, "size": size}
 
     made = sheets(folder, seeds)
@@ -367,6 +378,10 @@ def parser() -> argparse.ArgumentParser:
     generate.add_argument("--steps", type=int, help="sampling steps for turning (default: the model's own)")
     generate.add_argument("--pose", default=POSE,
                           help="the pose words in the prompt, for example \"flying, wings spread, legs tucked\" (default: standing)")
+    generate.add_argument("--palette", choices=[NO_PALETTE, *PALETTES], default=NO_PALETTE,
+                          help="snap every sprite to this palette's colours")
+    generate.add_argument("--colours", type=colour_count, default=MOST_COLOURS,
+                          help=f"the most colours a sprite may have, {FEWEST_COLOURS} to {MAX_COLOURS}")
     generate.add_argument("--facing", choices=["front", "side"], default="front",
                           help="front: draw the front view, and turn it with --lora; side: draw the right side, "
                                "and flip it for the left (for a pose such as flying, seen from the side)")

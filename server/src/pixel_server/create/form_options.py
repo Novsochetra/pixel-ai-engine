@@ -21,12 +21,14 @@ def form_options() -> dict:
         "models": choices(studio.MODELS),
         "sprites": [{"value": str(size), "label": f"{size} × {size}"} for size in studio.SPRITES],
         "facing": choices(studio.FACING),
+        "palettes": choices(studio.PALETTES),
+        "colours": studio.COLOURS,
         "promptLength": PROMPT_LENGTH,
         "poseLength": POSE_LENGTH,
         "characters": CHARACTERS,
         "largestUpload": animate.LARGEST_UPLOAD,
         "uploadLimit": animate.UPLOAD_LIMIT,
-        "defaults": {"sprite": str(DEFAULT_SPRITE), "model": DEFAULT_MODEL, "facing": "front"},
+        "defaults": {"sprite": str(DEFAULT_SPRITE), "model": DEFAULT_MODEL, "facing": "front", "palette": "none"},
     }
 
 

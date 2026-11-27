@@ -7,6 +7,8 @@ FIELDS = {
     "facing": "facing",
     "characters": "seeds",
     "sprite": "sprite",
+    "palette": "palette",
+    "colours": "colours",
     "drawWith": "create_lora",
     "drawingModel": "front_model",
     "turnWith": "lora",

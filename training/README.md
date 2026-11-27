@@ -122,6 +122,16 @@ faces on the side views, where turning it at 256 did not. The results go to
 `../dataset/data/generated/<date>-<prompt>/`: `s0-front.png`, `s0-left.png` and so on, the raw
 pictures, and `s0-sheet.png` with the 4 views side by side.
 
+The snap keeps at most 32 colours. `--palette` snaps every pixel to a classic palette instead
+(`pico-8`, `game-boy`, `nes`, `commodore-64`, `zx-spectrum`, `cga`, `1-bit`; the colours are
+Lospec's), and `--colours` (2 to 64) limits each sprite to that many, counting only the character,
+not the cleared background. With a palette, the most used of its colours are kept. The palette is
+put on after the model draws, so a 4-colour palette can merge small details:
+
+```bash
+uv run pixel-train generate "a frog wizard" --palette pico-8 --colours 12
+```
+
 ### Turn front views you already have
 
 `pixel-train rotate` turns front views that are already made, with a rotate LoRA, and leaves the

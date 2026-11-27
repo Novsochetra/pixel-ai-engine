@@ -60,7 +60,8 @@ def started_args(jobs) -> list[str]:
 
 
 def test_a_good_form_starts_a_generate_job(client, jobs, studio_data):
-    body = {"prompt": "a frog  wizard", "characters": 3, "sprite": "96", "turnWith": "runs/rotate-v2/final"}
+    body = {"prompt": "a frog  wizard", "characters": 3, "sprite": "96", "palette": "game-boy", "colours": 4,
+            "turnWith": "runs/rotate-v2/final"}
 
     reply = client.post("/api/generate", json=body, headers=SAME_SITE)
 
@@ -69,7 +70,8 @@ def test_a_good_form_starts_a_generate_job(client, jobs, studio_data):
     assert reply.json()["job"]["kind"] == "generate"
     assert started_args(jobs) == [
         "generate", "a frog wizard", "--seeds", "3", "--sprite", "96", "--turn-model", "flux2-klein-4b",
-        "--front-model", "flux2-klein-4b", "--lora", str(studio_data.resolve() / "runs/rotate-v2/final"),
+        "--front-model", "flux2-klein-4b", "--palette", "game-boy", "--colours", "4",
+        "--lora", str(studio_data.resolve() / "runs/rotate-v2/final"),
     ]
 
 
@@ -126,8 +128,18 @@ def test_the_made_characters_are_listed_newest_first(client):
     items = client.get("/api/generated").json()["items"]
 
     assert [item["folder"] for item in items] == ["new-dragon", "old-frog"]
+    assert (items[1]["palette"], items[1]["colours"]) == ("None", 32)
     assert items[0]["sheets"][0]["src"] == "/api/files/generated/new-dragon/s0-sheet.png"
     assert client.get(items[0]["sheets"][0]["src"]).headers["content-type"] == "image/png"
+
+
+def test_a_made_character_names_its_palette(client, studio_data):
+    write_generated(studio_data, "gb-knight", {"prompt": "a knight", "created_at": "2026-11-28T08:00:00+00:00",
+                                               "palette": "game-boy", "colours": 4})
+
+    knight = client.get("/api/generated").json()["items"][0]
+
+    assert (knight["palette"], knight["colours"]) == ("Game Boy (4)", 4)
 
 
 def test_only_pictures_in_generated_are_served(client, studio_data):
@@ -173,8 +185,11 @@ def test_a_lora_names_the_model_it_was_trained_on(client, studio_data):
 def test_the_form_options_are_listed(client):
     options = client.get("/api/generate/options").json()
 
-    assert options["defaults"] == {"sprite": "128", "model": "flux2-klein-4b", "facing": "front"}
+    assert options["defaults"] == {"sprite": "128", "model": "flux2-klein-4b", "facing": "front", "palette": "none"}
     assert options["characters"] == {"min": 1, "max": 8, "default": 2}
+    assert options["colours"] == {"min": 2, "max": 64, "default": 32}
+    assert options["palettes"][0] == {"value": "none", "label": "None"}
+    assert {"value": "pico-8", "label": "PICO-8 (16)"} in options["palettes"]
 
 
 def test_an_uploaded_reference_goes_to_the_job(client, jobs, studio_data):

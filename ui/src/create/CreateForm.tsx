@@ -3,6 +3,7 @@ import { Segmented } from '@/components/segmented/Segmented';
 import { Stepper } from '@/components/stepper/Stepper';
 import { TextField } from '@/components/text-field/TextField';
 import type { Facing, FormOptions } from './create-client';
+import { ColourFields } from './ColourFields';
 import { facingNote, STANDING, type CreateValues } from './create-form';
 import { ModelFields } from './ModelFields';
 import { ReferenceField } from './ReferenceField';
@@ -74,7 +75,7 @@ function DrawingFields({ options, values, onChange }: FieldsProps) {
   );
 }
 
-// The inspector's form: what to draw first, then the model that draws it.
+// The inspector's form: what to draw first, then its colours, then the model that draws it.
 export function CreateForm({ form }: { form: Form }) {
   const { options, values, change } = form;
 
@@ -94,6 +95,7 @@ export function CreateForm({ form }: { form: Form }) {
         value={values.reference}
         onChange={(reference) => change({ reference })}
       />
+      <ColourFields options={options} values={values} onChange={change} />
       <ModelFields form={form} values={values} options={options} />
     </form>
   );

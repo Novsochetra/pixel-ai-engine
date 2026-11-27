@@ -14,6 +14,11 @@ FACING = {"front": "front, then turned to left, back, right", "side": "side, fac
 TASKS = {"rotate": "rotate: turn a front view", "create": "create: draw a front view from text"}
 NAME = re.compile(r"^[A-Za-z0-9_-]{1,40}$")
 GALLERY = 40
+# The palettes pixel-train generate knows (training's palettes.PALETTES), with their colour counts.
+PALETTES = {"none": "None", "1-bit": "1-bit (2)", "game-boy": "Game Boy (4)", "cga": "CGA (4)",
+            "zx-spectrum": "ZX Spectrum (15)", "pico-8": "PICO-8 (16)", "commodore-64": "Commodore 64 (16)",
+            "nes": "NES (55)"}
+COLOURS = {"min": 2, "max": 64, "default": 32}
 # FLUX.2 Klein reads 512 tokens (about 2,000 characters); the create template takes about 60.
 PROMPT_LENGTH = 1000
 
@@ -142,6 +147,13 @@ def create_args(data: Path, create: str, pose: str, facing: str) -> list[str]:
     return ["--create-lora", str(data.resolve() / create)]
 
 
+def colour_args(form: dict) -> list[str]:
+    palette = one_of(form.get("palette", "none"), PALETTES, "palette")
+    colours = number(form.get("colours", str(COLOURS["default"])), COLOURS["min"], COLOURS["max"], "Max colours")
+
+    return ["--palette", palette, "--colours", str(colours)]
+
+
 def generate_job(data: Path, form: dict) -> tuple[str, list[str]]:
     prompt = " ".join(form.get("prompt", "").split())
     if not prompt or len(prompt) > PROMPT_LENGTH:
@@ -151,7 +163,8 @@ def generate_job(data: Path, form: dict) -> tuple[str, list[str]]:
     sprite = one_of(form.get("sprite", "128"), SPRITES, "sprite size")
     model = one_of(form.get("turn_model", "flux2-klein-4b"), MODELS, "turning model")
     front = one_of(form.get("front_model", "flux2-klein-4b"), MODELS, "drawing model")
-    args = ["generate", prompt, "--seeds", str(seeds), "--sprite", sprite, "--turn-model", model, "--front-model", front]
+    args = ["generate", prompt, "--seeds", str(seeds), "--sprite", sprite, "--turn-model", model, "--front-model", front,
+            *colour_args(form)]
     pose = " ".join(form.get("pose", "").split())
     if len(pose) > 100:
         raise Invalid("Write the pose in at most 100 characters.")

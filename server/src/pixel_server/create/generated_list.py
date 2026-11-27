@@ -4,8 +4,10 @@ from pixel_data.dashboard import studio
 
 from pixel_server.library.urls import file_url
 
-# The first generations were drawn before the sprite size could be chosen, at 64 px.
+# The first generations were drawn before the sprite size could be chosen, at 64 px, and before
+# the palette could be, with no palette and at most 32 colours.
 FIRST_SPRITE = 64
+FIRST_COLOURS = 32
 
 
 def generated_list(data: Path) -> dict:
@@ -28,6 +30,8 @@ def generated_entry(item: dict) -> dict:
         "createdAt": item.get("created_at", ""),
         "sprite": item.get("sprite", FIRST_SPRITE),
         "facing": item.get("facing", "front"),
+        "palette": studio.PALETTES.get(item.get("palette", "none"), "None"),
+        "colours": item.get("colours", FIRST_COLOURS),
         "drawWith": lora_label(item.get("create_lora")),
         "drawingModel": item.get("front_model", ""),
         "turnWith": lora_label(item.get("lora")),

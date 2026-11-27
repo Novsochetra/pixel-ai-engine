@@ -4,7 +4,7 @@ import { OPTIONS } from '../integration/create-server';
 
 // The old /generate page sent these when only the prompt was filled; the new form must match,
 // except that it leaves out the turning, so the server keeps its default of none: front only. An
-// empty reference is none, as the old page had.
+// empty reference is none, as the old page had, and no palette with 32 colours snaps as it did.
 describe('the create form, as the old /generate page', () => {
   it('sends the old defaults', () => {
     const values = { ...defaultValues(OPTIONS, []), prompt: 'a frog wizard with a staff' };
@@ -15,6 +15,8 @@ describe('the create form, as the old /generate page', () => {
       facing: 'front',
       characters: 2,
       sprite: '128',
+      palette: 'none',
+      colours: 32,
       drawWith: '',
       drawingModel: 'flux2-klein-4b',
       reference: '',

@@ -4,6 +4,7 @@ from PIL import Image
 
 from pixel_training.cli import parser
 from pixel_training.generate import make_fronts, mirror, read_reference, sheets, turn, with_reference, write_info
+from pixel_training.pixelate import Snap
 
 INSTRUCTIONS = {"left": "turn left", "back": "turn around", "right": "turn right"}
 
@@ -66,8 +67,8 @@ def test_generate_defaults():
 
 
 def test_a_bigger_sprite_keeps_more_pixels(tmp_path):
-    fronts = make_fronts(tmp_path, "a knight", [0], fake([]), sprite=128)
-    turn(tmp_path, fronts, INSTRUCTIONS, fake([]), 256, sprite=128)
+    fronts = make_fronts(tmp_path, "a knight", [0], fake([]), Snap(128))
+    turn(tmp_path, fronts, INSTRUCTIONS, fake([]), 256, Snap(128))
 
     assert Image.open(fronts[0]).size == (128, 128)
     assert Image.open(tmp_path / "s0-back.png").size == (128, 128)

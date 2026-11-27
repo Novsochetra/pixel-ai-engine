@@ -12,14 +12,14 @@ from pathlib import Path
 from PIL import Image
 
 from pixel_training.models import Generate
-from pixel_training.pixelate import blow_up, pixelate
+from pixel_training.pixelate import Snap, blow_up
 
 SPRITE = 64
 VIEWS = ("front", "left", "back", "right")
 SHEET_SCALE = 4
 
 
-def make_fronts(folder: Path, prompt: str, seeds: list[int], generate: Generate, sprite: int = SPRITE,
+def make_fronts(folder: Path, prompt: str, seeds: list[int], generate: Generate, snap: Snap = Snap(SPRITE),
                 view: str = "front") -> list[Path]:
     """Draw one view (the front, or the right side) once per seed; keep the raw picture and the sprite."""
     folder.mkdir(parents=True, exist_ok=True)
@@ -28,7 +28,7 @@ def make_fronts(folder: Path, prompt: str, seeds: list[int], generate: Generate,
         print(f"{view} view {number} of {len(seeds)} (seed {seed})...", flush=True)
         image = generate(prompt, None, seed)
         image.convert("RGB").save(folder / f"s{seed}-{view}-raw.png")
-        pixelate(image, sprite).save(folder / f"s{seed}-{view}.png")
+        snap(image).save(folder / f"s{seed}-{view}.png")
         fronts.append(folder / f"s{seed}-{view}.png")
 
     return fronts
@@ -65,7 +65,7 @@ def mirror(sides: list[Path]) -> list[Path]:
 
 
 def turn(folder: Path, fronts: list[Path], instructions: dict[str, str], generate: Generate, size: int,
-         sprite: int = SPRITE) -> None:
+         snap: Snap = Snap(SPRITE)) -> None:
     """Turn every front view to each view in the instructions, the way the LoRA was trained."""
     total, number = len(fronts) * len(instructions), 0
     for front in fronts:
@@ -80,7 +80,7 @@ def turn(folder: Path, fronts: list[Path], instructions: dict[str, str], generat
             image = generate(instruction, reference, int(seed[1:]))
             print(f"  done in {time.monotonic() - started:.0f}s", flush=True)
             image.convert("RGB").save(folder / f"{seed}-{view}-raw.png")
-            pixelate(image, sprite).save(folder / f"{seed}-{view}.png")
+            snap(image).save(folder / f"{seed}-{view}.png")
 
 
 def sheets(folder: Path, seeds: list[int]) -> list[Path]:

@@ -22,6 +22,8 @@ export function defaultValues(
     facing: defaults.facing,
     characters: options.characters.default,
     sprite: defaults.sprite,
+    palette: defaults.palette,
+    colours: options.colours.default,
     drawWith,
     drawingModel: modelFor(createLoras, drawWith, defaults.model),
     reference: '',
@@ -62,6 +64,15 @@ export const facingNote = (facing: Facing) =>
   facing === 'side'
     ? 'Drawn from the side, facing right. The left is its mirror.'
     : 'Drawn from the front. Turn it on Rotate once you like it.';
+
+const COLOUR_STEPS = [2, 4, 8, 12, 16, 24, 32, 48, 64];
+
+// A few common counts, as a menu: stepping one by one up to 64 would take too many taps.
+export const colourChoices = ({ min, max }: FormOptions['colours']) =>
+  COLOUR_STEPS.filter((count) => count >= min && count <= max).map((count) => ({
+    value: String(count),
+    label: `${count} colours`,
+  }));
 
 export const isReady = (values: CreateValues) => values.prompt.trim() !== '';
 
